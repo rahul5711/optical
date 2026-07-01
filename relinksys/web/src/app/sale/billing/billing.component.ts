@@ -153,7 +153,7 @@ selectedValues: any = {
     ['N5', 'N6', 'N8', 'N10', 'N12', 'N18', 'N36' ]
   ];
 
- 
+   showAdd = false;
   myControl = new FormControl('');
   myControl1 = new FormControl('');
   myControl2 = new FormControl('');
@@ -257,6 +257,12 @@ selectedValues: any = {
 
   Check: any = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
+     rxDoc: any = {
+      ID: null, CompanyID: null, Name: '', DOB: '', Anniversary: '', Designation: '', Qualification: null, HospitalName: null, MobileNo1: null,
+      MobileNo2: null, PhoneNo: null, Email: null, Address: null, Branch: null, Landmark: null, PhotoURL: null, DoctorType: null,
+      DoctorLoyalty: null, LoyaltyPerPatient: null, LoginPermission: 0, LoginName: '', Password: '', Status: 1, CreatedBy: null,
+      UpdatedBy: null, CreatedOn: null, UpdatedOn: null, CommissionType: 0, CommissionMode: 0, CommissionValue: 0, CommissionValueNB: 0
+    };
   param = { Name: '', MobileNo1: '', Address: '', Sno: '' };
   membarship: any
   membarshipList: any = []
@@ -620,6 +626,37 @@ selectedValues: any = {
     this.getWebsiteLink()
   }
 
+  docSave() {
+      this.sp.show()
+      const subs: Subscription =  this.dc.saveDoctor( this.rxDoc).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Your file has been Save.',
+              showConfirmButton: false,
+              timer: 1200
+            }) 
+            this.bill.BillPageSupportDat();
+                this.rxDoc = {
+      ID: null, CompanyID: null, Name: '', DOB: '', Anniversary: '', Designation: '', Qualification: null, HospitalName: null, MobileNo1: null,
+      MobileNo2: null, PhoneNo: null, Email: null, Address: null, Branch: null, Landmark: null, PhotoURL: null, DoctorType: null,
+      DoctorLoyalty: null, LoyaltyPerPatient: null, LoginPermission: 0, LoginName: '', Password: '', Status: 1, CreatedBy: null,
+      UpdatedBy: null, CreatedOn: null, UpdatedOn: null, CommissionType: 0, CommissionMode: 0, CommissionValue: 0, CommissionValueNB: 0
+    };
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => {
+          console.log(err.msg);
+        },
+        complete: () => subs.unsubscribe(),
+      });
+      this.modalService.dismissAll()
+    } 
   
     getGenderList() {
       const subs: Subscription = this.supps.getList('Gender').subscribe({

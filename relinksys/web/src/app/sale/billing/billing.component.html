@@ -869,13 +869,23 @@
                                                             </mat-form-field>
                                                         </div>
                                                         <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                            <button mat-mini-fab color="primary"
-                                                                [routerLink]="['/sale/doctor',0]"
-                                                                [queryParams]="{ check: 1}"
-                                                                aria-label="dropdown search">
-                                                                <mat-icon>add</mat-icon>
+                                                            <button type="button" autofocus class="btn_icon" (click)="showDoctorAdd = !showDoctorAdd;">
+                                                                <mat-icon class="col-white plus_icon" >add</mat-icon>
                                                             </button>
                                                         </div>
+                                                        <div *ngIf="showDoctorAdd" class="col-md-2 col-4 mb-0">
+                                                                <mat-form-field class="example-full-width mb-0">
+                                                                  <mat-label>Add Rx</mat-label>
+                                                                    <input matInput name="Name" [(ngModel)]="rxDoc.Name"  #NameTypecontrol>
+                                                                </mat-form-field>
+                                                        </div>
+                                                         <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                           <button type="button"  mat-mini-fab color="primary" (click)="showDoctorAdd = !showDoctorAdd; docSave()"
+                                                              aria-label="Example icon button with a bookmark icon">
+                                                              <mat-icon>save</mat-icon>
+                                                             </button>
+                                                         </div>
+
                                                         <div class="col-md-3 col-3 p-md-0">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Other/Shade</mat-label>
@@ -1491,14 +1501,23 @@
                                                                 </mat-error>
                                                             </mat-form-field>
                                                         </div>
-                                                        <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                            <button mat-mini-fab color="primary"
-                                                                [routerLink]="['/sale/doctor',0]"
-                                                                [queryParams]="{ check: 1}"
-                                                                aria-label="dropdown search">
-                                                                <mat-icon>add</mat-icon>
+                                                         <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                            <button type="button" autofocus class="btn_icon" (click)="showDoctorAdd = !showDoctorAdd;">
+                                                                <mat-icon class="col-white plus_icon" >add</mat-icon>
                                                             </button>
                                                         </div>
+                                                        <div *ngIf="showDoctorAdd" class="col-md-2 col-4 mb-0">
+                                                                <mat-form-field class="example-full-width mb-0">
+                                                                  <mat-label>Add Rx</mat-label>
+                                                                    <input matInput name="Name" [(ngModel)]="rxDoc.Name"  #NameTypecontrol>
+                                                                </mat-form-field>
+                                                        </div>
+                                                         <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                           <button type="button"  mat-mini-fab color="primary" (click)="showDoctorAdd = !showDoctorAdd; docSave()"
+                                                              aria-label="Example icon button with a bookmark icon">
+                                                              <mat-icon>save</mat-icon>
+                                                             </button>
+                                                         </div>
                                                         <div class="col-md-1 col-3 p-md-0 ps-1">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>PD_R</mat-label>
@@ -1793,14 +1812,23 @@
                                                                 </mat-error>
                                                             </mat-form-field>
                                                         </div>
-                                                        <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                            <button mat-mini-fab color="primary"
-                                                                [routerLink]="['/sale/doctor',0]"
-                                                                [queryParams]="{ check: 1}"
-                                                                aria-label="dropdown search">
-                                                                <mat-icon>add</mat-icon>
+                                                         <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                            <button type="button" autofocus class="btn_icon" (click)="showDoctorAdd = !showDoctorAdd;">
+                                                                <mat-icon class="col-white plus_icon" >add</mat-icon>
                                                             </button>
                                                         </div>
+                                                        <div *ngIf="showDoctorAdd" class="col-md-2 col-4 mb-0">
+                                                                <mat-form-field class="example-full-width mb-0">
+                                                                  <mat-label>Add Rx</mat-label>
+                                                                    <input matInput name="Name" [(ngModel)]="rxDoc.Name"  #NameTypecontrol>
+                                                                </mat-form-field>
+                                                        </div>
+                                                         <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                           <button type="button"  mat-mini-fab color="primary" (click)="showDoctorAdd = !showDoctorAdd; docSave()"
+                                                              aria-label="Example icon button with a bookmark icon">
+                                                              <mat-icon>save</mat-icon>
+                                                             </button>
+                                                         </div>
                                                         <div class="col-md-3 col-12 mb-0" style="margin: 0; ">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Treatment</mat-label>
