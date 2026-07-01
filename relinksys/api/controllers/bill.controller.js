@@ -16992,9 +16992,6 @@ module.exports = {
                 filterType,
                 FromDate,
                 ToDate
-                // filterType = "YearWise",
-                // FromDate = "2025-01-01",
-                // ToDate = "2026-12-31"
             } = req.body;
 
             if (!FromDate || !ToDate) {
