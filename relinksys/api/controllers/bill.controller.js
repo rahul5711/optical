@@ -12954,7 +12954,7 @@ module.exports = {
                 return res.send({ success: false, message: "Invalid InvoiceNo Data" });
             }
 
-            const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
+            const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and CompanyID = ${CompanyID}`);
 
             if (!fetchCompany.length) {
                 return res.send({ success: false, message: "Invalid CompanyID Data" });
@@ -17498,7 +17498,7 @@ async function getRewardBalance(RewardCustomerRefID, InvoiceNo, CompanyID, shopi
             return { success: false, message: "Invalid InvoiceNo Data" };
         }
 
-        const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and ID = ${CompanyID}`);
+        const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and CompanyID = ${CompanyID}`);
 
         if (!fetchCompany.length) {
             return { success: false, message: "Invalid CompanyID Data" };
