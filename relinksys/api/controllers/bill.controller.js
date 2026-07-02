@@ -16976,6 +16976,12 @@ module.exports = {
             const response = {
                 success: true,
                 message: 'data fetched',
+                header: {
+                    TotalSale: 0,
+                    TotalPurchase: 0,
+                    TotalExpense: 0,
+                    Profit: 0
+                },
                 data: []
             };
 
@@ -17235,6 +17241,26 @@ ORDER BY ReportYear,ReportMonthNo`;
                 CompanyID, fromDate, toDate
             ]);
 
+            // Calculate header totals
+            const header = report.reduce((acc, row) => {
+                acc.TotalSale += Number(row.TotalSale || 0);
+                acc.TotalPurchase += Number(row.TotalPurchase || 0);
+                acc.TotalExpense += Number(row.TotalExpense || 0);
+                return acc;
+            }, {
+                TotalSale: 0,
+                TotalPurchase: 0,
+                TotalExpense: 0
+            });
+
+            header.Profit = header.TotalSale - header.TotalPurchase - header.TotalExpense;
+
+            // Round values
+            Object.keys(header).forEach(key => {
+                header[key] = Number(header[key].toFixed(2));
+            });
+
+            response.header = header;
             response.data = report;
 
             return res.status(200).json(response);
