@@ -96,6 +96,10 @@ searchTimer: any;
   RegisterAmount:any = 0
   RegisterPaid:any = 0
   RegisterBalance:any = 0
+   RegisterTotalSale :any = 0
+  RegisterTotalPurchase :any = 0
+  RegisterTotalExpense:any = 0
+    RegisterProfit:any = 0
   FilterTypeR:any = 'today'
   ngOnInit(): void {
 
@@ -749,9 +753,10 @@ searchTimer: any;
             if (res.success) {
               this.as.successToast(res.message)
               this.RegisterList = res.data
-              // this.RegisterAmount = res.calculation.Amount
-              // this.RegisterBalance = res.calculation.Balance
-              // this.RegisterPaid = res.calculation.Paid
+              this.RegisterTotalSale = res.header.TotalSale
+              this.RegisterTotalPurchase = res.header.TotalPurchase
+              this.RegisterTotalExpense= res.header.TotalExpense
+              this.RegisterProfit= res.header.Profit
 
        
             } else {

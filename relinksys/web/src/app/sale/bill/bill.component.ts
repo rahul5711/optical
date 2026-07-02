@@ -460,10 +460,12 @@ export class BillComponent implements OnInit {
             this.applyReward.RewardBalance = rewardData.data.RewardAmount;
             this.applyReward.RewardPercentage = rewardData.data.RewardPercentage;
             this.applyReward.AppliedRewardAmount = rewardData.data.AppliedRewardAmount;
+            this.applyReward.RewardCustomerRefID = this.id;
           } else {
             this.applyReward.RewardBalance = 0;
             this.applyReward.RewardPercentage = 0;
             this.applyReward.AppliedRewardAmount = 0;
+             this.applyReward.RewardCustomerRefID = 0
           }
 
         } else {
@@ -3557,8 +3559,8 @@ let dtm
       this.applyReward.RewardBalance = 0
       this.applyReward.RewardPercentage = 0
       this.applyReward.AppliedRewardAmount = 0
-      this.applyReward.RewardCustomerRefID = Number(this.BillMaster.CustomerID)
-      const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.BillMaster.InvoiceNo).subscribe({
+      this.applyReward.RewardCustomerRefID = this.applyReward.CustomerID
+      const subs: Subscription = this.bill.getRewardBalance(this.applyReward.RewardCustomerRefID, this.applyReward.InvoiceNo).subscribe({
         next: (res: any) => {
           this.applyReward.RewardBalance = res.data?.RewardAmount
           this.applyReward.RewardPercentage = res.data?.RewardPercentage
