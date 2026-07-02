@@ -41,12 +41,14 @@ export class EcomSettingComponent implements OnInit {
     TermConditions :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     ReturnNote :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     DayExchange :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
+    EcomName:'', EcomAddress:'', EcomMoblieNo1:'', EcomMoblieNo:'', EcomPhoneNo:'', EcomEmail:'', EcomLogo:''
   }
   PolicyNoteList: any = [];
   TermConditionsList: any = [];
   ReturnNoteList: any = [];
   DayExchangeList: any = [];
   freeImage: any;
+  ecomLogo: any;
   img: any;
 companySettingdata:any
   ngOnInit(): void {
@@ -94,6 +96,25 @@ uploadImage(e: any, index: number) {
         if (data.body !== undefined && mode === 'water') {
           this.freeImage = data.body?.download;
           this.data.complimentaryImage = data.body?.download
+          this.as.successToast(data.body?.message)
+        }
+       
+
+      });
+    })
+
+  }
+  uploadImage2(e: any, mode: any) {
+
+    this.img = e.target.files[0];
+    // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+    this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+      // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+      this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
+      
+        if (data.body !== undefined && mode === 'ecomLogo') {
+          this.ecomLogo = data.body?.download;
+          this.data.EcomLogo = data.body?.download
           this.as.successToast(data.body?.message)
         }
 
@@ -212,3 +233,6 @@ getCompanySetting() {
       });
     }
 }
+
+
+

@@ -7,27 +7,25 @@
                     <div class="header">
                         <h2>Setting</h2>
                     </div>
-                    <div class="body">
-                        <form autocomplete="off" #f="ngForm" >
-                            <div class="row">
+
+                    <mat-tab-group>
+                    <form autocomplete="off" #f="ngForm" >
+                        <div class="body ">
+                        <mat-tab  label=" Image Upload " >
+                              <div class="row">
                                 <div class="col-12 header">
                                     <h2>Silder Image Upload</h2>
                                 </div>
-
                             </div>
                             <div class="row">
-
                                 <div class="col-3" *ngFor="let item of images; let i = index">
                                     <div class="row">
-
                                         <div class="col-12 mt-1">
                                             <img class="fit-picture" width="100%" height="220"
                                                 [src]="item ? (env.apiUrl + item) : 'assets/no-image.png'"
                                                 style="object-fit: contain; border: 1px solid;">
                                         </div>
-
                                         <div class="col-12 mb-0" (click)="fileInput.click()" style="cursor: pointer;">
-
                                             <i class="fa-solid fa-cloud-arrow-up upload_icon"
                                                 style="width:100% !important">
 
@@ -45,49 +43,14 @@
                                 </div>
 
                             </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="col-12">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Coupon Code</mat-label>
-                                            <input matInput name="BarcodeName" [(ngModel)]="data.CouponCode"
-                                                #CouponCodecontrol>
-                                            <mat-error *ngIf="CouponCodecontrol.required">
-                                                BarcodeName is required
-                                            </mat-error>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-12">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Facebook Link</mat-label>
-                                            <input matInput name="FacebookLink" [(ngModel)]="data.FacebookLink"
-                                                #FacebookLinkcontrol>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-12">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Instagram Link</mat-label>
-                                            <input matInput name="InstagramLink" [(ngModel)]="data.InstagramLink"
-                                                #InstagramLinkcontrol>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-12">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Youtube Link</mat-label>
-                                            <input matInput name="YoutubeLink" [(ngModel)]="data.YoutubeLink"
-                                                #YoutubeLinkcontrol>
-                                        </mat-form-field>
-                                    </div>
-                                    <div class="col-12">
-                                        <mat-form-field class="example-full-width mb-0">
-                                            <mat-label>Twitter Link</mat-label>
-                                            <input matInput name="TwitterLink" [(ngModel)]="data.TwitterLink"
-                                                #TwitterLinkcontrol>
-                                        </mat-form-field>
-                                    </div>
 
+                            <div class="row mt-3">
+
+                                <div class="col-12 header">
+                                    <h2>Complimentary Upload</h2>
                                 </div>
-                                <div class="col-3">
+                            
+                              <div class="col-3">
                                     <div class="row">
                                         <div class="col-12 mt-1 ">
                                             <img class="fit-picture" width="100%" height="220"
@@ -106,8 +69,9 @@
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
+                                </div>
+                        </mat-tab>
+                        <mat-tab label="Policy">
                             <div class="row ">
                                 <div class="col-6">
                                     <div class="row ">
@@ -266,13 +230,125 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                        </mat-tab>
+
+                        <mat-tab label="Shop Detail ">
+                              <div class="row">
+                                <div class="col-9">
+                             <div class="row">
+                                <div class="col-4">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Shop Name</mat-label>
+                                            <input matInput name="EcomName" [(ngModel)]="data.EcomName" #EcomNamecontrol>
+                                    </mat-form-field>
+                                </div>
+                               
+                                <div class="col-2">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>MoblieNo2</mat-label>
+                                            <input matInput name="EcomMoblieNo2" type="number" [(ngModel)]="data.EcomMoblieNo2" #EcomMoblieNo2control>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>MoblieNo1</mat-label>
+                                            <input matInput name="EcomMoblieNo1" type="number" [(ngModel)]="data.EcomMoblieNo1" #EcomMoblieNo1control>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>PhoneNo</mat-label>
+                                            <input matInput name="EcomPhoneNo" type="number" [(ngModel)]="data.EcomPhoneNo" #EcomPhoneNocontrol>
+                                    </mat-form-field>
+                                </div>
+                                 <div class="col-6">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Address</mat-label>
+                                            <input matInput name="EcomAddress" [(ngModel)]="data.EcomAddress" #EcomAddresscontrol>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-4">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Email</mat-label>
+                                            <input matInput name="EcomEmail" type="email" [(ngModel)]="data.EcomEmail" #EcomEmailcontrol>
+                                    </mat-form-field>
+                                </div>
+
+
+                                <div class="col-5">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Facebook Link</mat-label>
+                                            <input matInput name="FacebookLink" [(ngModel)]="data.FacebookLink"
+                                                #FacebookLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-5">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Instagram Link</mat-label>
+                                            <input matInput name="InstagramLink" [(ngModel)]="data.InstagramLink"
+                                                #InstagramLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-5">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Youtube Link</mat-label>
+                                            <input matInput name="YoutubeLink" [(ngModel)]="data.YoutubeLink"
+                                                #YoutubeLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-5">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Twitter Link</mat-label>
+                                            <input matInput name="TwitterLink" [(ngModel)]="data.TwitterLink"
+                                                #TwitterLinkcontrol>
+                                        </mat-form-field>
+                                    </div>
+                                     <div class="col-10">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Coupon Code</mat-label>
+                                            <input matInput name="BarcodeName" [(ngModel)]="data.CouponCode"
+                                                #CouponCodecontrol>
+                                            <mat-error *ngIf="CouponCodecontrol.required">
+                                                BarcodeName is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                
+                             </div>
+                             </div>
+                             <div class="col-2 ms-auto">
+                                    <div class="row">
+                                        <div class="col-12 mt-1 ">
+                                            <img class="fit-picture" width="100%" height="220"
+                                                [src]="this.env.apiUrl + ecomLogo"
+                                                style="object-fit: contain; border: 1px solid;">
+                                        </div>
+                                        <div class="col-xl-12 col-lg-11 col-md-12 col-12 mb-0 "
+                                            (click)="fileInput2.click()" style="cursor: pointer;">
+                                            <i class="fa-solid fa-cloud-arrow-up upload_icon"
+                                                style=" width:100% !important">
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Ecom Logo
+                                                </span>
+                                            </i>
+                                            <input #fileInput2 id="my-input" name='ecomLogo' type="file"
+                                                (change)="uploadImage2($event, 'ecomLogo')" style="display:none;">
+                                        </div>
+                                    </div>
+                             </div>
+                                    </div>
+                           
+                        </mat-tab>
+</div>
+                       
+                    </form>
+
+                     </mat-tab-group>
+                             <div class="row mt-3">
                                 <div class="col-12">
-                                    <button (click)="Sumbit()">Save/Update</button>
+                                    <button (click)="Sumbit()"  mat-raised-button color="primary">Save / Update</button>
                                 </div>
                             </div>
-                        </form>
-                    </div>
+                  
                 </div>
             </div>
         </div>
