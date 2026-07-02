@@ -3727,14 +3727,22 @@ let dtm
         ID: null, RewardCustomerRefID: null, CompanyID: null, ShopID: null, CreditType: 'Credit', PaymentDate: null, PayableAmount: 0, PaidAmount: 0, CustomerCredit: 0, PaymentMode: 'Customer Reward', CardNo: '', PaymentReferenceNo: '', Comments: 0, Status: 1, pendingPaymentList: {}, RewardPayment: 0, ApplyReward: true, ApplyReturn: false, RewardType: 'Self', RewardBalance: 0, AppliedRewardAmount: 0, RewardPercentage: 0, Otp: null
       };
 
+      
       const subs: Subscription = this.pay.customerPayment(data).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.invoiceList = []
-            this.paymentHistoryByMasterID(this.id, this.id2)
-            this.billByCustomer(this.id, this.id2)
-            this.getBillById(this.id2)
+            // this.paymentHistoryByMasterID(this.id, this.id2)
+            // this.billByCustomer(this.id, this.id2)
+            // this.getBillById(this.id2)
+            // this.applyReward.PaidAmount = 0; this.applyReward.PaymentMode = 'Customer Reward'; this.applyReward.ApplyReturn = false;
+            // this.RewardType()
+             this.applyReward = data
+            this.paymentHistoryByMasterID(this.applyReward.CustomerID, this.applyReward.BillMasterID)
+            this.billByCustomer(this.applyReward.CustomerID, this.applyReward.BillMasterID)
             this.applyReward.PaidAmount = 0; this.applyReward.PaymentMode = 'Customer Reward'; this.applyReward.ApplyReturn = false;
+            this.RewardType()
+            this.modalService.dismissAll()
           } else {
             this.applyReward = data
             this.as.errorToast(res.message)

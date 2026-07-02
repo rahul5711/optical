@@ -37,11 +37,11 @@ export class EcomSettingComponent implements OnInit {
   data: any = {
     SilderImage:[],
     CouponCode: '', FacebookLink: '', InstagramLink: '', YoutubeLink: '', TwitterLink: '', complimentaryImage:'',
+    EcomName:'', EcomAddress:'', EcomMoblieNo1:'', EcomMoblieNo:'', EcomPhoneNo:'', EcomEmail:'', EcomLogo:'',
     PolicyNote :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     TermConditions :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     ReturnNote :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     DayExchange :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
-    EcomName:'', EcomAddress:'', EcomMoblieNo1:'', EcomMoblieNo:'', EcomPhoneNo:'', EcomEmail:'', EcomLogo:''
   }
   PolicyNoteList: any = [];
   TermConditionsList: any = [];
@@ -182,6 +182,7 @@ getCompanySetting() {
       this.DayExchangeList = this.data.DayExchange
       this.freeImage =  this.data.complimentaryImage
       this.images =  this.data.SilderImage
+      this.ecomLogo =  this.data.EcomLogo
       console.log(this.data);
 
     } catch (error) {
