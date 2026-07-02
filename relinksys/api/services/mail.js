@@ -10,7 +10,7 @@ module.exports.sendMail = async ({ to, cc, subject, body, attachments = null, sh
     let connection;
     let config = {
         email: 'opticalguruindia@gmail.com',
-        password: 'crgl ilnf kizf wxud'
+        password: 'egbs rzxk dxkg alrp'
     }
 
     if (shopid === 0 || companyid === 0) {
@@ -90,7 +90,7 @@ module.exports.companySendMail = async ({ to, cc, subject, body, attachments = n
     let connection;
     let config = {
         email: 'opticalguruindia@gmail.com',
-        password: 'crgl ilnf kizf wxud'
+        password: 'egbs rzxk dxkg alrp'
     }
 
     if (shopid === 0 || companyid === 0) {
@@ -172,7 +172,7 @@ module.exports.sendMailForOwn = async ({ to, cc, subject, body, attachments = nu
     let connection;
     let config = {
         email: 'opticalguruindia@gmail.com',
-        password: 'crgl ilnf kizf wxud'
+        password: 'egbs rzxk dxkg alrp'
     }
 
 

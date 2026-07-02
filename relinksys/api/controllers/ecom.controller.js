@@ -5628,6 +5628,9 @@ module.exports = {
                 body: mailTemplate
             };
 
+            console.log(emailData);
+            
+
             /* ===============================
                SEND MAIL
             =============================== */
