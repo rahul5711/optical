@@ -11,8 +11,8 @@
                     <mat-tab-group>
                     <form autocomplete="off" #f="ngForm" >
                         <div class="body ">
-                        <mat-tab  label=" Image Upload " >
-                              <div class="row">
+                        <mat-tab  label="Silder Image Upload " >
+                              <div class="row mt-3">
                                 <div class="col-12 header">
                                     <h2>Silder Image Upload</h2>
                                 </div>
@@ -72,7 +72,7 @@
                                 </div>
                         </mat-tab>
                         <mat-tab label="Policy">
-                            <div class="row ">
+                            <div class="row mt-3">
                                 <div class="col-6">
                                     <div class="row ">
                                         <div class="col-sm-12 header">
@@ -229,11 +229,55 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-6">
+                                    <div class="row ">
+                                        <div class="col-sm-12 header">
+                                            <h2>FQA
+                                                <button class="bg-none" type="button" (click)="addRow('fqa')">
+                                                    <mat-icon class="col-white plus_icon"> add</mat-icon>
+                                                </button>
+                                            </h2>
+                                        </div>
+
+                                        <div class="col-sm-12 table-container mt-3" style="overflow:auto;height:300px;">
+                                            <table class="table">
+                                                <thead class="thead-light">
+                                                    <tr>
+                                                        <th>S.No.</th>
+                                                        <th style="width:35%">Question</th>
+                                                        <th style="width:35%">Answer</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let data of FqaList; let i = index;">
+                                                        <td class="text-center">{{i+1}}</td>
+
+                                                        <td class="text-left">
+                                                            <input matInput [(ngModel)]="data.Question"
+                                                                name="{{data.Question + i}}"
+                                                                style="border: 1px solid; padding: 5px; width: 100%;">
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <input matInput [(ngModel)]="data.Answer"
+                                                                name="{{data.Answer + i}}"
+                                                                style="border: 1px solid; padding: 5px; width: 100%;">
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <i (click)="delete(i,'fqa')" class="material-icons"
+                                                                style="cursor: pointer;  color:red; margin: 0; padding:0">delete</i>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </mat-tab>
 
                         <mat-tab label="Shop Detail ">
-                              <div class="row">
+                              <div class="row mt-3">
                                 <div class="col-9">
                              <div class="row">
                                 <div class="col-4">
@@ -303,12 +347,33 @@
                                                 #TwitterLinkcontrol>
                                         </mat-form-field>
                                     </div>
-                                     <div class="col-10">
+                                    <div class="col-2"></div>
+                                     <div class="col-2">
                                         <mat-form-field class="example-full-width mb-0">
                                             <mat-label>Coupon Code</mat-label>
-                                            <input matInput name="BarcodeName" [(ngModel)]="data.CouponCode"
+                                            <input matInput name="CouponCode" [(ngModel)]="data.CouponCode"
                                                 #CouponCodecontrol>
                                             <mat-error *ngIf="CouponCodecontrol.required">
+                                                BarcodeName is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                     <div class="col-2">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Coupon Code Discount</mat-label>
+                                            <input matInput name="CouponDiscount" [(ngModel)]="data.CouponDiscount"
+                                                #CouponDiscountcontrol>
+                                            <mat-error *ngIf="CouponDiscountcontrol.required">
+                                                BarcodeName is required
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                     <div class="col-6">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Coupon Code Tag</mat-label>
+                                            <input matInput name="CouponTagLine" [(ngModel)]="data.CouponTagLine"
+                                                #CouponTagLinecontrol>
+                                            <mat-error *ngIf="CouponTagLinecontrol.required">
                                                 BarcodeName is required
                                             </mat-error>
                                         </mat-form-field>
@@ -320,18 +385,18 @@
                                     <div class="row">
                                         <div class="col-12 mt-1 ">
                                             <img class="fit-picture" width="100%" height="220"
-                                                [src]="this.env.apiUrl + ecomLogo"
+                                                [src]="this.env.apiUrl + eLogo"
                                                 style="object-fit: contain; border: 1px solid;">
                                         </div>
                                         <div class="col-xl-12 col-lg-11 col-md-12 col-12 mb-0 "
                                             (click)="fileInput2.click()" style="cursor: pointer;">
                                             <i class="fa-solid fa-cloud-arrow-up upload_icon"
                                                 style=" width:100% !important">
-                                                <span style="font-size: 10px;letter-spacing: 2px;"> Ecom Logo
+                                                <span style="font-size: 10px;letter-spacing: 2px;"> Website Logo
                                                 </span>
                                             </i>
                                             <input #fileInput2 id="my-input" name='ecomLogo' type="file"
-                                                (change)="uploadImage2($event, 'ecomLogo')" style="display:none;">
+                                                (change)="uploadImage2($event, 'eLogo')" style="display:none;">
                                         </div>
                                     </div>
                              </div>

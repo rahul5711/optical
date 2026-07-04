@@ -3742,7 +3742,6 @@ let dtm
             this.billByCustomer(this.applyReward.CustomerID, this.applyReward.BillMasterID)
             this.applyReward.PaidAmount = 0; this.applyReward.PaymentMode = 'Customer Reward'; this.applyReward.ApplyReturn = false;
             this.RewardType()
-            this.modalService.dismissAll()
           } else {
             this.applyReward = data
             this.as.errorToast(res.message)

@@ -36,58 +36,50 @@ export class EcomSettingComponent implements OnInit {
   images: any[] = ['', '', '', ''];
   data: any = {
     SilderImage:[],
-    CouponCode: '', FacebookLink: '', InstagramLink: '', YoutubeLink: '', TwitterLink: '', complimentaryImage:'',
+    CouponTagLine: '',  CouponCode: '', CouponDiscount: '', FacebookLink: '', InstagramLink: '', YoutubeLink: '', TwitterLink: '', complimentaryImage:'',
     EcomName:'', EcomAddress:'', EcomMoblieNo1:'', EcomMoblieNo:'', EcomPhoneNo:'', EcomEmail:'', EcomLogo:'',
     PolicyNote :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     TermConditions :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     ReturnNote :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
     DayExchange :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',
+    Fqa :'[{"Question":"","Answer":""},{"Question":"","Answer":""},{"Question":"","Answer":""},{"Question":"","Answer":""},{"Question":"","Answer":""}]',
   }
   PolicyNoteList: any = [];
   TermConditionsList: any = [];
   ReturnNoteList: any = [];
   DayExchangeList: any = [];
+  FqaList: any = [];
   freeImage: any;
-  ecomLogo: any;
+  eLogo: any;
   img: any;
-companySettingdata:any
+  companySettingdata:any
+
   ngOnInit(): void {
     this.PolicyNoteList = JSON.parse(this.data.PolicyNote) || []
     this.TermConditionsList = JSON.parse(this.data.TermConditions) || []
     this.ReturnNoteList = JSON.parse(this.data.TermConditions) || []
     this.DayExchangeList = JSON.parse(this.data.TermConditions) || []
+    this.FqaList = JSON.parse(this.data.Fqa) || []
     this.getCompanySetting()
   }
 
 
-
 uploadImage(e: any, index: number) {
-
   const img = e.target.files[0];
-
   this.compressImage.compress(img)
     .pipe(take(1))
     .subscribe((compressedImage: any) => {
-
       this.fu.uploadFileComapny(compressedImage)
         .subscribe((data: any) => {
-
           if (data.body !== undefined) {
-
             this.images[index] = data.body?.download;
-
             this.as.successToast(data.body?.message);
-            
           }
-
         });
-
     });
-
 }
 // this.data.SilderImage = JSON.stringify(this.images);
   uploadImage1(e: any, mode: any) {
-
     this.img = e.target.files[0];
     // console.log(`Image size before compressed: ${this.img.size} bytes.`)
     this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
@@ -98,26 +90,21 @@ uploadImage(e: any, index: number) {
           this.data.complimentaryImage = data.body?.download
           this.as.successToast(data.body?.message)
         }
-       
-
       });
     })
-
   }
-  uploadImage2(e: any, mode: any) {
 
+  uploadImage2(e: any, mode: any) {
     this.img = e.target.files[0];
     // console.log(`Image size before compressed: ${this.img.size} bytes.`)
     this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
       // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
       this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
-      
-        if (data.body !== undefined && mode === 'ecomLogo') {
-          this.ecomLogo = data.body?.download;
+        if (data.body !== undefined && mode === 'eLogo') {
+          this.eLogo = data.body?.download;
           this.data.EcomLogo = data.body?.download
           this.as.successToast(data.body?.message)
         }
-
       });
     })
 
@@ -136,6 +123,9 @@ uploadImage(e: any, index: number) {
     if(mode == 'exchange'){
       this.DayExchangeList.push({ Content: '' });
     }
+      if(mode == 'fqa'){
+      this.FqaList.push({ Question: '' , Answer:''});
+    }
   }
 
   delete(i: any,mode:any) {
@@ -150,6 +140,9 @@ uploadImage(e: any, index: number) {
     }
     if(mode == 'exchange'){
       this.DayExchangeList.splice(i, 1);
+    }
+    if(mode == 'fqa'){
+      this.FqaList.splice(i, 1);
     }
   }
 
@@ -180,9 +173,10 @@ getCompanySetting() {
       this.ReturnNoteList = this.data.ReturnNote
       this.TermConditionsList = this.data.TermConditions
       this.DayExchangeList = this.data.DayExchange
+      this.FqaList = this.data.Fqa
       this.freeImage =  this.data.complimentaryImage
       this.images =  this.data.SilderImage
-      this.ecomLogo =  this.data.EcomLogo
+      this.eLogo =  this.data.EcomLogo
       console.log(this.data);
 
     } catch (error) {
@@ -201,6 +195,7 @@ getCompanySetting() {
      this.data.TermConditions = JSON.stringify(this.TermConditionsList);
      this.data.ReturnNote = JSON.stringify(this.ReturnNoteList);
      this.data.DayExchange = JSON.stringify(this.DayExchangeList);
+     this.data.Fqa = JSON.stringify(this.FqaList);
 
      this.companySettingdata.EcomSettingArray = JSON.stringify(this.data)
       const subs: Subscription = this.cs.updatecompanysetting(this.companySettingdata).subscribe({
@@ -234,6 +229,8 @@ getCompanySetting() {
       });
     }
 }
+
+
 
 
 
