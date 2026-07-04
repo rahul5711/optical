@@ -82,7 +82,7 @@ async function formatTimestamp(input) {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
 }
 
-async function getSubdomain(url) {
+async function getSubdomain2(url) {
     try {
         const hostname = new URL(url).hostname;
 
@@ -102,6 +102,31 @@ async function getSubdomain(url) {
         return null;
     } catch (error) {
         return null;
+    }
+}
+
+async function getSubdomain(url) {
+    try {
+        const hostname = new URL(url).hostname;
+
+        // Return original URL for localhost
+        if (hostname === 'localhost') return url;
+
+        // Return original URL for IP addresses
+        if (/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) return url;
+
+        const parts = hostname.split('.');
+
+        // Has a real subdomain (excluding www)
+        if (parts.length > 2 && parts[0] !== 'www') {
+            return parts[0];
+        }
+
+        // No subdomain, return original URL
+        return url;
+
+    } catch (error) {
+        return url;
     }
 }
 
@@ -1471,6 +1496,169 @@ module.exports = {
                 }
             });
 
+            response.message = "Products fetched successfully";
+            return res.send(response);
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+    getProductForWebSiteFilterWithPagination: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: {}, success: true, message: "" };
+            const CompanyID = req?.headers?.companyid || 341;
+
+            // ✅ Filters from request
+            const { Gender, ProductTypeName, currentPage, itemsPerPage } = req.body;
+
+
+            /** ===============================
+             * Pagination
+             =============================== */
+            let page = currentPage || 1;
+            let limit = itemsPerPage || 10;
+            let skip = page * limit - limit;
+
+            /** ===============================
+             * DB Connection
+             =============================== */
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /** ===============================
+             * 1️⃣ Fetch Product Types
+             =============================== */
+            const [productTypeRows] = await connection.query(
+                `SELECT Name AS ProductType 
+             FROM product 
+             WHERE Status = 1 AND CompanyID = ?`,
+                [CompanyID]
+            );
+
+            if (!productTypeRows.length) {
+                return res.send({
+                    success: false,
+                    message: "No product types found",
+                    data: {}
+                });
+            }
+
+            // Initialize response buckets
+            productTypeRows.forEach(t => {
+                const name = t.ProductType?.trim();
+                if (name) response.data[name] = [];
+            });
+            response.data["Others"] = [];
+
+            /** ===============================
+             * 2️⃣ Build Dynamic WHERE Clause
+             =============================== */
+            let whereClause = `
+            WHERE IsPublished = 1 
+            AND Status = 1 
+            AND CompanyID = ?
+        `;
+
+            const params = [CompanyID];
+
+            if (Gender) {
+
+                // whereClause += ` AND (Gender = ? OR Gender = 'Unisex')`;
+                // params.push(Gender);
+
+                if (["Men", "Women"].includes(Gender)) {
+                    whereClause += ` AND (Gender = ? OR Gender = 'Unisex')`;
+                    params.push(Gender);
+                } else {
+                    whereClause += ` AND Gender = ?`;
+                    params.push(Gender);
+                }
+
+            }
+
+            if (ProductTypeName) {
+                whereClause += ` AND ProductTypeName = ?`;
+                params.push(ProductTypeName);
+            }
+
+            /** ===============================
+             * Count Query
+             =============================== */
+            const countQuery = `
+            SELECT ID
+            FROM ecom_product
+            ${whereClause}
+            `;
+
+            const [countRows] = await connection.query(countQuery, params);
+
+
+            /** ===============================
+             * 3️⃣ Fetch Products
+             =============================== */
+            const [rows] = await connection.query(
+                `
+            SELECT
+                ID,
+                ProductTypeID,
+                ProductTypeName,
+                ProductName,
+                SalePrice,
+                OfferPrice,
+                Quantity,
+                Status,
+                IsPublished,
+                IsOutOfStock,
+                PublishCode,
+                Images,
+                LiveImages,
+                Description,
+                ProductNameArray,
+                Gender,
+                CreatedBy,
+                CreatedOn,
+                UpdatedBy,
+                UpdatedOn
+            FROM ecom_product
+            ${whereClause}
+            ORDER BY ID DESC
+            LIMIT ?
+            OFFSET ?
+            `,
+                [...params, limit, skip]
+            );
+
+            /** ===============================
+             * 4️⃣ Map Products to Types
+             =============================== */
+            rows.forEach(product => {
+                try {
+                    product.Images = product.Images ? JSON.parse(product.Images) : [];
+                    product.LiveImages = product.LiveImages ? JSON.parse(product.LiveImages) : [];
+                } catch {
+                    product.Images = [];
+                    product.LiveImages = [];
+                }
+
+                const typeName = product.ProductTypeName?.trim();
+
+                if (typeName && response.data[typeName]) {
+                    response.data[typeName].push(product);
+                } else {
+                    response.data["Others"].push(product);
+                }
+            });
+
+            response.count = countRows.length;
             response.message = "Products fetched successfully";
             return res.send(response);
 
@@ -3693,6 +3881,9 @@ module.exports = {
 
             const subdomain = await getSubdomain(url);
 
+            console.log("subdomain", subdomain);
+
+
             let companyid = null
 
             if (subdomain !== null) {
@@ -3706,13 +3897,19 @@ module.exports = {
 
             return res.json({
                 success: true,
-                subdomain: subdomain === null ? "eguru" : subdomain,
-                CompanyID: companyid === null ? 487 : companyid
+                // subdomain: subdomain === null ? "eguru" : subdomain,
+                // CompanyID: companyid === null ? 487 : companyid
+                subdomain: subdomain,
+                CompanyID: companyid
             });
 
         } catch (err) {
             console.log(err);
-            next(err)
+            return {
+                success: false,
+                message: 'We are getting some issue, please try after sometime.'
+            }
+            // next(err)
         } finally {
             if (connection) {
                 connection.release(); // Always release the connection
@@ -5629,7 +5826,7 @@ module.exports = {
             };
 
             console.log(emailData);
-            
+
 
             /* ===============================
                SEND MAIL
