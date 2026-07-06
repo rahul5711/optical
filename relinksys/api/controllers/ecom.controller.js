@@ -1131,7 +1131,7 @@ module.exports = {
             }
         }
     },
-    getProductForWebSite2: async (req, res, next) => {
+    getProductForWebSite: async (req, res, next) => {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
@@ -1236,7 +1236,7 @@ module.exports = {
             }
         }
     },
-    getProductForWebSite: async (req, res, next) => {
+    getProductForWebSite2: async (req, res, next) => {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
