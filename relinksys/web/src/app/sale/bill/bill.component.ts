@@ -2583,7 +2583,9 @@ let dtm
             }
 
             this.router.navigate(['/sale/billing', this.id, this.id2]);
-            this.openModal1(content1);
+            if(this.user.PaymentView == 'true'){
+              this.openModal1(content1);
+            }
 
             this.as.successToast(res.message);
 
@@ -4202,7 +4204,12 @@ let dtm
             if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Invoice')
             }
-            window.open(url, "_blank")
+             if(this.BillMaster.CompanyID == 341){
+               this.printBill(url)
+       
+             }else{
+              window.open(url, "_blank")
+             }
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt + cacheBuster;
@@ -4224,7 +4231,32 @@ let dtm
   }
 
 
+printBill(url: string) {
+  const iframe = document.createElement('iframe');
 
+  iframe.style.position = 'fixed';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
+  iframe.style.visibility = 'hidden';
+
+  iframe.src = url;
+
+  document.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    setTimeout(() => {
+      iframe.contentWindow?.focus();
+      iframe.contentWindow?.print();
+
+      // Optional: print ke baad iframe remove kar do
+      setTimeout(() => {
+        document.body.removeChild(iframe);
+      }, 1000);
+
+    }, 500); // PDF load hone ke liye thoda wait
+  };
+}
 
   // billPrint(mode: any) {
   //   this.sp.show();

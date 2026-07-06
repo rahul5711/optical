@@ -153,7 +153,7 @@
                             <button *ngIf="deleteBillingSearch" class="bg-btn" (click)="deleteItem(i)">
                               <mat-icon class="delete_icon ms-1">delete_forever</mat-icon>
                             </button>
-                            <button title="Payment" class="bg-btn" (click)="openModal13(content1,Bdata)">
+                            <button *ngIf="user.PaymentView == 'true'" title="Payment" class="bg-btn" (click)="openModal13(content1,Bdata)">
                               <mat-icon class="edit_icon ms-1">attach_money </mat-icon>
                             </button>
                             <div class="button-container" *ngIf="this.id != '0'">
