@@ -3,14 +3,14 @@ const router = express.Router();
 
 const domainController = require("../controllers/domainController");
 
-router.get("/", domainController.getInfo);
+router.get("/getInfo", domainController.getInfo);
 
 router.post("/add", domainController.addDomainHandler);
 
-router.get("/details", domainController.getDomainHandler);
+router.post("/details", domainController.getDomainHandler);
 
-router.get("/verify", domainController.verifyDomainHandler);
+router.post("/verify", domainController.verifyDomainHandler);
 
-router.delete("/delete", domainController.deleteDomainHandler);
+router.post("/delete", domainController.deleteDomainHandler);
 
 module.exports = router;

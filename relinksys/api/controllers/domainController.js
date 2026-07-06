@@ -42,6 +42,23 @@ const addDomainHandler = async (req, res) => {
             }
         );
 
+        //         {
+        //   "success": true,
+        //   "message": "Domain added successfully.",
+        //   "data": {
+        //     "name": "vsocart.co.uk",
+        //     "apexName": "vsocart.co.uk",
+        //     "projectId": "prj_LAYzshJNYGAJMFEfoiLBw2PWbfqw",
+        //     "redirect": null,
+        //     "redirectStatusCode": null,
+        //     "gitBranch": null,
+        //     "customEnvironmentId": null,
+        //     "updatedAt": 1783355490443,
+        //     "createdAt": 1783355490443,
+        //     "verified": true
+        //   }
+        // }
+
         return res.status(200).json({
             success: true,
             message: "Domain added successfully.",
@@ -63,7 +80,7 @@ const addDomainHandler = async (req, res) => {
 // ===============================
 const getDomainHandler = async (req, res) => {
     try {
-        const { domain } = req.query;
+        const { domain } = req.body;
 
         if (!domain) {
             return res.status(400).json({
@@ -75,6 +92,22 @@ const getDomainHandler = async (req, res) => {
         const response = await vercel.get(
             `/v9/projects/${process.env.VERCEL_PROJECT_ID}/domains/${domain}`
         );
+
+        //         {
+        //   "success": true,
+        //   "data": {
+        //     "name": "vsocart.co.uk",
+        //     "apexName": "vsocart.co.uk",
+        //     "projectId": "prj_LAYzshJNYGAJMFEfoiLBw2PWbfqw",
+        //     "redirect": null,
+        //     "redirectStatusCode": null,
+        //     "gitBranch": null,
+        //     "customEnvironmentId": null,
+        //     "updatedAt": 1783355490443,
+        //     "createdAt": 1783355490443,
+        //     "verified": true
+        //   }
+        // }
 
         return res.status(200).json({
             success: true,
@@ -96,7 +129,7 @@ const getDomainHandler = async (req, res) => {
 // ===============================
 const verifyDomainHandler = async (req, res) => {
     try {
-        const { domain } = req.query;
+        const { domain } = req.body;
 
         if (!domain) {
             return res.status(400).json({
@@ -152,7 +185,7 @@ const verifyDomainHandler = async (req, res) => {
 // ===============================
 const deleteDomainHandler = async (req, res) => {
     try {
-        const { domain } = req.query;
+        const { domain } = req.body;
 
         if (!domain) {
             return res.status(400).json({
@@ -164,6 +197,11 @@ const deleteDomainHandler = async (req, res) => {
         await vercel.delete(
             `/v9/projects/${process.env.VERCEL_PROJECT_ID}/domains/${domain}`
         );
+
+        //         {
+        //   "success": true,
+        //   "message": "Domain deleted successfully."
+        // }
 
         return res.status(200).json({
             success: true,
