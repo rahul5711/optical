@@ -218,10 +218,47 @@ const deleteDomainHandler = async (req, res) => {
     }
 };
 
+/**
+ * Get Vercel DNS Records
+ */
+const getDNSRecords = async (req, res) => {
+    try {
+        const { domain } = req.body;
+
+        return res.status(200).json({
+            success: true,
+            message: "DNS records required for Vercel",
+            data: {
+                domain,
+                records: [
+                    {
+                        type: "A",
+                        name: "@",
+                        value: "216.198.79.1",
+                        ttl: "Auto"
+                    },
+                    {
+                        type: "CNAME",
+                        name: "www",
+                        value: "cname.vercel-dns.com",
+                        ttl: "Auto"
+                    }
+                ]
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     getInfo,
     addDomainHandler,
     getDomainHandler,
     verifyDomainHandler,
     deleteDomainHandler,
+    getDNSRecords
 };

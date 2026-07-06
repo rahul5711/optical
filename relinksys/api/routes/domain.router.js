@@ -13,4 +13,6 @@ router.post("/verify", domainController.verifyDomainHandler);
 
 router.post("/delete", domainController.deleteDomainHandler);
 
+router.post("/getDNSRecords", domainController.getDNSRecords);
+
 module.exports = router;
