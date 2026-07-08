@@ -30,6 +30,7 @@ const addRoutes = (app) => {
     app.use('/membership', require('../routes/membershipcard.route'));
     app.use('/ecom', require('../routes/ecom.route'));
     app.use('/domain', require('../routes/domain.router'));
+    app.use('/print', require('../routes/printRoutes'));
 }
 
 module.exports = { addRoutes };
