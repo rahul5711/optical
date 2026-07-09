@@ -199,7 +199,7 @@ filteredOptions:any = []
 
     if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + 'and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
     }
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
@@ -210,7 +210,7 @@ filteredOptions:any = []
     if(this.companySetting.BillingFlow != 1){
     if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + '|| DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+      Parem = Parem + ' OR DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
     }
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
