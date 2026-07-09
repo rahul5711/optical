@@ -186,6 +186,9 @@ export class BillListComponent implements OnInit {
   // }
 
   showInput(data: any) {
+    if(this.user.PaymentView == 'true'){
+
+    
     // Ensure data has an UpdateMode property
     if (this.roleName != "MANAGER" && this.roleName != "EMPLOYEE" && this.roleName != "ACCOUNTED" && this.roleName != "ACCOUNT") {
       if (!data.hasOwnProperty('UpdateMode')) {
@@ -193,7 +196,7 @@ export class BillListComponent implements OnInit {
       }
       data.PaymentDate = moment(data.PaymentDate).format('YYYY-MM-DD')
       data.UpdateMode = !data.UpdateMode;
-    }
+    }}
   }
 
   // payment history 

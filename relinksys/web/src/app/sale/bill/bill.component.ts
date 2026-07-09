@@ -33,6 +33,7 @@ import axios from 'axios';
 import * as pdfjsLib from 'pdfjs-dist';
 import { ShopService } from 'src/app/service/shop.service';
 import { ReminderService } from 'src/app/service/reminder.service';
+import { PrintService } from 'src/app/service/print.service';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 @Component({
@@ -108,6 +109,7 @@ export class BillComponent implements OnInit {
     private purchaseService: PurchaseService,
     private ss: ShopService,
     private rs: ReminderService,
+    private printPdf: PrintService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -4156,13 +4158,34 @@ let dtm
   //   this.billPrint(mode)
   // }
 
-  getTinyUrl(url:any) {
+  printURL(url:any) {
       this.sp.show()
-      const subs: Subscription = this.bill.getTinyUrl(url).subscribe({
+      let dtm = {
+       url : this.BillLink,
+       printer : url
+      }
+      const subs: Subscription = this.printPdf.printURL(dtm).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.as.successToast(res.message)
-            this.BillLink = res.shortUrl
+            console.log(res);
+            
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  getDefaultPrinter() {
+      this.sp.show()
+      const subs: Subscription = this.printPdf.getDefaultPrinter().subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            console.log(res);
+            this.printURL(res.defaultPrinter.Name)
           } else {
             this.as.errorToast(res.message)
           }
@@ -4200,16 +4223,17 @@ let dtm
             this.BillMaster.Invoice = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice + cacheBuster;
             this.BillLink = url
+            
             // this.getTinyUrl(this.BillLink )
             if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Invoice')
             }
-             if(this.BillMaster.CompanyID == 341){
-               this.printBill(url)
-       
-             }else{
+            if(this.BillMaster.CompanyID == 341){
+              this.getDefaultPrinter()
+            }else{
               window.open(url, "_blank")
-             }
+            }
+             
           } else if (mode === "Receipt") {
             this.BillMaster.Receipt = res;
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt + cacheBuster;
@@ -4218,7 +4242,11 @@ let dtm
              if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Receipt')
             }
-            window.open(url, "_blank");
+            if(this.BillMaster.CompanyID == 341){
+              this.getDefaultPrinter()
+            }else{
+              window.open(url, "_blank")
+            }
           }
         } else {
           this.as.errorToast(res.message)
