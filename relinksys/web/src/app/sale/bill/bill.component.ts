@@ -4185,7 +4185,17 @@ let dtm
         next: (res: any) => {
           if (res.success) {
             console.log(res);
-            this.printURL(res.defaultPrinter.Name)
+            if(res.defaultPrinter.Name == 'Microsoft Print to PDF' ){
+                  Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: 'Default Printer Not Supported',
+            text: 'Please set a physical printer as your default printer. Printing to PDF is not allowed.',
+             confirmButtonText: 'OK'
+          })
+            }else{
+              this.printURL(res.defaultPrinter.Name)
+            }
           } else {
             this.as.errorToast(res.message)
           }
