@@ -81,10 +81,11 @@ const getPrintersHandler2 = async (req, res) => {
 
 };
 
-const getPrintersHandler = async (req, res) => {
+const getPrintersHandlerOld = async (req, res) => {
 
     exec(
         'powershell -NoProfile -Command "Get-CimInstance Win32_Printer | Select-Object Name,DriverName,PortName,Default | ConvertTo-Json -Compress"',
+        // 'powershell -NoProfile -Command "$user=whoami; $printers=Get-CimInstance Win32_Printer | Select Name,DriverName,PortName,Default; @{User=$user; Printers=$printers} | ConvertTo-Json -Depth 3"',
         (error, stdout, stderr) => {
 
             if (error) {
@@ -132,6 +133,71 @@ const getPrintersHandler = async (req, res) => {
         }
     );
 
+};
+const getPrintersHandler = async (req, res) => {
+    const command =
+        'powershell -NoProfile -Command "$user=whoami; $printers=Get-CimInstance Win32_Printer | Select-Object Name,DriverName,PortName,Default; @{User=$user; Printers=$printers} | ConvertTo-Json -Depth 3"';
+
+    exec(
+        command,
+        {
+            maxBuffer: 1024 * 1024 * 10
+        },
+        (error, stdout, stderr) => {
+
+            if (error) {
+                return res.status(500).json({
+                    success: false,
+                    message: error.message
+                });
+            }
+
+            if (stderr && stderr.trim()) {
+                console.log("PowerShell Error:", stderr);
+            }
+
+            if (!stdout || !stdout.trim()) {
+                return res.status(200).json({
+                    success: true,
+                    user: null,
+                    defaultPrinter: null,
+                    data: []
+                });
+            }
+
+            try {
+
+                const result = JSON.parse(stdout);
+
+                let printers = result.Printers || [];
+
+                if (!Array.isArray(printers)) {
+                    printers = [printers];
+                }
+
+                const defaultPrinter =
+                    printers.find(printer => printer.Default === true) || null;
+
+                return res.status(200).json({
+                    success: true,
+                    user: result.User, // Remove this line if you don't want to return the user
+                    defaultPrinter,
+                    data: printers
+                });
+
+            } catch (err) {
+
+                return res.status(500).json({
+                    success: false,
+                    message: "Failed to parse PowerShell output.",
+                    error: err.message,
+                    stdout
+                });
+
+            }
+
+        }
+    );
 };
 
 
