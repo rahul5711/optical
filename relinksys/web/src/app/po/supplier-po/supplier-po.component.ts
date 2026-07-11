@@ -197,27 +197,47 @@ filteredOptions:any = []
     let ID = 0
     let Parem = '';
 
-    if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
-      let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
-    }
+  //   if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
+  //     let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
+  //     Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+  //   }
 
-    if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
-      let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
-    }
+  //   if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
+  //     let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
+  //     Parem = Parem + ' and ' + `'${ToDate}'`;
+  //   }
 
-    if(this.companySetting.BillingFlow != 1){
-    if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
-      let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
-      Parem = Parem + ' OR DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
-    }
+  //   if(this.companySetting.BillingFlow != 1){
+  //   if (this.data.FromDate !== '' && this.data.FromDate !== null && this.data.CustomerID === 'All') {
+  //     let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
+  //     Parem = Parem + ' OR DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+  //   }
 
-    if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
-      let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
-      Parem = Parem + ' and ' + `'${ToDate}'`;
+  //   if (this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
+  //     let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
+  //     Parem = Parem + ' and ' + `'${ToDate}'`;
+  //   }
+  //  }
+
+
+  if (
+    this.data.FromDate !== '' && this.data.FromDate !== null && this.data.ToDate !== '' && this.data.ToDate !== null && this.data.CustomerID === 'All') {
+    const FromDate = moment(this.data.FromDate).format('YYYY-MM-DD');
+    const ToDate = moment(this.data.ToDate).format('YYYY-MM-DD');
+  
+    if (this.companySetting.BillingFlow != 1) {
+  
+      Parem += `
+        AND (
+          DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") BETWEEN '${FromDate}' AND '${ToDate}'
+          OR
+          DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") BETWEEN '${FromDate}' AND '${ToDate}'
+        ) `;
+  
+    } else {
+      Parem += ` AND DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") BETWEEN '${FromDate}' AND '${ToDate}' `;
     }
-   }
+  }
 
   if (this.data.CustomerID !== null && this.data.CustomerID !== 'All') {
       Parem = Parem + ' and billmaster.CustomerID = ' + this.data.CustomerID;

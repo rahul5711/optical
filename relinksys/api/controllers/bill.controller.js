@@ -6180,7 +6180,7 @@ module.exports = {
 
             let masterParam = ``
             let parem = ``
-            let productTypes = ` and billdetail.ProductTypeName IN ('Lens', 'Frame','Sunglases' , 'Sunglass')`
+            let productTypes = ` and billdetail.ProductTypeName IN ('Lens', 'Frame','Sunglases' , 'Sunglass', 'LENS' , 'FRAME', 'SUNGLASS' )`
             if (Parem !== undefined) {
                 parem = Parem
             }
