@@ -66,16 +66,20 @@ module.exports = {
             if (ShopName.trim() === "") return res.send({ message: "Invalid ShopName Data" })
             // if (City.trim() === "") return res.send({ message: "Invalid City Data" })
 
-            const [doesExistEmail] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from cannonuser where Email = '${Email}'`)
+           if (Email && Email.trim() !== '') {
+    const [doesExistEmail] = await mysql2.pool.query(
+        `SELECT Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn FROM cannonuser WHERE Email = ?`, [Email]
+    );
 
-            if (doesExistEmail.length) {
-                response.data = [];
-                response.success = false
-                response.message = 'Email already exist';
-                return res.send(response);
-            }
-
-            const [doesExistMobile] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from cannonuser where Mobile = '${Mobile}'`)
+    if (doesExistEmail.length) {
+        response.data = [];
+        response.success = false;
+        response.message = 'Email already exists';
+        return res.send(response);
+    }
+}
+  if (Mobile && Mobile.trim() !== '') {
+            const [doesExistMobile] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from cannonuser where Mobile = ?`, [Mobile])
 
             if (doesExistMobile.length) {
                 response.data = [];
@@ -83,7 +87,7 @@ module.exports = {
                 response.message = 'Mobile number already exist';
                 return res.send(response);
             }
-
+        }
             const [doesExistUserID] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from cannonuser where UserID = '${UserID}'`)
 
             if (doesExistUserID.length) {
@@ -111,11 +115,11 @@ module.exports = {
             if (_.isEmpty(req.body)) return res.send({ message: "Invalid Query Data" })
             if (!ID || ID === undefined) return res.send({ message: "Invalid ID Data" })
             if (Name.trim() === "") return res.send({ message: "Invalid Name Data" })
-            if (Email.trim() === "") return res.send({ message: "Invalid Email Data" })
-            if (Mobile.trim() === "") return res.send({ message: "Invalid Mobile Data" })
+            // if (Email.trim() === "") return res.send({ message: "Invalid Email Data" })
+            // if (Mobile.trim() === "") return res.send({ message: "Invalid Mobile Data" })
             if (UserID.trim() === "") return res.send({ message: "Invalid UserID Data" })
             if (ShopName.trim() === "") return res.send({ message: "Invalid ShopName Data" })
-            if (City.trim() === "") return res.send({ message: "Invalid City Data" })
+            // if (City.trim() === "") return res.send({ message: "Invalid City Data" })
 
             const [doesExist] = await mysql2.pool.query(`select Name, Mobile, Email, Role, UserID, ShopName, City, Status, CreatedOn from cannonuser where ID = ${ID}`)
 
@@ -132,12 +136,12 @@ module.exports = {
                 return res.send(response);
             }
 
-            if (doesExist.length && doesExist[0].Mobile !== Mobile) {
-                response.data = [];
-                response.success = false
-                response.message = `You can't change mobile number.`;
-                return res.send(response);
-            }
+            // if (doesExist.length && doesExist[0].Mobile !== Mobile) {
+            //     response.data = [];
+            //     response.success = false
+            //     response.message = `You can't change mobile number.`;
+            //     return res.send(response);
+            // }
             if (doesExist.length && doesExist[0].UserID !== UserID) {
                 response.data = [];
                 response.success = false
@@ -408,10 +412,10 @@ module.exports = {
 
             // CHECK: Mobile Exists
 
-            if (Mobile && Mobile.trim() !== "") {
+            if (Mobile && Mobile.trim() !== '') {
             
                 const [doesExistMobile] = await mysql2.pool.query(
-                    "SELECT CustomerName, Mobile FROM cannoncustomer WHERE Mobile = ?",
+                    `SELECT CustomerName, Mobile FROM cannoncustomer WHERE Mobile = ?`,
                     [Mobile]
                 );
             
@@ -423,7 +427,6 @@ module.exports = {
                     });
                 }
             }
-
 
             // INSERT CUSTOMER
             const [data] =
