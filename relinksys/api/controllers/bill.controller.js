@@ -3271,15 +3271,15 @@ module.exports = {
                 })
             }
 
-            if (CompanyID === 408) {
-                printdata.billItemList.forEach((t) => {
-                    if (t.PreOrder === 0 && t.Manual === 0 && t.OrderRequest === 0) {
-                        if (t.ProductTypeName.toUpperCase() == 'FRAME' || t.ProductTypeName.toUpperCase() == 'SUNGLASS') {
-                            t.ProductName = t.ProductName = SUBSTRING_INDEX(t.ProductName, '/', 1);
-                        }
-                    }
-                })
-            }
+            // if (CompanyID === 408) {
+            //     printdata.billItemList.forEach((t) => {
+            //         if (t.PreOrder === 0 && t.Manual === 0 && t.OrderRequest === 0) {
+            //             if (t.ProductTypeName.toUpperCase() == 'FRAME' || t.ProductTypeName.toUpperCase() == 'SUNGLASS') {
+            //                  t.ProductName = t.ProductName.substring(0, t.ProductName.lastIndexOf('/'));
+            //             }
+            //         }
+            //     })
+            // }
 
             let BillFormat = ''
 
