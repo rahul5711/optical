@@ -1135,7 +1135,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             /** ===============================
              * DB Connection
@@ -1242,7 +1242,7 @@ module.exports = {
             const response = { data: {}, success: true, message: "" };
 
             const Body = req.body;
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             /** ===============================
              * DB Connection
@@ -1372,7 +1372,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             // ✅ Filters from request
             const { Gender, ProductTypeName } = req.body;
@@ -1511,7 +1511,7 @@ module.exports = {
         let connection;
         try {
             const response = { data: {}, success: true, message: "" };
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             // ✅ Filters from request
             const { Gender, ProductTypeName, currentPage, itemsPerPage } = req.body;
@@ -1673,7 +1673,7 @@ module.exports = {
     getDataByPincode: async (req, res, next) => {
         let connection;
         try {
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
             let { pincode } = req.params;
             pincode = pincode.replace(/[^0-9]/g, '');
             // validation
@@ -1924,7 +1924,7 @@ module.exports = {
                 UpdatedBy = 1
             } = req.body;
 
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             if (!CompanyID || !Name || !MobileNo || !LoginName || !Password) {
                 return res.status(200).json({
@@ -2082,7 +2082,7 @@ module.exports = {
         try {
             const { username, password } = req.body;
 
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             if (!username || !password) {
                 return res.status(200).json({
@@ -2148,7 +2148,7 @@ module.exports = {
         try {
             const { UserID } = req.query; // or req.params
 
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             if (!UserID) {
                 return res.status(200).json({
@@ -2213,7 +2213,7 @@ module.exports = {
         try {
             const { UserID } = req.query; // or req.params
 
-            const CompanyID = req?.headers?.companyid || 341;
+            const CompanyID = req?.headers?.companyid ;
 
             if (!UserID) {
                 return res.status(200).json({

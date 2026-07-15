@@ -33,6 +33,21 @@
   padding: 5px;
   zoom: 120%;
 }
+      #table3 {
+  border-collapse: collapse;
+  
+}
+
+#table3 th,
+#table3 td {
+  text-align: center !important;
+  padding: 10px 10px;
+  zoom: 120%;
+  margin: 1%;
+  border: 1px solid #00a6b4 ;
+}
+
+
 .watermark{
         position: absolute;
         z-index: -1;
@@ -46,7 +61,7 @@
 <section style="position: relative;">
    <img src=<%=data.WaterMark%> alt="LOGO" class="watermark"  style="width:<%= data.WaterMarkWidth %>;height:<%= data.WaterMarkHeigh %>;opacity:<%= data.WaterMarkOpecity %>;left:<%= data.WaterMarkLeft %>;right:<%= data.WaterMarkRight %>; ">
 
-<% if (data.customer.CompanyID !==169 && data.customer.CompanyID !== 322) { %>
+<% if (data.customer.CompanyID !==169 && data.customer.CompanyID !== 322  &&  data.customer.CompanyID !== 341 ) { %>
 
    <body>
 
@@ -998,5 +1013,11 @@
          
             </body>
             <%} %>
+
+
+         <% if (data.customer.CompanyID == 341) { %> 
+              <%- include('./JKEyePower.ejs', {pageNumber: 1}) %>
+
+         <%} %>
 </section>
 </html>

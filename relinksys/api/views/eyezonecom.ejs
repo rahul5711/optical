@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vision world invoice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Noto+Sans+Gothic&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+    html body {
+        zoom: 100%;
+           font-family: 'Calibri', sans-serif;
+        padding: 1%;
+        border: 1px solid #cecece;
+        border-radius: 5px;
+    }
+
+     .headingName {
+         position: absolute;
+         margin-left: 36%;
+         width: 20%;
+         color: rgb(255, 255, 255);
+         margin-top: 0px;
+         font-size: 16px !important;
+         background-color: #b30000;
+         text-align: center;
+         font-weight: 600 !important;
+         padding: 2px 10px;
+         border-radius: 5px;vertical-align: middle;
+      }
+  .productlist table tr td , .productlist table tr th{
+    border: .5px solid #cdcdcd;
+  }
+
+   .powerTbl {
+        border: 1px solid #cdcdcd;
+        width: 100%;
+        border-radius: 5px;
+        border-collapse: separate;
+    }
+
+    .powerTbl td,
+    .powerTbl th {
+       
+        text-align: center;
+       padding: 0;
+  
+    }
+
+     .watermark{
+        position: absolute;
+        z-index: -11;
+        top: 10px;
+        /* background-color: blue; */
+    }
+  
+</style>
+
+<body >
+
+   
+<section style="width: 100%;">
+    <table style="width: 100%; text-align: left; ">
+        <tr>
+            <th style="width: 40%;">
+              <table style="width: 100%;">
+                    <tr>
+                        <td style="vertical-align: text-top;"> <img src='http://localhost:3000/assest/gps-location-map-svgrepo-com.png' alt="LOGO" width="70%" style="border: 1px solid #b30000; border-radius: 10px;"> </td>
+                        <td style="font-weight: 400;"> <%= data.shopdetails.Address %></td>
+                    </tr>
+                </table>
+            </th>
+            <th style="width: 30%;">
+               <table style="width: 100%;">
+                    <tr>
+                        <th>   <img src="<%= data.LogoURL %>" alt="LOGO" <% %> style="width: <%= data.ImageWidth %>; height: <%= data.ImageHeight %>;"></th>
+                        <!-- <td style="border-left: 1px solid; border-right: 1px solid; padding: 1% 5%; ">   <img src="https://theopticalguru.relinksys.com/uploads/2025/3/130/images/1742563671236.png" alt="LOGO" <% %> style="width: <%= data.ImageWidth %>; height: <%= data.ImageHeight %>;"></td> -->
+                    </tr>
+                </table>
+            </th>
+            <th style="width: 30%;">
+                 <table style="width: 100%;">
+                    <tr style="white-space: nowrap;">
+                        <td> <img src='http://localhost:3000/assest/phone-call-svgrepo-com.png' alt="LOGO" width="25px" style="border-radius: 5px;"></td>
+                        <td style="font-weight: 400;">  
+                            <%= data.shopdetails.MobileNo1 %>
+                        <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !== 'null') { %>
+                            <% if (data.shopdetails.CompanyID != 1) { %> / 
+                            <% } %>
+                            <% if (data.shopdetails.CompanyID == 1) { %> , 
+                            <% } %>
+                         
+                            <%= data.shopdetails.MobileNo2 %>
+                        <% } %>
+                    </td>
+                    </tr>
+                    <tr style="white-space: nowrap;">
+                        <td><img src='http://localhost:3000/assest/email-1572-svgrepo-com.png' alt="LOGO" width="25px" style="border-radius: 5px;"></td>
+                        <td style="font-weight: 400;"><%= data.shopdetails.Email %></td>
+                    </tr>
+                    <tr style="white-space: nowrap;">
+                        <td><img src='http://localhost:3000/assest/invoice-svgrepo-com.png' alt="LOGO" width="25px" style="border-radius: 5px;"></td>
+                        <td style="font-weight: 400;"><%= data.shopdetails.GSTNo %></td>
+                    </tr>
+                </table>
+            </th>
+        </tr>
+    </table>
+</section>
+    
+  <section style="position: relative;">
+    <img src=<%=data.WaterMark%> alt="LOGO" class="watermark"  style="width:<%= data.WaterMarkWidth %>;height:<%= data.WaterMarkHeigh %>;opacity:<%= data.WaterMarkOpecity %>;left:<%= data.WaterMarkLeft %>;right:<%= data.WaterMarkRight %>; ">
+
+
+  <section>
+                <div style="height: 15px; vertical-align: middle;"> 
+                    <div <% %>  style="border-bottom: 1px solid <%= data.Color %>; width: 40%; position:absolute; margin-top: 1.5%;"> </div>
+                    <div <% %> style="border-bottom: 1px solid <%= data.Color %>; width: 40%; float: right; position: relative; margin-top: 1.5%;"></div>
+                    <div <% %> class="headingName" style="vertical-align: top;" > <img src='http://localhost:3000/assest/invoice-warranty-line-svgrepo-com.png' alt="LOGO" width="10px" > <b>  <%=data.bill%>  </b></div>
+                 </div>
+              </section>
+
+
+              <section style="width: 100%; height: auto; font-size: 16px;">
+        <table style="width: 100%;">
+    <tr>
+        <td style="width: 34%; vertical-align: top !important; white-space: nowrap; border: 1px solid #cdcdcd; border-radius: 5px;">
+            <table  <% %> style="width: 100%;font-size:<%= data.CustomerFont %> ; ">
+                <tr><td style="width: 25%;">Invoice No.</td><td>: <%=data.billMaster.InvoiceNo%></td></tr>
+                <tr><td style="width: 25%;">Name</td><td>: <%=data.customer.Title%> <%=data.customer.Name%></td></tr>
+                <tr><td style="width: 25%;">Mobile No.</td><td>: <%=data.customer.MobileNo1%></td></tr>
+                  <% if (data.customer.GSTNo != '' && data.bill==='Tax Invoice'){%>
+                   <tr><td style="width: 25%;">GST No.</td><td>: <%=data.customer.GSTNo%></td></tr>
+                 <%}%>
+            </table>
+        </td>
+        <td style="width: 30%;"></td>
+        <td style="width: 34%; vertical-align: top !important; border: 1px solid #cdcdcd; border-radius: 5px;">
+            <table <% %> style="width: 100%;font-size:<%= data.CustomerFont %> ; ">
+                <tr><td style="width: 40%;">Bill Date</td><td>: <%=data.billMaster.BillDate%></td></tr>
+                <tr><td style="width: 40%;">Del Date</td><td>: <%=data.billMaster.DeliveryDate%></td></tr>
+                <tr><td style="width: 40%; vertical-align: top !important; ">Sale Person</td><td style="vertical-align: top !important;">: <%=data.employee%> </td></tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+ <% if (data.ShowPower==true){%>
+        <section class="font-sizes" style=" margin-top: 1%; width: 100%; height: auto; ">
+            <% if(data.EyeMeasurement !==null && data.EyeMeasurement.length !==0){ data.EyeMeasurement.forEach(function
+                (i, index) { %>
+                <table class="powerTbl" style="width: 44%; float: left;">
+                    <tr >
+                        <th colspan="2" style=" border-right: none !important;"></th>
+                        <th colspan="2" style="background-color: #b30000; text-align: center; color: #fff; border-radius: 5px; 
+                        border-left: none !important;border-right: none !important;">RIGHT EYE</th>
+                        <th colspan="2" style="  border-left: none !important;"></th>
+                          
+                    </tr>
+                    <tr style="background-color: #ffb3b3; ">
+                        <td style="background-color: #fff;"></td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VA</td>
+                        <td>ADD</td>
+                       
+                     
+                    </tr>
+                    <tr >
+                        <td >DP</td>
+                        <td>
+                           <%= i.REDPSPH ? i.REDPSPH : '-' %>
+                        </td>
+                        <td>
+                            <%= i.REDPCYL ? i.REDPCYL : '-' %>
+                        </td>
+                        <td>
+                            <%= i.REDPAxis ? i.REDPAxis : '-' %>
+                        </td>
+                        <td>
+                            <%= i.REDPVA ? i.REDPVA : '-' %>
+                        </td>
+                        <td rowspan="2">
+                            <%= i.R_Addition ? i.R_Addition : '-' %>
+                        </td>
+                          
+                    </tr>
+                    <tr>
+                        <td >NP</td>
+                        <td>
+                             <%= i.RENPSPH ? i.RENPSPH : '-' %>
+                        </td>
+                        <td>
+                             <%= i.RENPCYL ? i.RENPCYL : '-' %>
+                        </td>
+                        <td>
+                             <%= i.RENPAxis ? i.RENPAxis : '-' %>
+                        </td>
+                        <td>
+                             <%= i.REDPVA ? i.REDPVA : '-' %>
+                        </td>
+                       
+                    </tr>
+                </table>
+
+                  <table class="powerTbl" style="width: 44%; float: right;">
+                    <tr >
+
+                        <th colspan="2" style=" border-right: none !important;"></th>
+                        <th colspan="2" style="background-color: #b30000; text-align: center; color: #fff; border-radius: 5px; 
+                        border-left: none !important;border-right: none !important;">LEFT EYE</th>
+                        <th colspan="2" style="  border-left: none !important; border-radius: 5px !important;"></th>
+                    </tr>
+                    <tr style="background-color: #ff9a9a;">
+                        <td style="background-color: #fff;"></td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VA</td>
+                        <td>ADD</td>
+                     
+                    </tr>
+                    <tr>
+                        <td>DP</td>
+                        <td>
+                            <%= i.LEDPSPH ? i.LEDPSPH : '-' %>
+                        </td>
+                        <td>
+                            <%= i.LEDPCYL ? i.LEDPCYL : '-' %>
+                        </td>
+                        <td>
+                            <%= i.LEDPAxis ? i.LEDPAxis : '-' %>
+                        </td>
+                        <td>
+                            <%= i.LEDPVA ? i.LEDPVA : '-' %>
+                        </td>
+                        <td rowspan="2">
+                            <%= i.L_Addition ? i.L_Addition : '-' %>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>NP</td>
+                        <td>
+                            <%= i.LENPSPH ? i.LENPSPH : '-' %>
+                        </td>
+                        <td>
+                            <%= i.LENPCYL ? i.LENPCYL : '-' %>
+                        </td>
+                        <td>
+                            <%= i.LENPAxis ? i.LENPAxis : '-' %>
+                        </td>
+                        <td>
+                            <%= i.LENPVA ? i.LENPVA : '-' %>
+                        </td>
+                    </tr>
+                </table>
+                <%})}%>
+        </section>
+        <%}%>
+
+ <section class="productlist" style="padding-top: 1%; height: auto; ">
+                <table <% %> style="width:100%; border: 1px solid #cdcdcd; border-radius: 5px !important;  border-collapse: separate;
+    border-spacing: 0; overflow: hidden;">
+                        <thead style="background-color: #b30000; text-align: center; font-weight: 600; ">
+                            <tr <% %> style="text-align: center; font-size: <%= data.TableHeading %> ; height: 25px; color:#fff">
+                                    <% if (data.shopdetails.HSNCode==="true" ){%>
+                                        <th>HSNCode</th>
+                                        <%}%>
+                                            <th>Description</th>
+                                            <th>Qty</th>
+                                            <% if (data.shopdetails.Rate==="true" ){%>
+                                                <th>Rate</th>
+                                                <%}%>
+                                                    <% if (data.shopdetails.Discounts==="true" ){%>
+                                                        <th>  
+                                                            <% if (data.shopdetails.CompanyID != 422 ){%>
+                                                                Discount 
+                                                            <%}%>
+
+                                                            <% if (data.shopdetails.CompanyID == 422 ){%>
+                                                                - 
+                                                            <%}%>
+                                                        </th>
+                                                        <%}%>
+                                                            <% if (data.shopdetails.SubTotal==="true" ){%>
+                                                                <th>SubTotal</th>
+                                                                <%}%>
+                                                                    <% if (data.shopdetails.Tax==="true" &&
+                                                                        data.bill==='Tax Invoice' ){%>
+                                                                        <% if (data.GSTTypes=="CGST-SGST"
+                                                                            ) { %>
+                                                                            <th>CGST</th>
+                                                                            <th>SGST</th>
+                                                                            <%} else if (data.GSTTypes == 'IGST') { %>
+                                                                                <th>IGST</th>
+                                                                                <% } else if (data.GSTTypes == 'VAT') { %>
+                                                                                    <th>VAT</th>
+                                                                                    <% } else { %>
+                                                                                    <th>None</th>
+                                                                                <% } %>
+                                                                                    <%}%>
+                                                                                        <% if
+                                                                                            (data.shopdetails.Total==="true"
+                                                                                            ){%>
+                                                                                            <th>
+                                                                                                <% if (data.shopdetails.CompanyID === 19 ){%> AED <%}%>  <%= data.TotalValue %>
+                                                                                            </th>
+                                                                                            <%}%>
+
+                            </tr>
+                        </thead>
+                        <tbody class="tbodys" <% %> style="text-align: center; font-size: <%= data.TableBody %> ;">
+                                <% if(data.billItemList.length != 0 ){ data.billItemList.forEach(function (i, index) {
+                                    %>
+                                    <tr>
+                                        <% if (data.shopdetails.HSNCode==="true" ){%>
+                                            <td>
+                                                <%= i.HSNCode %>
+                                            </td>
+                                            <%}%>
+                                              <% if (i.CompanyID !=208 && i.CompanyID !=367 && i.CompanyID != 144){%>
+                                        <td style="width: 30%; font-size:14px">
+                                            <%= i.ProductName %>
+                                                <% if (i.Warranty !=''&& i.Warranty !="undefined" ){%>
+                                                    <%= i.Warranty %> <%}%>
+                                                <% if (i.Remark !='' && i.Remark !="undefined" ){%>
+                                                    /<%= i.Remark %>
+                                                <%}%>
+                                                </td>
+                                                <%}%>
+                                        <% if (i.CompanyID==208 || i.CompanyID==367 || i.CompanyID == 144){%>
+                                         <td style="width: 30%;">
+                                             <%= i.ProductTypeName %>
+                                            </td>
+                                        <%}%>
+
+                                                <td>
+                                                    <%= i.Quantity %>
+                                                </td>
+                                                <% if (data.shopdetails.Rate==="true" ){%>
+                                                    <td>
+                                                        <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.UnitPrice %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.UnitPrice) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.UnitPrice %>
+                                                        <% } %>
+
+                                                    </td>
+                                                    <%}%>
+                                                        <% if (data.shopdetails.Discounts==="true" ){%>
+                                                            <td>
+                                                               
+                                                                <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.DiscountAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.DiscountAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.DiscountAmount %>
+                                                        <% } %>
+                                                            </td>
+                                                            <%}%>
+                                                                <% if (data.shopdetails.SubTotal==="true" ){%>
+                                                                    <td>
+                                                                       
+                                                                        <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.SubTotal %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.SubTotal) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.SubTotal %>
+                                                        <% } %>
+
+                                                                    </td>
+                                                                    <%}%>
+                                                                        <% if (data.shopdetails.Tax==="true" &&
+                                                                            data.bill==='Tax Invoice'  ){%>
+
+                                                                            <% if
+                                                                                (data.GSTTypes=="CGST-SGST"
+                                                                                ) { %>
+                                                                                <td>
+                                                                                 
+
+                                                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+
+                                                                                    <br> @ <%= i.GSTPercentage %>
+                                                                                </td>
+                                                                                <td>
+                                                                                   
+                                                                                    <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+
+
+                                                                                    <br> @ <%=i.GSTPercentage %>
+                                                                                </td>
+                                                                                <%} else { %>
+                                                                                    <td>
+                                                                                       <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+                                                                                         <br> @ <%= i.GSTPercentage %>
+                                                                                    </td>
+                                                                                    <% } %>
+                                                                                        <%}%>
+
+                                                                                            <% if
+                                                                                                (data.shopdetails.Total==="true"
+                                                                                                ){%>
+                                                                                                <td style="text-align: end; padding-right: 5px;">
+                                                                                                   
+
+                                                                                                    <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.TotalAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.TotalAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.TotalAmount %>
+                                                        <% } %>
+                                                                                                </td>
+                                                                                                <%}%>
+
+                                    </tr>
+                                    <%})}%>
+                                        <!-- serviceList start -->
+                                        <% if(data.serviceList.length !==0 ){ data.serviceList.forEach(function (i,
+                                            index) { %>
+                                            <tr>
+                                                
+                                                <% if (data.shopdetails.HSNCode==="true" ){%>
+                                                <td></td>
+                                                <%}%>
+
+                                                <td>
+                                                    <%= i.ServiceType %>/<%= i.Description %>
+                                                </td>
+                                                <td> </td>
+
+                                                <% if (data.shopdetails.Rate==="true" ){%>
+                                                <td>
+
+                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.Price %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.Price) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.Price %>
+                                                        <% } %>
+                                                </td>
+                                                <%}%>
+
+                                                <% if (data.shopdetails.Discounts==="true" ){%>
+                                                <td> 
+                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.DiscountAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.DiscountAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.DiscountAmount %>
+                                                        <% } %>
+
+                                                </td>
+                                                <%}%>
+
+                                                <% if (data.shopdetails.Discounts==="true" ){%>
+                                                <td>
+
+                                                     <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.SubTotal %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.SubTotal) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.SubTotal %>
+                                                        <% } %>
+                                                </td>
+                                                <%}%>
+
+
+                                                <% if (data.shopdetails.Tax==="true" &&
+                                                    data.bill==='Tax Invoice'  ){%>
+
+                                                    <% if
+                                                        (data.GSTTypes=="CGST-SGST"
+                                                        ) { %>
+                                                        <td>
+                                                          
+
+                                                             <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+                                                             <br> @ <%= i.GSTPercentage %>
+                                                        </td>
+                                                        <td>
+                                                            <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+                                                             <br> @ <%= i.GSTPercentage %>
+                                                        </td>
+                                                        <%} else { %>
+                                                            <td>
+                                                                <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.GSTAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.GSTAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.GSTAmount %>
+                                                        <% } %>
+                                                                 <br> @ <%= i.GSTPercentage %>
+                                                            </td>
+                                                            <% } %>
+                                                                <%}%>
+
+                                                                    <% if
+                                                                        (data.shopdetails.Total==="true"
+                                                                        ){%>
+                                                                        <td style="text-align: end; padding-right: 5px;">
+                                                                            
+
+                                                                            <% if (data.currencyFormat) { %>
+                                                            <% if (data.currencyFormat === 'AED') { %>
+                                                                <span style="display: inline-flex; align-items: center; gap: 4px;">
+                                                                    <img src="http://localhost:3000/assest/UAE_Dirham_Symbol.png" alt="AED Icon" class="AEDIcon" />
+                                                                    <%= i.TotalAmount %> <!-- Only number -->
+                                                                </span>
+                                                            <% } else { %>
+                                                                <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(i.TotalAmount) %>
+                                                            <% } %>
+                                                        <% } else { %>
+                                                            <%= i.TotalAmount %>
+                                                        <% } %>
+                                                                        </td>
+                                                                        <%}%>
+                                            </tr>
+                                            <%})}%>
+                                                <!-- serviceList end -->
+                        </tbody>
+                </table>
+            </section>
+
+<section style="width: 100%; height: auto; font-size: 16px; margin-top: 1%; ">
+ <table style="width: 60%; float: left; border: 1px solid #cdcdcd; border-radius: 5px ;">
+    <tr>
+        <td>
+             <h4 <% %> style="color: <%= data.Color %>;padding: 0; margin:0;">
+                <img src='http://localhost:3000/assest/circle-exclamation-svgrepo-com.png' alt="LOGO" width="20px" style="border-radius: 5px; vertical-align: bottom;"> Important Note</h4>
+                <% if(data.welComeNoteShop.length !==0){ data.welComeNoteShop.forEach(function (i, index) { %>
+                            <p <% %> style="font-size:<%= data.NoteFont %> ; line-height:<%= data.NoteLineSpace %>;
+                                        padding: 0; margin:0;">
+                                        <%=index+1%>. <%=i.Content%>
+                            </p>
+                            <%})}%>
+        </td>
+    </tr>
+                <tr style="background-color: #ffb3b3; color: #b30000;  " >           
+                    <th  style="padding: 2px; border-radius: 5px; text-align: left; "> 
+                      <img src='http://localhost:3000/assest/time-svgrepo-com.png' alt="LOGO" width="20px" style="border-radius: 5px; vertical-align: bottom;">  <%= data.shopdetails.ShopTiming %>
+                    </th>
+                </tr>
+ </table>
+ <table style="width: 39%; float: right;  border: 1px solid #cdcdcd; border-radius: 5px ; ">
+    <tr>
+        <td>
+            <table style="width: 100%; ">
+                <% if (data.shopdetails.SubTotal==="true" ){%>
+                <tr>           
+                    <td>Total</td>
+                    <td style="text-align: end;">
+                            <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.subtotals) %>
+                    </td>
+                </tr>
+                <%}%>
+                <% if (data.shopdetails.Discounts==="true" ){%>
+                <tr>           
+                    <td>Discount</td>
+                    <td style="text-align: end;">
+                        <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.billMaster.DiscountAmount) %>
+                    </td>
+                </tr>
+                    <%}%>
+                <% if (data.shopdetails.AdminDiscount==="true" && data.billMaster.AddlDiscount != 0 ){%>
+                <tr>           
+                    <td>AdminDiscount</td>
+                    <td style="text-align: end;"> <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.billMaster.AddlDiscount) %></td>
+                </tr>
+                <%}%>
+                <tr style="background-color: #b30000; color: #fff; border-radius: 5px; ">           
+                    <td style="font-weight: 600; padding: 2px; border-radius: 5px 0 0 5px;">Grand Total </td>
+                    <td style="text-align: end;font-weight: 600; padding: 2px;  border-radius: 0 5px 5px 0px;"> <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.billMaster.TotalAmount) %></td>
+                </tr>
+                <tr>           
+                    <td>Advance</td>
+                    <td style="text-align: end;"><%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(data.rewardDsicount) %></td>
+                </tr>
+                <tr>           
+                    <td>Balance</td>
+                    <td style="text-align: end;"> <%= new Intl.NumberFormat(data.currencyLocale, { 
+                                                                    style: 'currency', 
+                                                                    currency: data.currencyFormat
+                                                                }).format(Number(data.CurrentInvoiceBalance)) %></td>
+                </tr>
+                <tr>           
+                    <td>Payment By</td>
+                    <td style="text-align: end;">
+                        <% if(data.paidlist.length !==0){
+                                                                    data.paidlist.forEach(function (i, index) { %>
+                                                                    <% if (i.PaymentMode !=='Payment Initiated' ){%>
+                                                                        <span style="font-size: 12px;">
+                                                                            <%=i.PaymentMode%>/
+                                                                        </span>
+                                                                        <%}%>
+                                                                            <%})}%>
+                    </td>
+                </tr>
+                <tr style="background-color: #ffb3b3; color: #b30000;  " >           
+                    <th colspan="2" style="padding: 2px; border-radius: 5px;"> 
+
+                        You've Saved <%=data.SavedDiscount%>  on this Invoice!
+                    </th>
+                </tr>
+              
+            </table>
+        </td>
+    </tr>
+ </table>
+</section>
+
+
+<section style="width: 100%; height:auto; margin-top:1%">
+    <table style="width: 100%;">
+        <tr style="height: 30px; background-color: #b30000; color: #fff; ">
+            <td style="padding-left: 10px; "><img src='http://localhost:3000/assest/ccc.png' alt="LOGO" width="20px" style="border-radius: 5px; vertical-align: bottom;">  Thank you for your trust!</td>
+            <td style="padding-left: 10px;"><img src='http://localhost:3000/assest/ccc.png' alt="LOGO" width="20px" style="border-radius: 5px; vertical-align: bottom;"> We`re here to server your vision better.</td>
+        </tr>
+    </table>
+</section>
+
+</section>
+</body>
+ 
+</html>

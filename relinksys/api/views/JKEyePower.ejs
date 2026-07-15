@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vision world invoice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Noto+Sans+Gothic&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<style>
+    html body {
+        zoom: 100% !important;
+        font-family: 'Calibri', sans-serif;
+        padding: 1%;
+        
+    }
+
+  .drname{
+width: 50%;
+background-image: url(http://localhost:3000/assest/jktop-removebg-preview.png);
+ background-size: 100% 90%;
+  background-repeat: no-repeat; 
+  text-align: left;
+  }
+    
+    .powerTbl {
+        width: 100%;
+        border-radius: 5px;
+        border-collapse: separate;
+    }
+
+    .powerTbl td,
+    .powerTbl th {
+          border: 1px solid #ffffff;
+        text-align: center;
+       padding: 5px;
+  
+    }
+</style>
+
+<body >
+
+   
+            
+            
+<section style="width: 100%; height: auto; height: 100px;">
+               <table style="width: 100%; height: auto;">
+                  <tr>
+                     <td style="width: 50%;">
+                        <img src='http://localhost:3000/assest/jklogo-removebg-preview.png' alt="LOGO" width="70%" >
+                     </td>
+                     <td class="drname">
+                        <div style="margin-left: 18%; width: 80%; margin-top: -10%;">
+                        <b style="font-size: 30px;color: #001f55; ">K HARSHA VARDHAN</b> 
+                        <br>
+                        <b style="font-size: 16px; color: rgb(0 31 85); font-weight: 400;">Consultant OPTOMETRIST</b>
+                        </div>
+                     </td>
+                  </tr>
+               </table>
+            </section>
+    
+            <section style="width: 100%; margin-top: 5%; height: auto;">
+                <div style="width: 20%; margin-left: 39.5%;">
+                    <img src='http://localhost:3000/assest/eyesihtper-removebg-preview.png' alt="LOGO" width="100%" >
+                </div>
+            </section>
+
+            <section style="width: 100%;height: 100px;">
+                <table style="width: 40%; float: left; border: 1px solid #001f55; padding: 1%; border-radius: 5px; line-height: 25px;">
+                    <tr >
+                        <td style="width: 30%;"><img src='http://localhost:3000/assest/user-svgrepo-com.png' alt="LOGO" width="20%" > Name</td>
+                        <td> : <%=data.customer.Title%> <%=data.customer.Name%></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%;"><img src='http://localhost:3000/assest/call-192-svgrepo-com.png' alt="LOGO" width="20%" > Moblie</td>
+                        <td> : <%=data.customer.MobileNo1%></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30%;"><img src='http://localhost:3000/assest/address-location-map-svgrepo-com.png' alt="LOGO" width="20%" > Addrres</td>
+                        <td> : <%=data.customer.Address%></td>
+                    </tr>
+                </table>
+                <table style="width: 40%; float: right;border: 1px solid #001f55; padding: 1%; border-radius: 5px; line-height: 25px;">
+                    <tr>
+                        <td style="width: 45%;"><img src='http://localhost:3000/assest/date-range-svgrepo-com (1).png' alt="LOGO" width="15%" > Visiting Date</td>
+                    <% if (data.mode==='spectacle' ) { %>
+                        <td > : <%= new Date(data.spectacle.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %></td>
+                    <%} %>
+                    <% if (data.mode==='contact' ) { %>
+                        <td > :  <%= new Date(data.contact.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %></td>
+                    <%} %>
+                    <% if (data.mode==='other' ) { %>
+                        <td> : <%= new Date(data.other.VisitDate).toLocaleDateString('en-GB').replace(/\//g, '-') %></td>
+                    <%} %>
+                    </tr> 
+                    <tr>
+                        <td style="width: 30%;"><img src='http://localhost:3000/assest/user-svgrepo-com.png' alt="LOGO" width="15%" > Age</td>
+                        <td> : <%=data.customer.Age%></td>
+                    </tr> 
+                    <tr>
+                        <td style="width: 30%;"><img src='http://localhost:3000/assest/man-doctor-svgrepo-com.png' alt="LOGO" width="15%" > Rx_By</td>
+                    <% if (data.mode==='spectacle' && data.spectacle.RefferedByDoc !='Self' ) { %>
+                        <td > : <%=data.spectacle.RefferedByDoc%></td>
+                    <%} %>
+                    <% if (data.mode==='contact' ) { %>
+                        <td > : <%=data.contact.RefferedByDoc%></td>
+                    <%} %>
+                    <% if (data.mode==='other' ) { %>
+                        <td> : <%=data.other.RefferedByDoc%></td>
+                    <%} %>
+                    </tr>
+                    
+                </table>
+            </section>
+
+          
+        <section class="font-sizes" style=" margin-top: 1%; width: 100%; height: auto; ">
+            <% if (data.mode==='spectacle' ) { %>
+                <div style="width: 100%;    border: 1px solid #001f55; border-radius: 5px ; height: auto;">
+                    <table style="width: 100%; ">
+
+                <tr >
+                        <th colspan="2" style=" border-right: none !important;"></th>
+                        <th colspan="2" style="background-color: #8CBE5A; text-align: center; color: #fff; border-radius: 0 0 20px 20px; 
+                        border-left: none !important;border-right: none !important; width: 30%;">SUBJECTIVE REFRACTION</th>
+                        <th colspan="2" style="  border-left: none !important;"></th>
+                          
+                    </tr>
+                 </table>
+                <table class="powerTbl" style="width: 100%; padding-top: 1%;">
+                   
+                    <tr style="background-color: #001f55; color: #fff; ">
+                        <td ></td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VA</td>
+                        <td>ADD</td>
+                    </tr>
+                    <tr style="background-color: #bacda7;">
+                        <td style="background-color: #001f55; color: #fff;">RE</td>
+                        <td>
+                           <%= data.spectacle.REDPSPH ? data.spectacle.REDPSPH : '-' %>
+                        </td>
+                        <td>
+                            <%= data.spectacle.REDPCYL ? data.spectacle.REDPCYL : '-' %>
+                        </td>
+                        <td>
+                            <%= data.spectacle.REDPAxis ? data.spectacle.REDPAxis : '-' %>
+                        </td>
+                        <td>
+                            <%= data.spectacle.REDPVA ? data.spectacle.REDPVA : '-' %>
+                        </td>
+                        <td >
+                            <%= data.spectacle.R_Addition ? data.spectacle.R_Addition : '-' %>
+                        </td>
+                          
+                    </tr>
+                    <tr style="background-color: #bacda7;">
+                        <td style="background-color: #001f55; color: #fff;">LE</td>
+                        <td>
+                            <%= data.spectacle.LEDPSPH ? data.spectacle.LEDPSPH : '-' %>
+                        </td>
+                        <td>
+                            <%= data.spectacle.LEDPCYL ? data.spectacle.LEDPCYL : '-' %>
+                        </td>
+                        <td>
+                            <%= data.spectacle.LEDPAxis ? data.spectacle.LEDPAxis : '-' %>
+                        </td>
+                        <td>
+                            <%= data.spectacle.LEDPVA ? data.spectacle.LEDPVA : '-' %>
+                        </td>
+                        <td >
+                            <%= data.spectacle.L_Addition ? data.spectacle.L_Addition : '-' %>
+                        </td>
+                       
+                    </tr>
+                </table>
+</div>
+                <%}%>
+
+
+                   <% if (data.mode==='contact' ) { %>
+                <div style="width: 100%;    border: 1px solid #cdcdcd; border-radius: 5px ; height: auto;">
+                    <table style="width: 100%; ">
+
+                <tr >
+                        <th colspan="2" style=" border-right: none !important;"></th>
+                        <th colspan="2" style="background-color: #8CBE5A; text-align: center; color: #fff; border-radius: 0 0 20px 20px; 
+                        border-left: none !important;border-right: none !important; width: 30%;">SUBJECTIVE REFRACTION</th>
+                        <th colspan="2" style="  border-left: none !important;"></th>
+                          
+                    </tr>
+                 </table>
+                <table class="powerTbl" style="width: 100%; padding-top: 1%;">
+                   
+                    <tr style="background-color: #001f55; color: #fff; ">
+                        <td ></td>
+                        <td>SPH</td>
+                        <td>CYL</td>
+                        <td>AXIS</td>
+                        <td>VA</td>
+                        <td>ADD</td>
+                    </tr>
+                    <tr style="background-color: #bacda7;">
+                        <td style="background-color: #001f55; color: #fff;">RE</td>
+                        <td>
+                           <%= data.contact.REDPSPH ? data.contact.REDPSPH : '-' %>
+                        </td>
+                        <td>
+                            <%= data.contact.REDPCYL ? data.contact.REDPCYL : '-' %>
+                        </td>
+                        <td>
+                            <%= data.contact.REDPAxis ? data.contact.REDPAxis : '-' %>
+                        </td>
+                        <td>
+                            <%= data.contact.REDPVA ? data.contact.REDPVA : '-' %>
+                        </td>
+                        <td >
+                            <%= data.contact.R_Addition ? data.contact.R_Addition : '-' %>
+                        </td>
+                          
+                    </tr>
+                    <tr style="background-color: #bacda7;">
+                        <td style="background-color: #001f55; color: #fff;">LE</td>
+                        <td>
+                            <%= data.contact.LEDPSPH ? data.contact.LEDPSPH : '-' %>
+                        </td>
+                        <td>
+                            <%= data.contact.LEDPCYL ? data.contact.LEDPCYL : '-' %>
+                        </td>
+                        <td>
+                            <%= data.contact.LEDPAxis ? data.contact.LEDPAxis : '-' %>
+                        </td>
+                        <td>
+                            <%= data.contact.LEDPVA ? data.contact.LEDPVA : '-' %>
+                        </td>
+                        <td >
+                            <%= data.contact.L_Addition ? data.contact.L_Addition : '-' %>
+                        </td>
+                       
+                    </tr>
+                </table>
+</div>
+                <%}%>
+
+        </section>
+       
+
+        <section  style=" margin-top: 1%; width: 100%; height: auto; ">
+            <table style="float: left; width: 60%; height: auto;border: 1px solid #001f55; border-radius: 5px; line-height: 30px; padding: 1%;">
+                <tr>
+                    <td  style="background-color: #8CBE5A;  color: #fff; border-radius: 20px; 
+                        width: 30%; text-align: center; font-weight: 600; padding: 2px 1px !important;"> <b style="background-color: #fff; color: #8CBE5A; border-radius: 25px; padding: 1% 3%; margin-left: -6%; ">Rx</b> Rx DETAILS</td>
+                        <td></td>
+                </tr>
+                <% if(data.powerNoteShop.length !==0){ data.powerNoteShop.forEach(function (i,  index) { %>
+                    <tr>
+                        <td colspan="2" style="padding: 0; vertical-align: text-top; width: 5% !important;">
+                           <b><%= index+1 %>. </b>   <%=i.Content%>
+                        </td>
+                        
+                    </tr>
+                <%})}%>
+            </table>
+            <table style="float: right; width: 39%; height: auto;border: 1px solid #001f55; border-radius: 5px; line-height: 30px; padding: 1%;">
+                  <tr>
+                         <td  style="background-color: #8CBE5A;  color: #fff; border-radius: 20px; 
+                        width: 70%; text-align: center; font-weight: 600; text-transform: uppercase;"><b style="background-color: #fff; color: #8CBE5A; border-radius: 25px;  padding: 1% 3%; margin-left: -7%;">  <img src="http://localhost:3000/assest/pen-svgrepo-com.png" alt="" width="5%"></b> Authorized Signature</td>
+                        <td style="width: 10%;"></td>
+                       
+                </tr>
+                  <tr>
+                    
+                    <td colspan="2" style="padding-top: 5%;">
+                         <img src="http://localhost:3000/assest/eyeglass-svgrepo-com.png" alt="" width="10%">  ........................................................</td>
+                </tr>
+                  <tr>
+                    
+                    <td colspan="2" style="line-height: 20px;width: 90%; padding-left: 10%;">  Bring this card on your next visit. <br>
+                                          CHECK YEARLY, SEE CLEARLY</td>
+                </tr>
+               
+            </table>
+
+        </section>
+
+        <section  style=" padding-top: 2%; width: 100%; height: auto;  ">
+            <table style="width: 100%; padding-top: 1%; border-radius: 5px;">
+                <tr style=" background-color: #001f55; color: #fff;  ">
+<td style="padding: 1%;  border-radius:  5px 0px 0  5px ; width:5%"><img src='http://localhost:3000/assest/address-location-map-svgrepo-com.png' alt="LOGO" width="100%" style="border-radius: 25px; border: 2px solid #fff; padding: 10%; vertical-align: bottom;  ">  </td>
+                    <td style="padding: 1%;  ">  <%= data.shopdetails.Address %></td>
+                   
+                    <td style="text-align: right; padding: 1%; border-radius: 0 5px 5px 0 ;">
+                       <img src='http://localhost:3000/assest/call-192-svgrepo-com.png' alt="LOGO" width="10%" style="border-radius: 25px; border: 2px solid #fff; padding: 2%; vertical-align: bottom; margin-right: 2%;">   <%= data.shopdetails.MobileNo1 %>
+                        <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !== 'null') { %>
+                            <% if (data.shopdetails.CompanyID != 1) { %> / 
+                            <% } %>
+                            <% if (data.shopdetails.CompanyID == 1) { %> , 
+                            <% } %>
+                         
+                            <%= data.shopdetails.MobileNo2 %>
+                        <% } %>
+                    </td>
+                </tr>
+            </table>
+        </section>
+</body>
+ 
+</html>

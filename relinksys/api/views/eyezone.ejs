@@ -49,7 +49,7 @@
 <body>
     <section style="width: 100%;">
         <section style="width: 49%; float: left;position: relative; ">
-
+    <% if (data.shopdetails.CompanyID != 473 ){%>
             <table style="width: 100%; border-bottom: 1px solid; font-size: 12px !important;">
                 <tr>
                     <td style="width: 20%;"><img src="<%= data.LogoURL %>" alt="LOGO" width="100%"></td>
@@ -74,7 +74,35 @@
                     </td>
                 </tr>
             </table>
+    <%}%>
+    <% if (data.shopdetails.CompanyID == 473 ){%>
+        <section style="width: 100%;">
+            <table style="width: 50%; border-bottom: 1px solid; font-size: 12px !important; float: left;">
+                <tr>
+                    <td style="width: 20%;"><img src="<%= data.LogoURL %>" alt="LOGO" width="100%"></td>
+                </tr>
+            </table>
+            <table style="width: 50%; border-bottom: 1px solid; font-size: 12px !important; float: left;">
+                  <tr>
+                    <td style="width: 80%; text-align: center;">
+                        <h1 style="font-size: 1.25rem;  padding: 0; margin: 0;">
+                            <%= data.shopdetails.Name %>
+                        </h1> Mob.
+                        <%= data.shopdetails.MobileNo1 %>
+                            <% if (data.shopdetails.MobileNo2 && data.shopdetails.MobileNo2 !=='null' ) { %>
+                                <% if (data.shopdetails.CompanyID !=1) { %> /
+                                    <% } %>
+                                        <% if (data.shopdetails.CompanyID==1) { %> ,
+                                            <% } %>
 
+                                                <%= data.shopdetails.MobileNo2 %>
+                                                    <% } %> <br>
+                                                      <%= data.shopdetails.Address %>
+                    </td>
+                </tr>
+            </table>
+        </section>
+    <%}%>
             <section style="width: 100%;">
                 <table style="width: 60%; float: left; font-size: 12px !important; text-align: left !important;">
                     <tr style="white-space: normal;">
@@ -212,8 +240,19 @@
                     <section style="width: 100%; border-top: 1px solid !important; height: 130px;">
                         <table
                             style="width: 40%;  font-size: 12px !important; text-align: left !important; float: left; ">
+                          
                             <tr>
-                                <th>Remark</th>
+                                <th>InvoiceNo. </th> <td><%=data.billMaster.InvoiceNo%></td>
+                            </tr>
+                            <tr>
+                                <th>Name:</th> <td><%=data.customer.Title%> <%=data.customer.Name%></td>
+                            </tr>
+                            <tr>
+                                <th>GlassOrder:</th> 
+                                
+                                <% if(data.billItemList.length !=0 ){ data.billItemList.forEach(function (i, index) { %>
+                                <td> <%= i.Remark %></td>
+                                <% }) } %>
                             </tr>
 
                         </table>

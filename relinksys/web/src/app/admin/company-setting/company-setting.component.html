@@ -323,7 +323,7 @@
                                                     <div class="col-md-12  header mt-md-4">
                                                         <h2>Bill Format</h2>
                                                     </div>
-                                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0" *ngIf="user.is_direct == true">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Bill Format</mat-label>
                                                             <mat-select name="BillFormat" [(ngModel)]="data.BillFormat"
@@ -342,6 +342,19 @@
                                                                 <mat-option value="thermal print.ejs">thermal print</mat-option>
                                                                 <mat-option value="optometric.ejs">optometrist</mat-option>
                                                                 <mat-option value="eyezone.ejs">eyezone</mat-option>
+                                                                <mat-option value="eyezonecom.ejs">eyezone.com</mat-option>
+                                                            </mat-select>
+                                                            <mat-error>Bill Format </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0" *ngIf="user.is_direct != true" >
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Bill Format</mat-label>
+                                                            <mat-select name="BillFormat" [(ngModel)]="data.BillFormat"
+                                                                required>
+                                                                <mat-option value="invoice.ejs">invoice.ejs</mat-option>
+                                                                <mat-option value="invoice_Box.ejs">invoice_Box</mat-option>
+                                                                <mat-option value={{this.data.BillFormat}}>{{this.data.BillFormat}}</mat-option>
                                                             </mat-select>
                                                             <mat-error>Bill Format </mat-error>
                                                         </mat-form-field>

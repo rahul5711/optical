@@ -33,7 +33,8 @@
 
                                     <table style="margin-left:0px;margin-top:-9px; text-align: right; ">
                                         <tr>
-                                            <th style="width:190px; ">
+                                            <th style="width:190px;line-height: 20px; ">
+                                                  <% if (data.CompanyID != '28'){%>
                                                 <div
                                                     style="text-align:left;font-size:24px;font-weight:600;font-family:verdana;margin-left:18px;">
                                                     ₹ <%=i.RetailPrice%>
@@ -43,11 +44,26 @@
                                                     style="text-align:left;font-size:14px;font-weight:600;margin-left:18px;font-family:verdana; padding-right: 10px;">
                                                     <%=i.ProductBrandName%>
                                                 </div>
- 						<div
+ 					                        	<div
                                                     style="text-align:left;font-size:14px;font-weight:600;margin-left:18px;font-family:verdana; padding-right: 10px;">
                                                     <%=i.ProductModelName%>
                                                 </div>
+                                                   <% } %>
+                                                  <% if (data.CompanyID == '28'){%>
+                                                <div
+                                                    style="text-align:left;font-size:22px;font-weight:600;font-family:verdana;margin-left:18px; text-decoration: line-through; color: red">
+                                                    ₹ <%=i.PriceCut%>
+                                                </div>
 
+                                                <div
+                                                    style="text-align:left;font-size:24px;font-weight:600;font-family:verdana;margin-left:18px; padding-bottom: 5px; padding-top: 5px;">
+                                                    ₹ <%=i.RetailPrice%>
+                                                </div>
+                                                <div
+                                                    style="text-align:left;font-size:14px;font-weight:600;margin-left:18px;font-family:verdana; padding-right: 10px;">
+                                                    <%=i.ProductBrandName%>
+                                                </div>
+                                                   <% } %>
 
                                             </th>
                                             <th style="width:100px;padding:0;">
