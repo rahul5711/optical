@@ -359,21 +359,38 @@ CountE: number = 0;
  
 
 getTodayOrderCount() {
-  const subs: Subscription = this.ec.getTodayOrderCount({}).subscribe({
-    next: (res: any) => {
-      console.log('Response:', res);
-        
-      if (res.success) {
-        this.CountE = res.count;
 
+  const today = new Date().toISOString().split('T')[0];
+
+  // LocalStorage Check
+  const savedData = JSON.parse(localStorage.getItem('todayOrderCount') || '{}');
+
+  if (savedData.date === today) {
+    this.CountE = savedData.count;
+  }
+
+  // API Call (Latest Count ke liye)
+  this.ec.getTodayOrderCount({}).subscribe({
+    next: (res: any) => {
+
+      if (res.success) {
+
+        // Overwrite Count
+        this.CountE = res.count || 0;
+
+        // Update LocalStorage
+        localStorage.setItem('todayOrderCount', JSON.stringify({
+          date: today,
+          count: this.CountE
+        }));
       }
+
     },
     error: (err: any) => {
-      console.log('API Error:', err);
-      console.log('Backend Error:', err?.error);
-    },
-    complete: () => subs.unsubscribe()
+      console.log(err);
+    }
   });
+
 }
 
 }

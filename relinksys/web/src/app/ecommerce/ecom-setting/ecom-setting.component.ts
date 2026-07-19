@@ -13,6 +13,7 @@ import { map, filter, debounceTime, distinctUntilChanged, take } from 'rxjs/oper
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { SupportService } from 'src/app/service/support.service';
 import { CompanyService } from 'src/app/service/company.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-ecom-setting',
@@ -32,6 +33,7 @@ export class EcomSettingComponent implements OnInit {
     private compressImage: CompressImageService,
     private supps: SupportService,
         private cs: CompanyService,
+        private cdr: ChangeDetectorRef,
   ) { }
   images: any[] = ['', '', '', ''];
   data: any = {
@@ -75,6 +77,7 @@ uploadImage(e: any, index: number) {
             this.images[index] = data.body?.download;
             this.as.successToast(data.body?.message);
           }
+           this.cdr.detectChanges();
         });
     });
 }
@@ -90,6 +93,7 @@ uploadImage(e: any, index: number) {
           this.data.complimentaryImage = data.body?.download
           this.as.successToast(data.body?.message)
         }
+         this.cdr.detectChanges();
       });
     })
   }
@@ -105,6 +109,7 @@ uploadImage(e: any, index: number) {
           this.data.EcomLogo = data.body?.download
           this.as.successToast(data.body?.message)
         }
+         this.cdr.detectChanges();
       });
     })
 
@@ -178,7 +183,7 @@ getCompanySetting() {
       this.images =  this.data.SilderImage
       this.eLogo =  this.data.EcomLogo
       console.log(this.data);
-
+       this.cdr.detectChanges();
     } catch (error) {
 
       console.error('JSON Error:', error);

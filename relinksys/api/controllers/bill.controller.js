@@ -3134,6 +3134,7 @@ module.exports = {
                 invoiceMode = false;
             }
 
+
             printdata.invoiceMode = invoiceMode;
 
             console.log(printdata.invoiceMode, ' printdata.invoiceMode');
@@ -3257,17 +3258,22 @@ module.exports = {
             printdata.totalUnits = 0
             printdata.totalDiscounts = 0
             printdata.totalRate = 0
+            printdata.totalPirecCut = 0
 
-            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' || printdata.CompanySetting.BillFormat == 'ajanta.ejs' || printdata.CompanySetting.BillFormat == 'optometric.ejs' || printdata.CompanySetting.BillFormat == 'a5_invoive.ejs') {
+            if (printdata.CompanySetting.BillFormat == 'invoice_Box.ejs' || printdata.CompanySetting.BillFormat == 'Sai_Drushti.ejs' || printdata.CompanySetting.BillFormat == 'ajanta.ejs' || printdata.CompanySetting.BillFormat == 'optometric.ejs' || printdata.CompanySetting.BillFormat == 'a5_invoive.ejs' || printdata.CompanySetting.BillFormat == 'invoiceBox_priceCut.ejs') {
                 printdata.billItemList.forEach((t) => {
+
                     printdata.totalUnits += t.UnitPrice
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Quantity * t.UnitPrice
+                    printdata.totalPirecCut += t.Quantity * t.PriceCut
+                     console.log( printdata.totalPirecCut,' printdata.totalPirecCut' , t.PriceCut);
                 })
                 printdata.serviceList.forEach((t) => {
                     printdata.totalUnits += t.Price
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Price
+                     printdata.totalPirecCut += 0
                 })
             }
 

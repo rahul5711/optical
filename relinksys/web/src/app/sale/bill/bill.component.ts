@@ -34,6 +34,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { ShopService } from 'src/app/service/shop.service';
 import { ReminderService } from 'src/app/service/reminder.service';
 import { PrintService } from 'src/app/service/print.service';
+import * as qz from 'qz-tray';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 @Component({
@@ -317,6 +318,8 @@ export class BillComponent implements OnInit {
 
   shopList: any = []
   shopListSS: any = []
+
+  ManualView = false;
 
   ngOnInit(): void {
     // apply for only hv employee 
@@ -4158,53 +4161,55 @@ let dtm
   //   this.billPrint(mode)
   // }
 
-  printURL(url:any) {
-      this.sp.show()
-      let dtm = {
-       url : this.BillLink,
-       printer : url
-      }
-      const subs: Subscription = this.printPdf.printURL(dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.as.successToast(res.message)
-            console.log(res);
+  // printURL(url:any) {
+  //     this.sp.show()
+  //     let dtm = {
+  //      url : this.BillLink,
+  //      printer : url
+  //     }
+  //     const subs: Subscription = this.printPdf.printURL(dtm).subscribe({
+  //       next: (res: any) => {
+  //         if (res.success) {
+  //           this.as.successToast(res.message)
+  //           console.log(res);
             
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
-  getDefaultPrinter() {
-      this.sp.show()
-      const subs: Subscription = this.printPdf.getDefaultPrinter().subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            console.log(res);
-            if(res.defaultPrinter.Name == 'Microsoft Print to PDF' ){
-                  Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'Default Printer Not Supported',
-            text: 'Please set a physical printer as your default printer. Printing to PDF is not allowed.',
-             confirmButtonText: 'OK'
-          })
-            }else{
-              this.printURL(res.defaultPrinter.Name)
-            }
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
-    }
+  //         } else {
+  //           this.as.errorToast(res.message)
+  //         }
+  //         this.sp.hide()
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   }
+  // getDefaultPrinter() {
+  //     this.sp.show()
+  //     const subs: Subscription = this.printPdf.getDefaultPrinter().subscribe({
+  //       next: (res: any) => {
+  //         if (res.success) {
+  //           console.log(res);
+  //           if(res.defaultPrinter.Name == 'Microsoft Print to PDF' ){
+  //                 Swal.fire({
+  //           position: 'center',
+  //           icon: 'warning',
+  //           title: 'Default Printer Not Supported',
+  //           text: 'Please set a physical printer as your default printer. Printing to PDF is not allowed.',
+  //            confirmButtonText: 'OK'
+  //         })
+  //           }else{
+  //             this.printURL(res.defaultPrinter.Name)
+  //           }
+  //         // this.printURL('HP LaserJet 1020')
+  //         this.printURL(res.defaultPrinter.Name )
+  //         } else {
+  //           this.as.errorToast(res.message)
+  //         }
+  //         this.sp.hide()
+  //       },
+  //       error: (err: any) => console.log(err.message),
+  //       complete: () => subs.unsubscribe(),
+  //     });
+  //   }
 
   billPrint(mode: any) {
 
@@ -4238,8 +4243,8 @@ let dtm
             if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Invoice')
             }
-            if(this.BillMaster.CompanyID == 341){
-              this.getDefaultPrinter()
+            if(this.BillMaster.CompanyID == 504){
+               await this.printPDF(url);
             }else{
               window.open(url, "_blank")
             }
@@ -4252,8 +4257,8 @@ let dtm
              if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Receipt')
             }
-            if(this.BillMaster.CompanyID == 341){
-              this.getDefaultPrinter()
+            if(this.BillMaster.CompanyID == 504){
+               await this.printPDF(url);
             }else{
               window.open(url, "_blank")
             }
@@ -4268,33 +4273,40 @@ let dtm
     });
   }
 
-
-printBill(url: string) {
-  const iframe = document.createElement('iframe');
-
-  iframe.style.position = 'fixed';
-  iframe.style.width = '0';
-  iframe.style.height = '0';
-  iframe.style.border = '0';
-  iframe.style.visibility = 'hidden';
-
-  iframe.src = url;
-
-  document.body.appendChild(iframe);
-
-  iframe.onload = () => {
-    setTimeout(() => {
-      iframe.contentWindow?.focus();
-      iframe.contentWindow?.print();
-
-      // Optional: print ke baad iframe remove kar do
-      setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 1000);
-
-    }, 500); // PDF load hone ke liye thoda wait
-  };
+async connectQZ() {
+  try {
+    if (!qz.websocket.isActive()) {
+      await qz.websocket.connect();
+      console.log("QZ Connected");
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
+
+async printPDF(pdfUrl: string) {
+  try {
+    await this.connectQZ();
+    // Default Printer
+    const printer = await qz.printers.getDefault();
+    console.log("Printer :", printer);
+    const config = qz.configs.create(printer);
+
+    const data = [{
+      type: 'pdf',
+      format: 'file',
+      data: pdfUrl
+    }];
+
+    await qz.print(config, data);
+    console.log("Print Success");
+
+  } catch (err) { 
+    console.error("Print Error :", err);
+  }
+
+}
+
 
   // billPrint(mode: any) {
   //   this.sp.show();

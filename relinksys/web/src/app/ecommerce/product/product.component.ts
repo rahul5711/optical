@@ -18,7 +18,7 @@ import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { EcomService } from 'src/app/service/ecom.service';
-
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-product',
   templateUrl: './product.component.html',
@@ -72,6 +72,7 @@ export class ProductComponent implements OnInit {
     private modalService: NgbModal,
     private compressImage: CompressImageService,
     private fu: FileUploadService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -704,6 +705,7 @@ export class ProductComponent implements OnInit {
       this.item.ProductStatus = data.ProductStatus
       this.item = data
     }
+     this.cdr.detectChanges();
   }
 
   editUpdate() {
@@ -907,6 +909,7 @@ export class ProductComponent implements OnInit {
               this.item.LiveImages[i].ImageName = this.evn.apiUrl + data.body?.download;
               this.as.successToast(data.body.message)
             }
+             this.cdr.detectChanges();
           },
           error: (err: any) => {
             console.log(err.message);
@@ -941,6 +944,7 @@ export class ProductComponent implements OnInit {
           this.ecommerceItem.liveImage = data.body?.download
           this.as.successToast(data.body?.message)
         }
+         this.cdr.detectChanges();
       });
     })
   }
@@ -1218,6 +1222,7 @@ export class ProductComponent implements OnInit {
               this.ecommerceItem.LiveImages[i].ImageName = this.evn.apiUrl + data.body?.download;
               this.as.successToast(data.body.message)
             }
+             this.cdr.detectChanges();
           },
           error: (err: any) => {
             console.log(err.message);

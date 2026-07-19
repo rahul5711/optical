@@ -171,8 +171,10 @@
                     </span>
                 </div>
             </div>
+
+            <ng-container *ngIf="this.ManualView == false">
             <div class="row rowModify pt-2" *ngIf="category !== 'Services'">
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" >
+                <div *ngIf="BillItem.Manual === false" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" >
                     <mat-form-field class="example-full-width mb-0 " >
                         <mat-label>BarCode </mat-label>
                         <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
@@ -181,7 +183,86 @@
                     </mat-form-field>
                     
                 </div>
-                <div class="col-xl-4 col-lg-4 col-md-6 col-8 mb-0" >
+                <div *ngIf="BillItem.Manual === false" class="col-xl-4 col-lg-4 col-md-6 col-8 mb-0" >
+                    <!-- <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Search By Product Name</mat-label>
+                        <input matInput name="searchString" [(ngModel)]="Req.searchString" #SearchStringNamecontrol
+                            autocomplete="off" (change)="getSearchByString()">
+                    </mat-form-field> -->
+
+                    <mat-form-field class="example-full-width">
+                        <mat-label>Product Search</mat-label>
+                        <input type="text"  aria-label="Text" matInput
+                        name="searchString"  [formControl]="myControl" [matAutocomplete]="auto"
+                               (input)="getSearchByString(myControl.value, 'searchString')" style="color: red;">
+                        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [panelWidth]="'560px'">
+                          <!-- <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option> -->
+                          <mat-option style="border-bottom: 2px solid #000 !important;" class="customer-option" (click)=" openModallocal(contentLocal,option);getSearchByBarcodeNoS(option)"  *ngFor="let option of BarcodeList" [value]="option.FullProductName">
+                             {{option.FullProductName}}  <b class="redclass">#{{option.BarCodeCount}}  </b> 
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                </div>
+                <div *ngIf="BillItem.Manual === true" class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0" >
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Product</mat-label>
+                        <mat-select name="selectedProduct" [(ngModel)]="selectedProduct" (selectionChange)="getFieldList()"
+                            required #selectedProductontrol>
+                            <mat-option>
+                                <ngx-mat-select-search matInput [(ngModel)]="searchValue"
+                                    (ngModelChange)="searchValue = onChange($event)"
+                                    [ngModelOptions]="{standalone: true}"    [disableInitialFocus]="true" >
+                                </ngx-mat-select-search>
+                            </mat-option>
+                            <mat-option value="NULL"></mat-option>
+                            <mat-option *ngFor="let prod of prodList | nameFilterS: searchValue  let i = index;"
+                                [value]="prod.Name">
+                                {{prod.Name | uppercase}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Product Type
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <!-- <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 pt-3">
+                    <mat-slide-toggle name="ShopMode" [(ngModel)]="ShopMode" color="primary"
+                        [ngModelOptions]="{standalone: true}" #ShopModecontrol class="example-margin"
+                        style="color:#ff651e;" (change)="shopAll()">All Shops
+                    </mat-slide-toggle>
+                </div> -->
+                <!-- <div class="col-xl-5 col-lg-5 col-md-9 col-8 mb-0"
+                    *ngIf="( selectedProduct !== '' || selectedProduct !== undefined || selectedProduct !== null )">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Select Barcode</mat-label>
+                        <mat-select name="SearchBarCode" [(ngModel)]="Req.SearchBarCode" #SearchBarCodecontrol>
+                            <mat-option  [disabled]="this.loginShop?.ID !== bc.ShopID && BarcodeListShow"
+                                [ngClass]="{'otherShopClass': this.loginShop?.ID !== bc.ShopID }"
+                                *ngFor="let bc of BarcodeList ; let i = index;" [value]="bc.Barcode" (click)="productSelect(bc); openModallocal(contentLocal,bc)">
+                                {{bc.Barcode}} <a> # {{bc.BarCodeCount }}</a>  | {{bc.ProductName | uppercase}} |
+                                {{bc.ShopName | titlecase }} <span [style.color]="'blue'"
+                                    *ngIf="bc.AreaName !== 'null'">({{bc.AreaName | titlecase}})</span>
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Product Type
+                        </mat-error>
+                    </mat-form-field>
+                </div> -->
+            </div>
+            </ng-container>
+           <ng-container *ngIf="this.ManualView == true">
+            <div class="row rowModify pt-2" *ngIf="category !== 'Services'">
+                <div  class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" >
+                    <mat-form-field class="example-full-width mb-0 " >
+                        <mat-label>BarCode </mat-label>
+                        <input matInput name="SearchBarCode" [(ngModel)]="Req.SearchBarCode"
+                            (blur)="openModallocal(contentLocal,Req.SearchBarCode);getSearchByBarcodeNo() " required #SearchBarCodecontrol autocomplete="off"
+                            appAutoFoucsDirectives inputMode="numeric"  #barcodeInput >
+                    </mat-form-field>
+                    
+                </div>
+                <div  class="col-xl-4 col-lg-4 col-md-6 col-8 mb-0" >
                     <!-- <mat-form-field class="example-full-width mb-0">
                         <mat-label>Search By Product Name</mat-label>
                         <input matInput name="searchString" [(ngModel)]="Req.searchString" #SearchStringNamecontrol
@@ -248,9 +329,11 @@
                     </mat-form-field>
                 </div>
             </div>
+            </ng-container>
             <!-- save product spec start -->
-            <form #fp="ngForm">
-                <div class="row rowModify" *ngIf="category !== 'Services'">
+            <form #fp="ngForm" >
+                <ng-container *ngIf="this.ManualView == false">
+                <div class="row rowModify" *ngIf="BillItem.Manual === true && category !== 'Services'">
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
                         *ngFor="let spec of specList ; let i = index;">
                         <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
@@ -365,6 +448,125 @@
                         </mat-form-field>
                     </div>
                 </div>
+                </ng-container>
+
+                 <ng-container *ngIf="this.ManualView == true">
+                <div class="row rowModify" *ngIf=" category !== 'Services'">
+                    <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
+                        *ngFor="let spec of specList ; let i = index;">
+                        <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                            <mat-form-field class="me-lg-2 me-0 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                <mat-label>{{spec.FieldName}}</mat-label>
+                                <mat-select name="{{spec.FieldName+'0'}}" [(ngModel)]="spec.SelectedValue"
+                                    (selectionChange)="getFieldSupportData(i);getBarCodeList(i)" editable="true"
+                                    [required]="spec.Required === 1" #singleSelect>
+                                    <mat-option>
+                                        <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue"
+                                            (ngModelChange)="spec.EnteredValue = onChange($event)"
+                                            [ngModelOptions]="{standalone: true}"  [disableInitialFocus]="true">
+                                        </ngx-mat-select-search>
+                                    </mat-option>
+                                    <mat-option value=""> </mat-option>
+                                    <mat-option
+                                        *ngFor="let val of spec.SptFilterData | proditemfilterbill: spec.EnteredValue "
+                                        [value]="val.TableValue1">
+                                        {{val.TableValue}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error>
+                                    {{spec.FieldName}} is Required
+                                </mat-error>
+                            </mat-form-field>
+                            <!-- <mat-checkbox class="pt-3" name="{{spec.FieldName+'0'}}" color="primary"
+                                            [(ngModel)]="spec.CheckBoxValue"></mat-checkbox> -->
+                            <mat-form-field class="mr-0 mb-0" *ngIf="spec.DisplayAdd === 1">
+                                <mat-label>Add {{spec.FieldName}}</mat-label>
+                                <input matInput name="{{spec.FieldName+'1'}}" [(ngModel)]="spec.SelectedValue"
+                                    (ngModelChange)="spec.SelectedValue = onChange($event)" required
+                                    #NewProductTypecontrol>
+                            </mat-form-field>
+
+                            <button style="background: none;border:none"
+                                *ngIf="spec.DisplayAdd === 0 && disableAddButtons" (click)="displayAddField(i)">
+                                <mat-icon class="col-white plus_icon">add</mat-icon>
+                            </button>
+                            <button style="background: none;border:none" *ngIf="spec.DisplayAdd === 1"
+                                (click)="saveFieldData(i)">
+                                <mat-icon class="col-white plus_icon">save</mat-icon>
+                            </button>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                            <mat-form-field class=" mr-0 mb-0">
+                                <mat-label>{{spec.FieldName}}</mat-label>
+                                <input matInput name="{{spec.FieldName+'2'}}" [(ngModel)]="spec.SelectedValue"
+                                    (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                    [required]="spec.Required === 1" (blur)="getFieldSupportData(i);getBarCodeList(i)">
+                                <mat-error>
+                                    {{spec.FieldName}} is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                            <mat-form-field class=" mr-0 mb-0">
+                                <mat-label>{{spec.FieldName}}</mat-label>
+                                <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                    [(ngModel)]="spec.SelectedValue"
+                                    (ngModelChange)="spec.SelectedValue = onChange($event)" editable="true"
+                                    [required]="spec.Required === 1">
+                                <mat-error>
+                                    {{spec.FieldName}} is Required
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                            <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary" class="example-margin"
+                                #Multiplecontrolx [(ngModel)]="spec.SelectedValue">
+                                {{spec.FieldName}}</mat-slide-toggle>
+                        </div>
+                    </div>
+                    <!-- <div *ngIf="!BillItem.PreOrder && showProductExpDate"
+                        class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Product Expiry Date</mat-label>
+                            <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
+                        </mat-form-field>
+                    </div> -->
+                    <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" *ngIf="showProductExpDate == true">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>ProductExpDate</mat-label>
+                            <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'"
+                        class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Family Name</mat-label>
+                            <mat-select name="Family" [(ngModel)]="BillItem.Family">
+                                <mat-option></mat-option>
+                                <mat-option selected value="Self">Self</mat-option>
+                                <mat-option [value]="f.Name" *ngFor="let f of familyList"> {{f.Name}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS'"
+                        class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Option</mat-label>
+                            <mat-select name="Option" [(ngModel)]="BillItem.Option"
+                                (selectionChange)="calculations('Quantity', 'subTotal')" required>
+                                <mat-option value="Full Glass">Full Lens</mat-option>
+                                <mat-option value="Half Glass Left">Half Lens Left</mat-option>
+                                <mat-option value="Half Glass Right">Half Lens Right</mat-option>
+                                <mat-option value="NA">NA</mat-option>
+                            </mat-select>
+                            <mat-error>
+                                Select Option Type
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                </ng-container>
             </form>
             <!-- save product spec end -->
         </form>

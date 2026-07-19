@@ -18,6 +18,7 @@ import { BillService } from 'src/app/service/bill.service';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { EcomService } from 'src/app/service/ecom.service';
+import { ChangeDetectorRef } from '@angular/core';
 @Component({
   selector: 'app-purchase',
   templateUrl: './purchase.component.html',
@@ -81,6 +82,7 @@ export class PurchaseComponent implements OnInit {
     private compressImage: CompressImageService,
      private fu: FileUploadService,
      private ec: EcomService,
+     private cdr: ChangeDetectorRef,
   ) {
     this.id = this.route.snapshot.params['id'];
   }
@@ -1546,6 +1548,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
               this.ecommerceItem.LiveImages[i].ImageName = this.env.apiUrl + data.body?.download;
               this.as.successToast(data.body.message)
             }
+             this.cdr.detectChanges();
           },
           error: (err: any) => {
             console.log(err.message);
@@ -1571,7 +1574,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
             this.ecommerceItem.liveImage = data.body?.download
             this.as.successToast(data.body?.message)
           }
-         
+          this.cdr.detectChanges();
         });
       })
     }

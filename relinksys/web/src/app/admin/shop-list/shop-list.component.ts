@@ -16,7 +16,7 @@ import { CompressImageService } from 'src/app/service/helpers/compress-image.ser
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { SupportService } from 'src/app/service/support.service';
 import { CustomerService } from 'src/app/service/customer.service';
-
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-shop-list',
@@ -69,6 +69,7 @@ export class ShopListComponent implements OnInit {
     private excelService: ExcelService,
     private supps: SupportService,
     private cus: CustomerService,
+    private cdr: ChangeDetectorRef,
 
   ) {
     this.id = this.route.snapshot.params['id'];
@@ -309,7 +310,8 @@ export class ShopListComponent implements OnInit {
           this.signatureImage =  data.body?.download;
           this.data.Signature = data.body?.download
           this.as.successToast(data.body?.message)
-        }
+        } 
+        this.cdr.detectChanges();
       });
     })
 

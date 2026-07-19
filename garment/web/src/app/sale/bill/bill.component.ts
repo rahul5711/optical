@@ -1725,15 +1725,30 @@ export class BillComponent implements OnInit {
 
     let PaidAmount = 0
 
-    if (this.id2 == 0) {
-      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
-      if (!this.originalDueAmount) {
-        this.originalDueAmount = this.BillMaster.DueAmount;
-      }
+    // if (this.id2 == 0) {
 
-      this.BillMaster.DueAmount = this.originalDueAmount - this.BillMaster.AddlDiscount;
+    //   this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+    //   if (!this.originalDueAmount) {
+    //     this.originalDueAmount = this.BillMaster.DueAmount;
+    //   }
 
-    }
+    //   this.BillMaster.DueAmount = this.originalDueAmount - this.BillMaster.AddlDiscount;
+
+    // }
+    if (this.id2 === 0) {
+
+  // Pehle latest bill calculation
+  this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster);
+
+  // Latest DueAmount ko base amount save karo
+  this.originalDueAmount = this.BillMaster.DueAmount;
+
+  // Additional Discount
+  const discount = Number(this.BillMaster.AddlDiscount) || 0;
+
+  // Due Amount update
+  this.BillMaster.DueAmount = Math.max(0, this.originalDueAmount - discount);
+}
     else {
       if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
         PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount

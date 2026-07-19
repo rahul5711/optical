@@ -28,6 +28,7 @@ import { MembershipcardService } from 'src/app/service/membershipcard.service';
 import { EMPTY } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ReminderService } from 'src/app/service/reminder.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-billing',
@@ -203,6 +204,7 @@ selectedValues: any = {
     private supps: SupportService,
     private msc: MembershipcardService,
      private rs: ReminderService,
+     private cdr: ChangeDetectorRef,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -1119,6 +1121,7 @@ getWebsiteLink(){
     if (this.data.DOB) {
       var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());
       this.data.Age = Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25);
+      this.cdr.detectChanges();
     }
   }
 
@@ -1328,6 +1331,10 @@ getWebsiteLink(){
         this.data = res.data[0];
         this.data.Idd = res.data[0].Idd;
         this.data.Age = Number(res.data[0].Age);
+        if(this.data.Age != null && this.data.Age != ''){
+          this.calculateAge();
+           this.cdr.detectChanges();
+        };
         this.rewardBalance = res.rewardBalance;
         this.data.VisitDate = moment(this.data.VisitDate).format('YYYY-MM-DD');
 
@@ -1406,8 +1413,9 @@ getWebsiteLink(){
           this.sp.hide(); // No call to saleServiceReport
         }
 
-        this.getCustomerCategory();
-        // this.calculateAge();
+      
+        
+          this.getCustomerCategory();
         this.as.successToast(res.message);
       } else {
         this.as.errorToast(res.message);

@@ -1,13 +1,14 @@
 import { Component, HostListener, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import Swal from 'sweetalert2';
-import { Subscription } from 'rxjs';
+import { interval, Subscription } from 'rxjs';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ShopService } from '../service/shop.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DataStorageServiceService } from '../service/helpers/data-storage-service.service';
 import { environment } from 'src/environments/environment';
+import { EcomService } from '../service/ecom.service';
 
 @Component({
   selector: 'app-common',
@@ -17,15 +18,15 @@ import { environment } from 'src/environments/environment';
 export class CommonComponent implements OnInit {
   @ViewChild('content1')
   content1!: TemplateRef<any>;
-  @HostListener('document:keydown', ['$event']) 
+  @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.altKey && event.key === 'f' || event.altKey && event.key === 'F'  ) {
+    if (event.altKey && event.key === 'f' || event.altKey && event.key === 'F') {
       event.preventDefault();
       this.openModal(this.content1); // Make sure to pass the correct content
     }
-    if (event.key === 'F1' ) {
-      this.router.navigate(['/admin/CompanyDashborad']);  
-        event.preventDefault();
+    if (event.key === 'F1') {
+      this.router.navigate(['/admin/CompanyDashborad']);
+      event.preventDefault();
     }
     // if (event.altKey && event.key === 'c' || event.altKey && event.key === 'C' ) {
     //     event.preventDefault();
@@ -47,11 +48,11 @@ export class CommonComponent implements OnInit {
     //     event.preventDefault();
     //     this.router.navigate(['/report/inventory']);  
     // }
-      // if (event.altKey && event.key === 'Backspace') {
-      //   // const userToken = localStorage.getItem('token'); 
-      //     event.preventDefault();
-      //     window.history.back(); 
-      // } 
+    // if (event.altKey && event.key === 'Backspace') {
+    //   // const userToken = localStorage.getItem('token'); 
+    //     event.preventDefault();
+    //     window.history.back(); 
+    // } 
   }
 
   env = environment;
@@ -71,7 +72,7 @@ export class CommonComponent implements OnInit {
   dropShoplist: any;
   selectedShops: any = [];
   searchText: any
-  showProfileBox= false;
+  showProfileBox = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,21 +81,29 @@ export class CommonComponent implements OnInit {
     private sp: NgxSpinnerService,
     private modalService: NgbModal,
     private dataStorage: DataStorageServiceService,
-  ) { }
+    private ec: EcomService,
+  ) {
+    if (this.companyData.EcomShop != 0) {
+      interval(3600000).subscribe(() => {
+        this.getTodayOrderCount();
+      });
+    }
+
+  }
 
 
 
 
   viewFlag: any = {
     viewCompanyInfo: true, viewEmployee: true, viewEmployeeList: true, viewShop: true, viewShopList: true, viewRolePermission: true,
-    viewCompanySetting: true, viewSmsSetting: true, viewLoginHistory: true, viewRecycleBin: true,viewReminder: true,
+    viewCompanySetting: true, viewSmsSetting: true, viewLoginHistory: true, viewRecycleBin: true, viewReminder: true,
     // Product Permission
-    viewProductType: true, viewProductMaster: true, viewAddManagement: true, viewChargeManagement: true, viewServiceManagement: true,viewQuotation: true,viewQuotationList: true,
+    viewProductType: true, viewProductMaster: true, viewAddManagement: true, viewChargeManagement: true, viewServiceManagement: true, viewQuotation: true, viewQuotationList: true,
     // Purchasing Permission
-    viewSupplier: true, viewSupplierList: true, viewPurchase: true, viewPurchaseList: true, viewPurchaseReturn: true, viewPurchaseReturnList: true, viewProductTransfer: true, viewBulkTransfer: true, viewBulkTransferList: true, viewOrderPrice: true, viewOrderPriceList: true, viewSearchOrderPriceList: true, viewStockAdjustment: true,  viewLensGrid: true,  viewLensGridList: true,
+    viewSupplier: true, viewSupplierList: true, viewPurchase: true, viewPurchaseList: true, viewPurchaseReturn: true, viewPurchaseReturnList: true, viewProductTransfer: true, viewBulkTransfer: true, viewBulkTransferList: true, viewOrderPrice: true, viewOrderPriceList: true, viewSearchOrderPriceList: true, viewStockAdjustment: true, viewLensGrid: true, viewLensGridList: true,
     viewBrandNonBrandAssign: true,
     // Billing Permissions
-    viewCustomerBill: true,viewCustomerPower:true, viewBillingSearch: true, viewCustomer: true, viewCustomerSearch: true, viewDoctor: true, viewDoctorList: true,
+    viewCustomerBill: true, viewCustomerPower: true, viewBillingSearch: true, viewCustomer: true, viewCustomerSearch: true, viewDoctor: true, viewDoctorList: true,
     viewLoyalty: true, viewLoyaltyInvoice: true,
     // Lens order Permissions
     viewSupplierOrder: true, viewPurchaseConvert: true, viewSupplierOrderList: true,
@@ -106,12 +115,12 @@ export class CommonComponent implements OnInit {
     // Security Permissions
     viewLocationTracker: true, viewPhysicalList: true, viewPhysical: true,
     // Report Permissions
-    viewSaleReport: true, viewSaleProductReport: true, viewSaleServiceReport: true,  viewSaleRegisterReport: true, 
-    viewProductCancelReport: true,viewProductPendingReport: true,viewProductExpiryReport: true,
+    viewSaleReport: true, viewSaleProductReport: true, viewSaleServiceReport: true, viewSaleRegisterReport: true,
+    viewProductCancelReport: true, viewProductPendingReport: true, viewProductExpiryReport: true,
     viewCashCollectionReport: true,
     viewPurchaseReport: true, viewPurchaseProductReport: true,
-    viewPurchaseChargeReport: true, viewPurchaseProductExpiryReport: true, viewSupplierDueAmonutReportReport: true, viewPurchaseRegisterReport: true, 
-    viewExpensesReport: true, viewExpensesRegisterReport: true, 
+    viewPurchaseChargeReport: true, viewPurchaseProductExpiryReport: true, viewSupplierDueAmonutReportReport: true, viewPurchaseRegisterReport: true,
+    viewExpensesReport: true, viewExpensesRegisterReport: true,
     viewInventoryReport: true, viewOpeningClosingStockQTY: true, viewOpeningClosingStockAMT: true, viewProductSummaryReport: true,
     viewCustomerReport: true,
     viewCustomerLedgerReport: true, viewSupplierLedgerReport: true, viewFitterLedgerReport: true, viewEmployeeLedgerReport: true, viewDoctorLedgerReport: true,
@@ -119,39 +128,39 @@ export class CommonComponent implements OnInit {
     viewSupplierCreditReport: true,
     viewEyeTestReport: true,
     viewLoyaltyReport: true, viewLoyalityDetailReport: true,
-    viewOldSaleReport: true,viewOldSaleDetailReport: true,
-    viewCustomerRewardReport: true, 
-    viewGSTFilingReport: true, 
-    viewPettyCashCashCounterReport: true, 
-    viewOpeningClosingReport: true, 
+    viewOldSaleReport: true, viewOldSaleDetailReport: true,
+    viewCustomerRewardReport: true,
+    viewGSTFilingReport: true,
+    viewPettyCashCashCounterReport: true,
+    viewOpeningClosingReport: true,
 
     // Excel Import
-    viewInventoryExcelImport: true, viewCustomerExcelImport: true,viewSupplierExcelImport: true, viewOrderRequest: true,
+    viewInventoryExcelImport: true, viewCustomerExcelImport: true, viewSupplierExcelImport: true, viewOrderRequest: true,
   }
   heroes: any = []
 
-  element:any
-  element1:any
-  element2:any
-  element3:any
-  element4:any
-  element5:any
-  element6:any
-  element7:any
-  element8:any
+  element: any
+  element1: any
+  element2: any
+  element3: any
+  element4: any
+  element5: any
+  element6: any
+  element7: any
+  element8: any
 
-  animateIcon :any;
+  animateIcon: any;
   iconColor = '#fff';
 
   isClicked = false;
-
+  CountE: number = 0;
   onClick() {
     this.isClicked = true;
     this.animateIcon = false
     // Add logic to handle the update when the button is clicked
   }
   ngOnInit(): void {
-    
+    // this.getTodayOrderCount()
     this.isClicked = true;
     this.sp.show()
     this.user = JSON.parse(localStorage.getItem('user') || '')
@@ -433,7 +442,7 @@ export class CommonComponent implements OnInit {
         "Name": "Reward",
         "routersLinks": `/report/reward`
       },
-    
+
     ];
 
     // role permission access
@@ -451,639 +460,639 @@ export class CommonComponent implements OnInit {
 
   }
 
- 
-  openModal(content:  TemplateRef<any>) {
+
+  openModal(content: TemplateRef<any>) {
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'sm' });
     this.searchText = ''
   }
 
- 
 
-  myFunctionS(mode:any) {
-    
-    if(mode == 'A0'){
-        this.x = document.getElementById("collapseExample");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-        this.x = document.getElementById("collapseExample1");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-  
-        this.x = document.getElementById("collapseExample2");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-  
-        this.x = document.getElementById("collapseExample3");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-        this.x = document.getElementById("collapseExample4");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-        this.x = document.getElementById("collapseExample5");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-        this.x = document.getElementById("collapseExample6");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-        this.x = document.getElementById("collapseExample7");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-  
-        this.x = document.getElementById("collapseExample8");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-        this.x = document.getElementById("collapseExampleLs");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-        this.x = document.getElementById("collapseExampleEcm");
-        if (this.x.style.display == "block" ) {
-          this.x.style.display = "none";
-        }
-    }
-    if(mode == 'A'){
+
+  myFunctionS(mode: any) {
+
+    if (mode == 'A0') {
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
       this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+    }
+    if (mode == 'A') {
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleEcm");
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "none" || this.x.style.display == "" ) {
+      if (this.x.style.display == "none" || this.x.style.display == "") {
         this.x.style.display = "block";
       } else {
         this.x.style.display = "none";
       }
     }
-    if(mode == 'B'){
+    if (mode == 'B') {
       this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-
-      this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-
-      this.x  = document.getElementById("collapseExample1");
-      if (this.x.style.display == "none" ||  this.x.style.display == ""  ) {
-          this.x.style.display = "block";
-      } else {
-        this.x.style.display = "none";
-      }
-    }
-    if(mode == 'C'){
-      this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-
-      this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-
-      this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleEcm");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if (mode == 'C') {
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
-      this.x  = document.getElementById("collapseExample2");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
         this.x.style.display = "block";
       } else {
         this.x.style.display = "none";
       }
     }
-    if(mode == 'D'){
+    if (mode == 'D') {
       this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-
-      this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x  = document.getElementById("collapseExample3");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
-        this.x.style.display = "block";
-      } else {
-        this.x.style.display = "none";
-      }
-    }
-    if(mode == 'E'){
-      this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-
-      this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x  = document.getElementById("collapseExample4");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
-        this.x.style.display = "block";
-      } else {
-        this.x.style.display = "none";
-      }
-    }
-    if(mode == 'F'){
-      this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x  = document.getElementById("collapseExample5");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
-        this.x.style.display = "block";
-      } else {
-        this.x.style.display = "none";
-      }
-    }
-    if(mode == 'G'){
-      this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
       this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
-      this.x  = document.getElementById("collapseExample6");
-      if (this.x.style.display == "none" || this.x.style.display == "" ) {
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
         this.x.style.display = "block";
       } else {
         this.x.style.display = "none";
       }
     }
-    if(mode == 'H'){
+    if (mode == 'E') {
       this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
+
       this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
-      this.x  = document.getElementById("collapseExample7");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
         this.x.style.display = "block";
       } else {
         this.x.style.display = "none";
       }
     }
-    if(mode == 'I'){
+    if (mode == 'F') {
       this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x  = document.getElementById("collapseExample8");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
-        this.x.style.display = "block";
-      } else {
-        this.x.style.display = "none";
-      }
-    }
-    if(mode == 'Ls'){
-      this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x  = document.getElementById("collapseExampleLs");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+      if (this.x.style.display == "none" || this.x.style.display == "") {
         this.x.style.display = "block";
       } else {
         this.x.style.display = "none";
       }
     }
-    if(mode == 'Ecm'){
+    if (mode == 'G') {
       this.x = document.getElementById("collapseExample");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample1");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample3");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample4");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample5");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
-      this.x = document.getElementById("collapseExample6");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
+
       this.x = document.getElementById("collapseExample7");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExample8");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
-      this.x  = document.getElementById("collapseExampleEcm");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleEcm");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
         this.x.style.display = "block";
       } else {
         this.x.style.display = "none";
       }
     }
-    if(mode == 'S1'){
+    if (mode == 'H') {
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleEcm");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if (mode == 'I') {
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleEcm");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if (mode == 'Ls') {
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleLs");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if (mode == 'Ecm') {
+      this.x = document.getElementById("collapseExample");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample1");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample2");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample3");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample4");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample5");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample6");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample7");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExample8");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleEcm");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if (mode == 'S1') {
       this.x = document.getElementById("collapseExampleS2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
 
-      this.x  = document.getElementById("collapseExampleS1");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
+      this.x = document.getElementById("collapseExampleS1");
+      if (this.x.style.display == "none" || this.x.style.display == "") {
         this.x.style.display = "block";
       } else {
         this.x.style.display = "none";
       }
     }
-    if(mode == 'S2'){
+    if (mode == 'S2') {
       this.x = document.getElementById("collapseExampleS1");
-      if (this.x.style.display == "block" ) {
-        this.x.style.display = "none";
-      }
-      this.x  = document.getElementById("collapseExampleS2");
-      if (this.x.style.display == "none" ||  this.x.style.display == "" ) {
-        this.x.style.display = "block";
-      } else {
-        this.x.style.display = "none";
-      }
-    }
-    if(mode == 'S3'){
-      this.x = document.getElementById("collapseExampleS1");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
       this.x = document.getElementById("collapseExampleS2");
-      if (this.x.style.display == "block" ) {
+      if (this.x.style.display == "none" || this.x.style.display == "") {
+        this.x.style.display = "block";
+      } else {
+        this.x.style.display = "none";
+      }
+    }
+    if (mode == 'S3') {
+      this.x = document.getElementById("collapseExampleS1");
+      if (this.x.style.display == "block") {
+        this.x.style.display = "none";
+      }
+      this.x = document.getElementById("collapseExampleS2");
+      if (this.x.style.display == "block") {
         this.x.style.display = "none";
       }
     }
 
   }
- 
+
 
   saveSelectedShop() {
     localStorage.removeItem('selectedShop');
@@ -1106,26 +1115,61 @@ export class CommonComponent implements OnInit {
 
     if (mode === 'purchaseList') {
       this.router.navigateByUrl('/inventory/purchaseList', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['/inventory/purchaseList', 0]); 
+        this.router.navigate(['/inventory/purchaseList', 0]);
       });
 
     } else if (mode === 'fitterInvoiceList') {
       this.router.navigateByUrl('/po/fitterInvoiceList', { skipLocationChange: true }).then(() => {
         this.router.navigate(['/po/fitterInvoiceList', 0]);
       });
-    }else if (mode === 'billinglist' || mode === 'commissionList') {
+    } else if (mode === 'billinglist' || mode === 'commissionList') {
       const route = mode === 'billinglist' ? '/sale/billinglist' : '/sale/commissionList';
       this.router.navigateByUrl(route, { skipLocationChange: true }).then(() => {
         this.router.navigate([route, 0]);
       });
     }
   }
-  
-  ComingSoon(){
+
+  ComingSoon() {
     alert('This is coming soon...')
   }
 
-  userd(){
+  userd() {
     this.showProfileBox = !this.showProfileBox
+  }
+
+  getTodayOrderCount() {
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // LocalStorage Check
+    const savedData = JSON.parse(localStorage.getItem('todayOrderCount') || '{}');
+
+    if (savedData.date === today) {
+      this.CountE = savedData.count;
+    }
+
+    // API Call (Latest Count ke liye)
+    this.ec.getTodayOrderCount({}).subscribe({
+      next: (res: any) => {
+
+        if (res.success) {
+
+          // Overwrite Count
+          this.CountE = res.count || 0;
+
+          // Update LocalStorage
+          localStorage.setItem('todayOrderCount', JSON.stringify({
+            date: today,
+            count: this.CountE
+          }));
+        }
+
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    });
+
   }
 }
