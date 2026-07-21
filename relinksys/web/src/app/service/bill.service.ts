@@ -664,6 +664,11 @@ export class BillService {
       .pipe(catchError(this.handleError));
   }
 
+ sendotpfordiscount(body:any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/send-otp-for-discount', body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
  runCron(): Observable<any> {
     return this.httpClient.get<any>(this.url + '/runCron', httpOptions)
       .pipe(catchError(this.handleError));

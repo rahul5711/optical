@@ -182,18 +182,7 @@
                                                 </div>
                                                 <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>Sale Rate </mat-label>
-                                                        <input matInput name="SalePrice" type="number" min="0"
-                                                            [(ngModel)]="item.SalePrice" required #SalePricecontrol
-                                                            [autocomplete]="false">
-                                                        <mat-error>
-                                                            Unit Price is required
-                                                        </mat-error>
-                                                    </mat-form-field>
-                                                </div>
-                                                <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
-                                                    <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>offer Rate </mat-label>
+                                                        <mat-label>MRP Rate </mat-label>
                                                         <input matInput name="OfferPrice" type="number" min="0"
                                                             [(ngModel)]="item.OfferPrice" required #OfferPricecontrol
                                                             [autocomplete]="false">
@@ -202,6 +191,19 @@
                                                         </mat-error>
                                                     </mat-form-field>
                                                 </div>
+                                                
+                                                <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Offer Rate </mat-label>
+                                                        <input matInput name="SalePrice" type="number" min="0"
+                                                            [(ngModel)]="item.SalePrice" required #SalePricecontrol
+                                                            [autocomplete]="false">
+                                                        <mat-error>
+                                                            Unit Price is required
+                                                        </mat-error>
+                                                    </mat-form-field>
+                                                </div>
+                                                
                                                 <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Quantity</mat-label>
@@ -351,8 +353,8 @@
                                                                 <th>Description</th>
                                                                 <th>Gender</th>
                                                                 <th>Quantity</th>
-                                                                <th>SalePrice</th>
                                                                 <th>OfferPrice</th>
+                                                                <th>MRP_Price</th>
                                                                 <th>IsOutOfStock</th>
                                                                 <th>IsPublished</th>
 
@@ -806,21 +808,22 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
+              
                 <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
-                        <mat-label>Sale Rate </mat-label>
-                        <input matInput name="SalePrice" type="number" min="0" [(ngModel)]="ecommerceItem.SalePrice"
-                            required #SalePricecontrol [autocomplete]="false">
+                        <mat-label>MRP Rate </mat-label>
+                        <input matInput name="OfferPrice" type="number" min="0" [(ngModel)]="ecommerceItem.OfferPrice"
+                            required #OfferPricecontrol [autocomplete]="false">
                         <mat-error>
                             Unit Price is required
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
+                  <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Offer Rate </mat-label>
-                        <input matInput name="OfferPrice" type="number" min="0" [(ngModel)]="ecommerceItem.OfferPrice"
-                            required #OfferPricecontrol [autocomplete]="false">
+                        <input matInput name="SalePrice" type="number" min="0" [(ngModel)]="ecommerceItem.SalePrice"
+                            required #SalePricecontrol [autocomplete]="false">
                         <mat-error>
                             Unit Price is required
                         </mat-error>

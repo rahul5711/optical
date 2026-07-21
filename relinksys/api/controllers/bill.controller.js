@@ -3266,7 +3266,9 @@ module.exports = {
                     printdata.totalUnits += t.UnitPrice
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Quantity * t.UnitPrice
-                    printdata.totalPirecCut += t.Quantity * t.PriceCut
+                     if(t.PriceCut != 0){
+                        printdata.totalPirecCut += t.Quantity * (t.PriceCut - t.UnitPrice)
+                    }
                     console.log(printdata.totalPirecCut, ' printdata.totalPirecCut', t.PriceCut);
                 })
                 printdata.serviceList.forEach((t) => {

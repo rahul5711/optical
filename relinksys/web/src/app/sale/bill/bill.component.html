@@ -172,7 +172,7 @@
                 </div>
             </div>
 
-            <ng-container *ngIf="this.ManualView == false">
+            <ng-container *ngIf="this.companySetting.ManualView == 'false'">
             <div class="row rowModify pt-2" *ngIf="category !== 'Services'">
                 <div *ngIf="BillItem.Manual === false" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" >
                     <mat-form-field class="example-full-width mb-0 " >
@@ -251,7 +251,7 @@
                 </div> -->
             </div>
             </ng-container>
-           <ng-container *ngIf="this.ManualView == true">
+           <ng-container *ngIf="this.companySetting.ManualView == 'true'">
             <div class="row rowModify pt-2" *ngIf="category !== 'Services'">
                 <div  class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0" >
                     <mat-form-field class="example-full-width mb-0 " >
@@ -332,7 +332,7 @@
             </ng-container>
             <!-- save product spec start -->
             <form #fp="ngForm" >
-                <ng-container *ngIf="this.ManualView == false">
+                <ng-container *ngIf="this.companySetting.ManualView == 'false'">
                 <div class="row rowModify" *ngIf="BillItem.Manual === true && category !== 'Services'">
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
                         *ngFor="let spec of specList ; let i = index;">
@@ -450,7 +450,7 @@
                 </div>
                 </ng-container>
 
-                 <ng-container *ngIf="this.ManualView == true">
+                 <ng-container *ngIf="this.companySetting.ManualView == 'true'">
                 <div class="row rowModify" *ngIf=" category !== 'Services'">
                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0"
                         *ngFor="let spec of specList ; let i = index;">
@@ -1183,8 +1183,10 @@
                         <mat-label class="cus-label">SGST</mat-label>
                         <input class="cust-input" type="number" matInput name="SGST" [(ngModel)]="sgst" disabled>
                     </mat-form-field>
-                </div> -->
-               
+                </div> --> 
+                <ng-container *ngIf="company.ID != 341"> 
+
+                
                 <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-1 col-4 col-sm-1 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">AddDiscount%</mat-label>
@@ -1231,7 +1233,42 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-          
+              </ng-container>
+
+
+              <ng-container *ngIf="company.ID == 341">
+                 <!-- <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-1 col-4 col-sm-1 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount%</mat-label>
+                        <input matInput name="AddlDiscountPercentage"
+                            (change)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
+                            [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
+                            [autocomplete]="false" required  [disabled]="user.DiscountPermission == 'false' || (checkOtp.trim() != '')">
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                  <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount RS</mat-label>
+                        <input matInput name="AddlDiscount" type="number" min="0"
+                            (change)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
+                            #AddlDiscounttcontrol [autocomplete]="false"  required [disabled]="user.DiscountPermission == 'false' || (checkOtp.trim() != '')">
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div> -->
+
+            <div *ngIf="this.id2 != 0 && this.user.DiscountPermission == 'true'" class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
+                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary" 
+                        (click)="openModalAddDis(contentAdd)" [disabled]="BillMaster.AddlDiscount != 0">Add_Dis</button>
+            </div>
+               
+              </ng-container>
+
+
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Grand Amount</mat-label>
@@ -1252,7 +1289,7 @@
                     <button *ngIf="this.id2 == 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
                         (click)="onSubmit(content1)"
                         [disabled]="onSubmitFrom || (!billItemList.length && !serviceLists.length)">Sav<span class="first-letter">e</span></button>
-                    <button *ngIf="this.id2 != 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
+                    <button *ngIf="this.id2 != 0 && !(company.ID == 341 && this.user.DiscountPermission == 'true')" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()"><span class="first-letter">U</span>pdate</button>
                     <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary" *ngIf="user.PaymentView == 'true'"
                         [disabled]="BillMaster.ID === null" (click)="openModal1(content1)"><span class="first-letter">P</span>ayment</button>
@@ -2588,3 +2625,71 @@
               </div>
              </ng-container>
             </ng-template>
+
+
+            
+<!-- Modal -->
+<ng-template #contentAdd role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+      <h2 class="modal-title header pt-2" id="exampleModalLabel">OTP Send</h2>
+      <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form #f="ngForm" autocomplete="off">
+            <div class="row">
+                
+                <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-6">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount%</mat-label>
+                        <input matInput name="AddlDiscountPercentage"
+                            (change)="AddDiscalculate('AddlDiscountPercentage', 'discount')" type="number" min="0"
+                            [(ngModel)]="BillMaster.AddlDiscountPercentage" #AddlDiscountPercentagecontrol
+                            [autocomplete]="false" required  [disabled]="user.DiscountPermission == 'false' ">
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                  <div *ngIf="this.id2 != 0 && this.loginShop?.AdminDiscount == 'true'" class="col-6">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">AddDiscount RS</mat-label>
+                        <input matInput name="AddlDiscount" type="number" min="0"
+                            (change)="AddDiscalculate('AddlDiscount', 'discount')" [(ngModel)]="BillMaster.AddlDiscount"
+                            #AddlDiscounttcontrol [autocomplete]="false"  required [disabled]="user.DiscountPermission == 'false' ">
+                        <mat-error>
+                            Additional Discount is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                  <div class="col-6">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label class="cus-label">Grand Amount</mat-label>
+                        <input class="redclass" style="color: red !important;" matInput name="TotalAmount" type="number"
+                            min="0" [(ngModel)]="BillMaster.TotalAmount" disabled>
+                    </mat-form-field>
+                </div>
+
+            <div *ngIf="this.id2 != 0 && this.user.DiscountPermission == 'true'" class="col-6">
+                    <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary" 
+                        (click)="sendotpfordiscount()" [disabled]="BillMaster.AddlDiscount == 0">OTP</button>
+            </div>
+
+                <div class="col-12">
+                    <mat-form-field class="example-full-width" appearance="outline">
+                        <mat-label>Please Enter OTP
+                        </mat-label>
+                        <input matInput name="secretCode" type="text" [(ngModel)]="OTP" required>
+                    </mat-form-field>
+                </div>
+            </div>
+           
+            <div class="row">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+                     <button  type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
+                        [disabled]="!OTP" (click)="update()"><span class="first-letter">U</span>pdate</button>
+                </div>
+            </div>
+      </form>
+    </div>
+  </ng-template>
