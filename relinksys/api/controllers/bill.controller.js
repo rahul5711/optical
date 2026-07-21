@@ -3267,13 +3267,13 @@ module.exports = {
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Quantity * t.UnitPrice
                     printdata.totalPirecCut += t.Quantity * t.PriceCut
-                     console.log( printdata.totalPirecCut,' printdata.totalPirecCut' , t.PriceCut);
+                    console.log(printdata.totalPirecCut, ' printdata.totalPirecCut', t.PriceCut);
                 })
                 printdata.serviceList.forEach((t) => {
                     printdata.totalUnits += t.Price
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Price
-                     printdata.totalPirecCut += 0
+                    printdata.totalPirecCut += 0
                 })
             }
 
@@ -17309,6 +17309,77 @@ ORDER BY ReportYear,ReportMonthNo`;
         } catch (error) {
             console.error(error);
             next(error);
+        }
+    },
+
+    sendWhatsAppTemplate: async (req, res, next) => {
+        try {
+            const { mobile } = req.body;
+
+            if (!mobile) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Mobile number is required"
+                });
+            }
+
+            // Generate Random 6-Digit OTP
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+            // Generate IST Timestamp
+            const timestamp = new Date().toLocaleString("en-IN", {
+                timeZone: "Asia/Kolkata",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            });
+
+            const payload = [
+                {
+                    templatename: "vallidinvoiceotp",
+                    mobile: mobile,
+                    dvariables: [
+                        otp,              // OTP
+                        "Discount",       // Static Value
+                        "5 minutes",      // OTP Validity
+                        "9838248479",     // Static Value
+                        "9838248479"      // Static Value
+                    ],
+                    dynurltext: otp
+                }
+            ];
+
+            const response = await axios.post(
+                "http://wa.iconicsolution.co.in/wapp/api/v2/send/bytemplate/json",
+                payload,
+                {
+                    headers: {
+                        "x-api-key": "a30ed9c24f5b4529a3082f6d3203a255",
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "WhatsApp OTP sent successfully.",
+                otp,
+                generatedAt: timestamp,
+                data: response.data
+            });
+
+        } catch (error) {
+            console.error("WhatsApp API Error:", error.response?.data || error.message);
+
+            return res.status(500).json({
+                success: false,
+                message: "Failed to send WhatsApp OTP.",
+                error: error.response?.data || error.message
+            });
         }
     }
 

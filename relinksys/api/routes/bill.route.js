@@ -317,6 +317,8 @@ router.post('/getProfitReport', verifyAccessTokenAdmin, dbConnection, Controller
 
 router.post('/getTinyUrl', verifyAccessTokenAdmin, dbConnection, Controller.getTinyUrl)
 
+router.post('/send-otp-for-discount', Controller.sendWhatsAppTemplate)
+
 
 
 
