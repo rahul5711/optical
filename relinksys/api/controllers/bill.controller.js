@@ -17314,7 +17314,7 @@ ORDER BY ReportYear,ReportMonthNo`;
 
     sendWhatsAppTemplate: async (req, res, next) => {
         try {
-            const { mobile } = req.body;
+            const { mobile, support_number } = req.body;
 
             if (!mobile) {
                 return res.status(200).json({
@@ -17346,8 +17346,8 @@ ORDER BY ReportYear,ReportMonthNo`;
                         otp,              // OTP
                         "Discount",       // Static Value
                         "5 minutes",      // OTP Validity
-                        "9838248479",     // Static Value
-                        "9838248479"      // Static Value
+                        support_number || "9838248479",     // Static Value
+                        support_number || "9838248479"      // Static Value
                     ],
                     dynurltext: otp
                 }
