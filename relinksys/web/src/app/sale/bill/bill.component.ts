@@ -82,8 +82,7 @@ export class BillComponent implements OnInit {
 
   myControl = new FormControl('');
   ProductSrchList: any;
-  checkOtp:any=''
-  OTP:any=''
+
   myControl1 = new FormControl('');
   filteredOptions: any;
   whatsimg: any = ''
@@ -198,7 +197,7 @@ export class BillComponent implements OnInit {
   onSubmitFrom = false;
   totakManualcreditAmt :any = 0
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0,
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0
   }
 
   BillItem: any = {
@@ -320,7 +319,8 @@ export class BillComponent implements OnInit {
   shopList: any = []
   shopListSS: any = []
 
- 
+ checkOtp:any =''
+paymentOTP:any = ''
 
   ngOnInit(): void {
     // apply for only hv employee 
@@ -2029,163 +2029,9 @@ let dtm
     }
   }
 
-  calculateBill(fieldName: string = '') {
-
-  // =========================
-  // 1. RESET BILL MASTER
-  // =========================
-  this.BillMaster.SubTotal = 0;
-  this.BillMaster.DiscountAmount = 0;
-  this.BillMaster.GSTAmount = 0;
-  this.BillMaster.TotalAmount = 0;
-
-  // =========================
-  // 2. CALCULATE GROSS TOTAL
-  // =========================
-  this.billItemList.forEach((item: any) => {
-
-    if (item.Status === 0) return;
-
-    item.Quantity = Number(item.Quantity || 0);
-    item.UnitPrice = Number(item.UnitPrice || 0);
-    item.GSTPercentage = Number(item.GSTPercentage || 0);
-
-    item.GrossAmount = Number(
-      (item.Quantity * item.UnitPrice).toFixed(2)
-    );
-
-    this.BillMaster.TotalAmount += item.GrossAmount;
-  });
-
-  this.BillMaster.TotalAmount = Number(
-    this.BillMaster.TotalAmount.toFixed(2)
-  );
-
-  // =========================
-  // 3. ADDITIONAL DISCOUNT VALIDATION
-  // =========================
-
-  this.BillMaster.AddlDiscount = Number(this.BillMaster.AddlDiscount || 0);
-  this.BillMaster.AddlDiscountPercentage = Number(this.BillMaster.AddlDiscountPercentage || 0);
-
-  if (fieldName === 'AddlDiscountPercentage') {
-
-    if (this.BillMaster.AddlDiscountPercentage < 0 ||
-        this.BillMaster.AddlDiscountPercentage > 100) {
-      alert('Additional Discount Percentage should be between 0 and 100');
-      this.BillMaster.AddlDiscountPercentage = 0;
-      this.BillMaster.AddlDiscount = 0;
-      return;
-    }
-
-    this.BillMaster.AddlDiscount = Number(
-      (this.BillMaster.TotalAmount *
-        this.BillMaster.AddlDiscountPercentage / 100).toFixed(2)
-    );
-  }
-
-  if (fieldName === 'AddlDiscount') {
-
-    if (this.BillMaster.AddlDiscount < 0) {
-      alert('Additional Discount cannot be negative');
-      this.BillMaster.AddlDiscount = 0;
-      this.BillMaster.AddlDiscountPercentage = 0;
-      return;
-    }
-
-    if (this.BillMaster.AddlDiscount > this.BillMaster.TotalAmount) {
-      alert('Additional Discount cannot be greater than Bill Total');
-      this.BillMaster.AddlDiscount = 0;
-      this.BillMaster.AddlDiscountPercentage = 0;
-      return;
-    }
-
-    this.BillMaster.AddlDiscountPercentage =
-      this.BillMaster.TotalAmount > 0
-        ? Number((
-            this.BillMaster.AddlDiscount * 100 /
-            this.BillMaster.TotalAmount
-          ).toFixed(2))
-        : 0;
-  }
-
-  // =========================
-  // 4. DISCOUNT RATIO
-  // =========================
-  const discountRatio =
-    this.BillMaster.TotalAmount > 0
-      ? this.BillMaster.AddlDiscount / this.BillMaster.TotalAmount
-      : 0;
-
-  // =========================
-  // 5. APPLY DISCOUNT TO ITEMS
-  // =========================
-  this.BillMaster.SubTotal = 0;
-  this.BillMaster.DiscountAmount = 0;
-  this.BillMaster.GSTAmount = 0;
-  this.BillMaster.TotalAmount = 0;
-
-  this.billItemList.forEach((item: any) => {
-
-    if (item.Status === 0) return;
-
-    const itemDiscount = Number(
-      (item.GrossAmount * discountRatio).toFixed(2)
-    );
-
-    item.DiscountAmount = itemDiscount;
-
-    item.DiscountPercentage = item.GrossAmount > 0
-      ? Number((itemDiscount * 100 / item.GrossAmount).toFixed(2))
-      : 0;
-
-    const taxableAmount = Number(
-      (item.GrossAmount - itemDiscount).toFixed(2)
-    );
-
-    item.GSTAmount = Number(
-      (taxableAmount -
-        taxableAmount / (1 + item.GSTPercentage / 100)).toFixed(2)
-    );
-
-    item.SubTotal = Number(
-      (taxableAmount - item.GSTAmount).toFixed(2)
-    );
-
-    item.TotalAmount = taxableAmount;
-
-    // Bill Totals
-    this.BillMaster.SubTotal += item.SubTotal;
-    this.BillMaster.DiscountAmount += item.DiscountAmount;
-    this.BillMaster.GSTAmount += item.GSTAmount;
-    this.BillMaster.TotalAmount += item.TotalAmount;
-  });
-
-  // =========================
-  // 6. ROUND BILL TOTALS
-  // =========================
-  this.BillMaster.SubTotal = Number(this.BillMaster.SubTotal.toFixed(2));
-  this.BillMaster.DiscountAmount = Number(this.BillMaster.DiscountAmount.toFixed(2));
-  this.BillMaster.GSTAmount = Number(this.BillMaster.GSTAmount.toFixed(2));
-  this.BillMaster.TotalAmount = Number(this.BillMaster.TotalAmount.toFixed(2));
-
-  // =========================
-  // 7. DUE AMOUNT
-  // =========================
-  const paidAmount = Number(this.BillMaster.PaidAmount || 0);
-
-  this.BillMaster.DueAmount = Number(
-    (this.BillMaster.TotalAmount - paidAmount).toFixed(2)
-  );
-
-  if (this.BillMaster.DueAmount < 0) {
-    this.BillMaster.DueAmount = 0;
-  }
-}
-
   AddDiscalculate(fieldName: any, mode: any) {
     // anil sir cal
-  this.calculateBill(fieldName)
+
     // if (this.BillMaster.OriginalTotalAmount === undefined || this.BillMaster.OriginalTotalAmount === null) {
     //   this.BillMaster.OriginalTotalAmount = +this.BillMaster.TotalAmount;
     // }
@@ -2261,38 +2107,38 @@ let dtm
 
     // this.BillMaster.DueAmount = + this.BillMaster.OriginalDueAmount - this.BillMaster.AddlDiscount
 
-    // // work now 
-    // let PaidAmount = 0
+    // work now 
+    let PaidAmount = 0
 
-    // if (this.id2 == 0) {
-    //   this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
-    // }
-    // else {
-    //   if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
-    //     PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-    //     this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
-    //     this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
-    //   }
-    //   else if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount) {
-    //     PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-    //     this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
-    //     this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
-    //   }
-    //   else {
-    //     this.BillMaster.AddlDiscount = 0
-    //     this.BillMaster.AddlDiscountPercentage = 0
-    //     PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
-    //     this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
-    //     this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
-    //     Swal.fire({
-    //       icon: 'warning',
-    //       title: 'You cannot give an additional discount greater than the due amount (0).',
-    //       text: '',
-    //       footer: '',
-    //       backdrop: false,
-    //     });
-    //   }
-    // }
+    if (this.id2 == 0) {
+      this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+    }
+    else {
+      if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscountPercentage) {
+        PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+        this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
+      }
+      else if (this.BillMaster.DueAmount >= this.BillMaster.AddlDiscount) {
+        PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+        this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
+      }
+      else {
+        this.BillMaster.AddlDiscount = 0
+        this.BillMaster.AddlDiscountPercentage = 0
+        PaidAmount = this.BillMaster.TotalAmount - this.BillMaster.DueAmount
+        this.billCalculation.AddDiscalculate(fieldName, mode, this.BillMaster)
+        this.BillMaster.DueAmount = + this.BillMaster.TotalAmount - PaidAmount
+        Swal.fire({
+          icon: 'warning',
+          title: 'You cannot give an additional discount greater than the due amount (0).',
+          text: '',
+          footer: '',
+          backdrop: false,
+        });
+      }
+    }
 
 
   }
@@ -2769,15 +2615,7 @@ let dtm
 
 
   update() {
-    if (this.company.ID === 341 && this.checkOtp != this.OTP) {
-          Swal.fire({
-            position: 'center',
-            icon: 'warning',
-            title: 'The OTP you entered is incorrect. Please try again.',
-            showConfirmButton: true,
-          })
-        return;
-    }
+
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;
     this.BillMaster.BillDate = this.BillMaster.BillDate + ' ' + this.currentTime;
@@ -2800,9 +2638,6 @@ let dtm
     const subs: Subscription = this.bill.updateBill(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
-          if(this.company.ID == 341){
-            this.modalService.dismissAll()
-          }
           this.BillMaster = []
           this.billItemList = []
           this.serviceLists = []
@@ -5282,13 +5117,12 @@ applyInsuranceQuotationAfterUpdate() {
   })
 }
 
- 
- openModalAddDis(content: any) {
-    this.modalService.open(content, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+  openModalpay(contentpay: any) {
+    this.modalService.open(contentpay, { centered: true , backdrop : 'static', keyboard: false,size: 'sm'});
+    this.sendotpfordiscount()
   }
 
-
-  sendotpfordiscount(){
+sendotpfordiscount(){
     const Mobile = this.customer?.MobileNo1?.toString().trim();
   if (!/^\d{10}$/.test(Mobile)) {
     this.as.errorToast('Please enter a valid 10-digit mobile number');
@@ -5305,6 +5139,7 @@ applyInsuranceQuotationAfterUpdate() {
        if (res.success) {
         this.as.successToast(res.message)
         this.checkOtp = res.otp
+        
       }else{
         this.as.errorToast(res.message);
       }
@@ -5317,4 +5152,24 @@ applyInsuranceQuotationAfterUpdate() {
     complete: () => subs.unsubscribe(),
   });
   }
+
+checkPayOTP(content1: TemplateRef<any>){
+  if (this.checkOtp != this.paymentOTP) {
+
+    Swal.fire({
+      icon: 'warning',
+      title: 'Please enter the valid OTP.',
+      showConfirmButton: true
+    });
+
+    return;
+  }
+
+  // Current modal close
+  this.modalService.dismissAll();
+
+  // Second modal open
+  this.openModal1(content1);
+}
+ 
 }
