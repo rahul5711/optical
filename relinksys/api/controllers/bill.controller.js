@@ -3266,7 +3266,7 @@ module.exports = {
                     printdata.totalUnits += t.UnitPrice
                     printdata.totalDiscounts += t.DiscountAmount
                     printdata.totalRate += t.Quantity * t.UnitPrice
-                     if(t.PriceCut != 0){
+                    if (t.PriceCut != 0) {
                         printdata.totalPirecCut += t.Quantity * (t.PriceCut - t.UnitPrice)
                     }
                     console.log(printdata.totalPirecCut, ' printdata.totalPirecCut', t.PriceCut);
@@ -17314,7 +17314,7 @@ ORDER BY ReportYear,ReportMonthNo`;
         }
     },
 
-    sendWhatsAppTemplate: async (req, res, next) => {
+    sendWhatsAppTemplateOld: async (req, res, next) => {
         try {
             const { mobile, support_number } = req.body;
 
@@ -17380,6 +17380,117 @@ ORDER BY ReportYear,ReportMonthNo`;
             return res.status(500).json({
                 success: false,
                 message: "Failed to send WhatsApp OTP.",
+                error: error.response?.data || error.message
+            });
+        }
+    },
+
+    sendWhatsAppTemplate: async (req, res) => {
+        try {
+            let {
+                mobile,
+                support_number,
+                customer_name,
+                discount_amount,
+                payable_amount
+            } = req.body;
+
+            // ==========================
+            // Validate Mobile Number
+            // ==========================
+            if (!mobile) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Mobile number is required."
+                });
+            }
+
+            // Remove spaces, +, -, etc.
+            const formattedMobile = mobile.toString().replace(/\D/g, "");
+
+            // Validate Indian Mobile Number
+            if (!/^(91)?[6-9]\d{9}$/.test(formattedMobile)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid mobile number."
+                });
+            }
+
+            // Always send in +91XXXXXXXXXX format
+            const whatsappMobile = formattedMobile.startsWith("91") ? `+${formattedMobile}` : `+91${formattedMobile}`;
+
+            // ==========================
+            // Generate Random OTP
+            // ==========================
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+            // ==========================
+            // Generate IST Timestamp
+            // ==========================
+            const timestamp = new Date().toLocaleString("en-IN", {
+                timeZone: "Asia/Kolkata",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            });
+
+            // ==========================
+            // WhatsApp Payload
+            // ==========================
+            const payload = [
+                {
+                    templatename: "invoice_1",
+                    mobile: whatsappMobile,
+                    dvariables: [
+                        `${customer_name || "Customer"} Use code ${otp}`,
+                        ` Rs ${discount_amount || 0}`,
+                        ` Rs ${payable_amount || 0}`,
+                        ` ${support_number}`
+                    ]
+                }
+            ];
+
+            console.log("========== WhatsApp Payload ==========");
+            console.log(JSON.stringify(payload, null, 2));
+
+            // ==========================
+            // Send WhatsApp Template
+            // ==========================
+            const response = await axios.post(
+                "http://wa.iconicsolution.co.in/wapp/api/v2/send/bytemplate/json",
+                payload,
+                {
+                    timeout: 30000,
+                    headers: {
+                        "x-api-key": "a30ed9c24f5b4529a3082f6d3203a255",
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            console.log("========== WhatsApp Response ==========");
+            console.log(response.data);
+
+            return res.status(200).json({
+                mobile: whatsappMobile,
+                success: true,
+                message: "WhatsApp OTP sent successfully.",
+                otp,
+                generatedAt: timestamp,
+                data: response.data
+            });
+
+        } catch (error) {
+            console.error("========== WhatsApp API Error ==========");
+            console.error(error.response?.data || error.message);
+
+            return res.status(error.response?.status || 500).json({
+                success: false,
+                message: "Failed to send WhatsApp template.",
                 error: error.response?.data || error.message
             });
         }
