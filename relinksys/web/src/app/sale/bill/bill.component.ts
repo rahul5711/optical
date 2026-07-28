@@ -5131,7 +5131,10 @@ sendotpfordiscount(){
 
   const dtm = { 
     mobile : Mobile, 
-    support_number : this.loginShop.MobileNo1
+    support_number : this.company.MobileNo1,
+    customer_name : this.customer.Name,
+    discount_amount : this.BillMaster.DiscountAmount,
+    payable_amount : this.BillMaster.TotalAmount,
   };
 
   const subs: Subscription = this.bill.sendotpfordiscount(dtm).subscribe({
@@ -5168,8 +5171,8 @@ checkPayOTP(content1: TemplateRef<any>){
   // Current modal close
   this.modalService.dismissAll();
 
-  // Second modal open
-  this.openModal1(content1);
+  // // Second modal open
+  // this.openModal1(content1);
 }
  
 }

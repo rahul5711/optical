@@ -80,7 +80,7 @@ export class ProductComponent implements OnInit {
   uploadPhoto: any
   item: any = {
     ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: [], FittingBoxID:''
   };
 
   data: any = { PurchaseMaster: null, PurchaseDetail: null };
@@ -120,7 +120,7 @@ export class ProductComponent implements OnInit {
 
   ecommerceItem: any = {
     ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: [], FittingBoxID:''
   };
   imge: any
   uploadPhotoe: any
@@ -718,7 +718,7 @@ export class ProductComponent implements OnInit {
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: [], FittingBoxID:''
           }
           this.selectedProduct = ''
           this.specList = []
@@ -755,7 +755,7 @@ export class ProductComponent implements OnInit {
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: [], FittingBoxID:''
           }
           this.selectedProduct = ''
           this.specList = []
@@ -791,7 +791,7 @@ export class ProductComponent implements OnInit {
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: [], FittingBoxID:''
           }
           this.selectedProduct = ''
           this.specList = []
@@ -1354,7 +1354,7 @@ export class ProductComponent implements OnInit {
           this.editBtn = false
           this.item = {
             ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: []
+            IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages: [], FittingBoxID:''
           }
           this.selectedProduct = ''
           this.specList = []

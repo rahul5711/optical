@@ -1257,8 +1257,12 @@
                         [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()"><span class="first-letter">U</span>pdate</button>
 
                      <ng-container *ngIf="company.ID == 504"> 
+                        
                         <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary" *ngIf="user.PaymentView == 'true'"
-                        [disabled]="BillMaster.ID === null" (click)="openModalpay(contentPay)"><span class="first-letter">P</span>ayment</button>
+                        [disabled]="BillMaster.ID === null" (click)="openModalpay(contentPay)">OTP</button>
+
+                        <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary" *ngIf="user.PaymentView == 'true'"
+                        [disabled]="BillMaster.ID === null" (click)="openModal1(content1)"><span class="first-letter">P</span>ayment</button>
                      </ng-container>
 
                      <ng-container *ngIf="company.ID != 504"> 
@@ -1276,17 +1280,17 @@
                     <button *ngIf="companySetting.FitterOrderModule == 'true' " type="button" class="  me-md-3 me-0" mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null" (click)="openModal13(content13)">Fitter Order</button> -->
 
-                        <button type="button"  mat-raised-button color="primary"
+                        <button *ngIf="company.ID != 504 || (company.ID == 504 && user.PaymentView == 'true')"  type="button"  mat-raised-button color="primary"
                         [disabled]="BillMaster.ID === null || this.fortyPercentDisabledB == true" (click)="billPrint('Invoice')" > <span class="first-letter">R</span>eceipt</button>
                         <!-- <button type="button" (click)="billPrints('Invoice')" class="small_big_Btn"> S</button>
                         <button type="button" (click)="billPrintB('Invoice')" class="small_big_Btn "> B</button> -->
 
-                    <button type="button" class=" me-md-0 me-0 ms-md-3 ms-0"  mat-raised-button color="primary"
+                    <button *ngIf="company.ID != 504 || (company.ID == 504 && user.PaymentView == 'true')" type="button" class=" me-md-0 me-0 ms-md-3 ms-0"  mat-raised-button color="primary"
                     [disabled]="BillMaster.ID === null || this.fortyPercentDisabledB == true" (click)="billPrint('Receipt')"> <span class="first-letter">I</span>nvoice</button>
                         <!-- <button type="button" (click)="billPrints('Receipt')" class="small_big_Btn"> S</button>
                         <button type="button" (click)="billPrintB('Receipt')" class="small_big_Btn "> B</button> -->
 
-                    <button type="button" mat-raised-button color="primary" class="ms-md-3">
+                    <button *ngIf="company.ID != 504 || (company.ID == 504 && user.PaymentView == 'true')" type="button" mat-raised-button color="primary" class="ms-md-3">
                         <mat-slide-toggle name="ShowPower" color="primary" [(ngModel)]="ShowPower"
                             class="example-margin" #ShowPowercontrol>Show Power</mat-slide-toggle>
                     </button>

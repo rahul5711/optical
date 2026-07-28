@@ -139,7 +139,7 @@ export class PurchaseComponent implements OnInit {
 
    ecommerceItem: any = {
     ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],LiveImages:[]
+    IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [],LiveImages:[],FittingBoxID:''
   };
     img: any
   uploadPhoto: any
@@ -1590,7 +1590,7 @@ this.ecommerceItem.ProductNameArray = JSON.stringify(this.ecommerceItem.ProductN
             this.editBtn = false
             this.item = {
               ID: null, CompanyID: null, ProductName: '', ProductTypeName: '', ProductTypeID: null, Description: '', Gender: '', SalePrice: 0.00, Quantity: 1, OfferPrice: 0.00, Status: 1,
-              IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[]
+              IsPublished: 0, IsOutOfStock: 0, PublishCode: '', Images: [], LiveImages:[], FittingBoxID:''
             }
             this.selectedProduct = ''
             this.specList = []

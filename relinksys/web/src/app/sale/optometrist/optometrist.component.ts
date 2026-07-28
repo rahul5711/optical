@@ -59,7 +59,7 @@ export class OptometristComponent implements OnInit {
   masterObject: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     Comprehensive: {
-      Reasonforvisit: '', Occupation: '', Nearworkinghours: '', BreakFrequencyduringnearwork: '',
+     ExaminationDate:'',  Reasonforvisit: '', Occupation: '', Nearworkinghours: '', BreakFrequencyduringnearwork: '',
       coList: [],
       ocularHistoryList: [],
       systemicHistoryList: [],

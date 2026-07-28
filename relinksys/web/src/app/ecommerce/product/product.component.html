@@ -180,6 +180,16 @@
                                                         </mat-error>
                                                     </mat-form-field>
                                                 </div>
+                                                  <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Sku ID/ EAN </mat-label>
+                        <input matInput name="FittingBoxID" type="text"  [(ngModel)]="item.FittingBoxID"
+                             #FittingBoxIDcontrol [autocomplete]="false">
+                        <mat-error>
+                            Unit Price is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
                                                 <div class="col-xl-12 col-lg-2 col-md-4 col-6 mb-0">
                                                     <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>MRP Rate </mat-label>
@@ -809,6 +819,16 @@
                     </mat-form-field>
                 </div>
               
+                <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Sku ID/ EAN </mat-label>
+                        <input matInput name="FittingBoxID" type="text"  [(ngModel)]="ecommerceItem.FittingBoxID"
+                             #FittingBoxIDcontrol [autocomplete]="false">
+                        <mat-error>
+                            Unit Price is required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
                 <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>MRP Rate </mat-label>
