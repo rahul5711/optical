@@ -537,7 +537,8 @@ module.exports = {
                 Description,
                 Gender,
                 ProductNameArray,
-                ProductStatus
+                ProductStatus,
+                FittingBoxID
             } = req.body;
 
             const finalProductStatus =
@@ -616,10 +617,10 @@ module.exports = {
                     Status, IsPublished, IsOutOfStock,
                     PublishCode, Images, LiveImages, Description,
                     Gender, CreatedBy,
-                    ProductNameArray, ProductStatus,
+                    ProductNameArray, ProductStatus,FittingBoxID,
                     CreatedOn
                 )
-                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
+                VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW())
             `;
 
                 const [result] = await connection.query(insertQuery, [
@@ -641,7 +642,8 @@ module.exports = {
                     Gender,
                     LoggedOnUser,
                     finalProductNameArray,
-                    finalProductStatus
+                    finalProductStatus,
+                    FittingBoxID
                 ]);
 
                 response.message = "Product saved successfully";
@@ -670,6 +672,7 @@ module.exports = {
                     UpdatedBy = ?,
                     ProductNameArray = ?,
                     ProductStatus = ?,
+                    FittingBoxID = ?,
                     UpdatedOn = NOW()
                 WHERE ID = ? AND CompanyID = ? AND ShopID = ?`,
                     [
@@ -689,6 +692,7 @@ module.exports = {
                         LoggedOnUser,
                         finalProductNameArray,
                         finalProductStatus,
+                        FittingBoxID,
                         ID,
                         CompanyID,
                         ShopID
@@ -938,6 +942,7 @@ module.exports = {
                 ecom_product.Description,
                 ecom_product.ProductNameArray,
                 ecom_product.ProductStatus,
+                ecom_product.FittingBoxID,
                 ecom_product.Gender,
                 ecom_product.CreatedBy,
                 ecom_product.CreatedOn,
@@ -1084,6 +1089,8 @@ module.exports = {
                 LiveImages,
                 Description,
                 ProductNameArray,
+                ProductStatus,
+                FittingBoxID,
                 Gender,
                 CreatedBy,
                 CreatedOn,
@@ -1193,6 +1200,8 @@ module.exports = {
                 LiveImages,
                 Description,
                 ProductNameArray,
+                ProductStatus,
+                FittingBoxID,
                 Gender,
                 CreatedBy,
                 CreatedOn,
@@ -1464,6 +1473,8 @@ module.exports = {
                 LiveImages,
                 Description,
                 ProductNameArray,
+                ProductStatus,
+                FittingBoxID,
                 Gender,
                 CreatedBy,
                 CreatedOn,
@@ -1623,6 +1634,8 @@ module.exports = {
                 LiveImages,
                 Description,
                 ProductNameArray,
+                ProductStatus,
+                FittingBoxID,
                 Gender,
                 CreatedBy,
                 CreatedOn,
