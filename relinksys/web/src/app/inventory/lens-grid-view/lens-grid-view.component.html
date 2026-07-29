@@ -1030,7 +1030,8 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Purchase Price</mat-label>
                         <input matInput name="purchasePrice" [(ngModel)]="lens.purchasePrice" #purchasePricecontrol
-                            [autocomplete]="false">
+                            [autocomplete]="false"
+                            (focus)="lens.purchasePrice == 0 ? lens.purchasePrice = '' : 0">
                         <mat-error>
                             Total Amount is required
                         </mat-error>
@@ -1080,7 +1081,8 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Retail Price</mat-label>
                         <input matInput name="retailPrice" [(ngModel)]="lens.retailPrice" #retailPricecontrol
-                            [autocomplete]="false">
+                            [autocomplete]="false"
+                            (focus)="lens.retailPrice == 0 ? lens.retailPrice = '' : 0">
                         <mat-error>
                             Total Amount is required
                         </mat-error>
@@ -1090,8 +1092,10 @@
                     *ngIf="shop[0].WholesaleBill === 'true' ||   this.item.WholeSale == true">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Wholesale Price</mat-label>
-                        <input matInput name="retailPrice" [(ngModel)]="lens.wholesalePrice" #retailPricecontrol
-                            [autocomplete]="false">
+                        <input matInput name="wholesalePrice" [(ngModel)]="lens.wholesalePrice" #retailPricecontrol
+                            [autocomplete]="false"
+                            (focus)="lens.wholesalePrice == 0 ? lens.wholesalePrice = '' : 0"
+                            >
                         <mat-error>
                             Total Amount is required
                         </mat-error>
@@ -1102,7 +1106,9 @@
                                         <mat-label>Price Cut</mat-label>
                                         <input matInput name="PriceCut" min="0" type="number"
                                             [(ngModel)]="lens.PriceCut" required #PriceCutcontrol
-                                            [autocomplete]="false">
+                                            [autocomplete]="false"
+                                            (focus)="lens.PriceCut == 0 ? lens.PriceCut = '' : 0"
+                                            >
                                         <mat-error>
                                             Price Rate is required
                                         </mat-error>

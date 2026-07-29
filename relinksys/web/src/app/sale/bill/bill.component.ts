@@ -5171,8 +5171,8 @@ checkPayOTP(content1: TemplateRef<any>){
   // Current modal close
   this.modalService.dismissAll();
 
-  // // Second modal open
-  // this.openModal1(content1);
+  // Second modal open
+  this.openModal1(content1);
 }
  
 }

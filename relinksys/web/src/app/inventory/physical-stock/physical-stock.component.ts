@@ -78,8 +78,9 @@ export class PhysicalStockComponent implements OnInit {
       this.Physicaldatas = [];
     }
     this.dataList = this.Physicaldatas.dataList
-    this.totalAvailableQty = this.Physicaldatas.totalAvailableQty
-    this.totalPhysicalQty = this.Physicaldatas.totalPhysicalQty
+    this.totalAvailableQty = this.Physicaldatas.totalAvailableQty || 0
+    this.totalPhysicalQty = this.Physicaldatas.totalPhysicalQty || 0
+    this.totalQtyDiff = (this.totalAvailableQty - this.totalPhysicalQty) || 0
     this.searchButton = this.Physicaldatas.searchButton
     this.dropdownShoplist()
     // this.getProductList()
@@ -248,7 +249,7 @@ export class PhysicalStockComponent implements OnInit {
     }
 
     if (this.data.ProductName !== '') {
-      Parem = Parem + ' and purchasedetailnew.ProductName Like ' + " '%" + this.data.ProductName.trim() + "%' ";
+     Parem = Parem + " AND purchasedetailnew.ProductName LIKE '" + this.data.ProductName.trim() + "%' ";
     }
 
     const subs: Subscription = this.purchaseService.getPhysicalStockProductList(Parem, this.ProductSearch).subscribe({
@@ -477,14 +478,16 @@ barcodeScan() {
         item.Scan = false 
       }
       this.totalPhysicalQty += item.PhysicalAvailable;
-      this.totalQtyDiff += item.QtyDiff;
+      // this.totalQtyDiff += item.QtyDiff;
     });
+
+      this.totalQtyDiff = (this.totalAvailableQty - this.totalPhysicalQty)
 
     const storageData = {
       dataList: this.dataList,
       totalAvailableQty: this.totalAvailableQty,
       totalPhysicalQty: this.totalPhysicalQty,
-      totalQtyDiff: this.totalQtyDiff,
+      totalQtyDiff: (this.totalAvailableQty - this.totalPhysicalQty),
       searchButton: this.searchButton
 
     };

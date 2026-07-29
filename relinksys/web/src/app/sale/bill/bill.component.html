@@ -225,6 +225,23 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
+
+                <div *ngIf="BillItem.PreOrder == true"
+                        class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                            <mat-label>Option</mat-label>
+                            <mat-select name="Option" [(ngModel)]="BillItem.Option"
+                                (selectionChange)="calculations('Quantity', 'subTotal')" required>
+                                <mat-option value="Full Glass">Full Lens</mat-option>
+                                <mat-option value="Half Glass Left">Half Lens Left</mat-option>
+                                <mat-option value="Half Glass Right">Half Lens Right</mat-option>
+                                <mat-option value="NA">NA</mat-option>
+                            </mat-select>
+                            <mat-error>
+                                Select Option Type
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
                 <!-- <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 pt-3">
                     <mat-slide-toggle name="ShopMode" [(ngModel)]="ShopMode" color="primary"
                         [ngModelOptions]="{standalone: true}" #ShopModecontrol class="example-margin"
@@ -419,7 +436,7 @@
                             <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
                         </mat-form-field>
                     </div>
-                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'"
+                    <!-- <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'"
                         class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                             <mat-label>Family Name</mat-label>
@@ -430,8 +447,8 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                    </div>
-                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS'"
+                    </div> -->
+                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' "
                         class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                             <mat-label>Option</mat-label>
@@ -537,7 +554,7 @@
                             <input matInput type="date" name="ProductExpDate" [(ngModel)]="BillItem.ProductExpDate">
                         </mat-form-field>
                     </div>
-                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'"
+                    <!-- <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' || selectedProduct?.toUpperCase() === 'CONTACT LENS'"
                         class="col-xl-1 col-lg-1 col-md-3 col-sm-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                             <mat-label>Family Name</mat-label>
@@ -548,8 +565,8 @@
                                 </mat-option>
                             </mat-select>
                         </mat-form-field>
-                    </div>
-                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS'"
+                    </div> -->
+                    <div *ngIf="selectedProduct?.toUpperCase() === 'LENS' "
                         class="col-xl-2 col-lg-2 col-md-3 col-sm-12 mb-0">
                         <mat-form-field class="example-full-width mb-0">
                             <mat-label>Option</mat-label>
@@ -1257,12 +1274,8 @@
                         [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()"><span class="first-letter">U</span>pdate</button>
 
                      <ng-container *ngIf="company.ID == 504"> 
-                        
                         <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary" *ngIf="user.PaymentView == 'true'"
-                        [disabled]="BillMaster.ID === null" (click)="openModalpay(contentPay)">OTP</button>
-
-                        <button type="button" class="  me-md-3 me-0" mat-raised-button color="primary" *ngIf="user.PaymentView == 'true'"
-                        [disabled]="BillMaster.ID === null" (click)="openModal1(content1)"><span class="first-letter">P</span>ayment</button>
+                        [disabled]="BillMaster.ID === null" (click)="openModalpay(contentPay)"><span class="first-letter">P</span>ayment</button>
                      </ng-container>
 
                      <ng-container *ngIf="company.ID != 504"> 
