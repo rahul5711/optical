@@ -6,7 +6,7 @@ const connected = chalk.bold.cyan;
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 var moment = require("moment");
-const { generateShopSequence } = require('../helpers/helper_function')
+const { generateShopSequence, shopID } = require('../helpers/helper_function')
 
 module.exports = {
 
@@ -350,6 +350,11 @@ module.exports = {
                 } else {
                     Shop[0].ProductGST = true
                 }
+                if (Shop[0].isWhatsappPaidService === 'false') {
+                    Shop[0].isWhatsappPaidService = false
+                } else {
+                    Shop[0].isWhatsappPaidService = true
+                }
             }
 
             response.message = "data fetch sucessfully"
@@ -593,6 +598,49 @@ module.exports = {
                 connection.destroy();
             }
         }
-    }
+    },
 
+    // update whatsapp config
+
+    updateWhatsappConfig: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (shopid == 0 || shopid === "0") {
+                return res.status(200).json({ success: false, message: "Please select shop" });
+            }
+            if (_.isEmpty(Body)) return res.send({ message: "Invalid Query Data" })
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+
+
+
+            const { isWhatsappPaidService, ApiKey, WhatsappArray } = Body;
+
+            let qry = `update shop set isWhatsappPaidService = '${isWhatsappPaidService}', ApiKey = '${ApiKey}', WhatsappArray = '${JSON.stringify(WhatsappArray)}' where CompanyID = ${CompanyID} and ID = ${shopid}`
+
+
+            let [data] = await connection.query(qry);
+
+            response.message = "data update sucessfully"
+            response.data = data
+            response.count = data.length
+            return res.send(response);
+
+        } catch (err) {
+            next(err)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    }
 }

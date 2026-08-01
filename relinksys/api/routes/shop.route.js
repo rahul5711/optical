@@ -58,5 +58,11 @@ router.post('/send-message', Controller2.sendMessage);
 router.post('/send-pdf', Controller2.sendPDF);
 
 
+// update whatsapp config
+
+router.post('/updateWhatsappConfig', verifyAccessTokenAdmin, dbConnection, Controller.updateWhatsappConfig)
+
+
+
 
 module.exports = router
