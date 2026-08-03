@@ -259,14 +259,14 @@ export class ReminderReportComponent implements OnInit {
     let msg = '';
     let Cusmob = '';
 
-    if (mode === 'Fbill') {
+
       Cusmob = data.BillCustomerMobile
       msg = `*Hi ${data.CustomerName},*%0A` +
         `Your reward points balance is Rs. ${data.Amount} Expiring soon. Please redeem as soon as possible. Thankyou%0A` +
         `*${shop[0].Name}* - ${shop[0].AreaName}%0A` +
         `${shop[0].MobileNo1}%0A` +
         `${shop[0].Website}%0A`
-    }
+
 
     if (data.MobileNo1 != '') {
       var mob = this.company.Code + Cusmob;
@@ -283,11 +283,99 @@ export class ReminderReportComponent implements OnInit {
     }
   }
 
-  getWhatsAppMessage(temp: any, messageName: any) {
-    if (temp && temp !== 'null') {
-      const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
-      return foundElement ? foundElement.MessageText1 : '';
+    // WhatsappSetting in CompnaySetting foundElement(MessageName1) Check then respones messageName
+    getWhatsAppMessage(temp: any, messageName: any) {
+      if (temp && temp !== 'null') {
+        const foundElement = temp.find((element: { MessageName1: any; }) => element.MessageName1 === messageName);
+        return foundElement ? foundElement.MessageText1 : '';
+      }
+      return '';
     }
-    return '';
-  }
+  
+    // Whatsapp All Message Send 
+    WhatsappSend(data: any, ) {
+      let mode = this.data.Type
+      let temp = JSON.parse(this.companySetting.WhatsappSetting);
+      let WhatsappMsg = '';
+        let shoplist = this.shopList;
+    let shop = shoplist.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    let msg = '';
+    let Cusmob = '';
+  
+      // Customer_Birthday Condition`s  
+      if (mode === 'Birthday' ) {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Birthday');
+      }
+  
+      // Customer_Anniversary Condition`s 
+      if (mode === 'Anniversary') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Anniversary');
+      }
+  
+      // Customer_Order Pending Condition 
+      if (mode === 'OrderPending') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
+      }
+  
+      // Customer_Eye Testing Condition 
+      if (mode === 'EyeTesting') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Eye Testing');
+      }
+  
+      // Solution Expiry Condition 
+      if (mode === 'SolutionExpiry' ) {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Solution Expiry');
+      }
+  
+      // Contactlens Expiry Condition 
+      if (mode === 'ContactLensExpiry') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Contactlens Expiry');
+      }
+  
+      // Customer_Comfort Feedback Condition 
+      if (mode === 'ComfortFeedback') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Comfort Feedback');
+      }
+  
+      // Customer_Service Condition 
+      if (mode === 'ServiceMsg') {
+        WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service');
+      }
+  
+      let p = ''
+      if (mode === 'ServiceMsg' || mode === 'ComfortFeedback' || mode === 'OrderPending') {
+        p = '*Please give your valuable Review for us !*'
+      } else {
+        p = ''
+      }
+  
+ 
+      Cusmob = data.BillCustomerMobile
+      msg = `*Hi  ${data.CustomerName},*%0A` +
+        `${WhatsappMsg}%0A%0A` +
+        `*${shop[0].Name}* - ${shop[0].AreaName}%0A` +
+        `${shop[0].MobileNo1}%0A` +
+        `${shop[0].Website}%0A` +
+        `${p}` 
+          
+
+    if (Cusmob != '') {
+      var mob = this.company.Code + Cusmob;
+      // var url = `https://wa.me/${mob}?text=${msg}`;
+      var url = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
+      window.open(url, "_blank");
+    } else {
+      Swal.fire({
+        position: 'center',
+        icon: 'warning',
+        title: '<b>' + data.CustomerName + '</b>' + ' Mobile number is not available.',
+        showConfirmButton: true,
+      })
+    }
+
+     
+  
+    }
+
+
 }

@@ -123,7 +123,7 @@
                                         <tbody class="text-center">
                                             <tr *ngFor="let data of dataList; let i = index" text="left">
                                                 <td>{{ i + 1 }} 
-                                                    <button *ngIf="data.BillCustomerMobile !== '' && this.company.WhatsappMsg == 'true'"  class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3">
+                                                    <button *ngIf="data.BillCustomerMobile !== '' && this.company.WhatsappMsg == 'true'"  class="bg_none whatsappfBill ms-lg-2 me-lg-1 ms-3 me-3" (click)="WhatsappSend(data)">
                                                        <i  class="fa-brands fa-whatsapp "></i>
                                                    </button>
                                                 </td>
