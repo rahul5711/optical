@@ -7,6 +7,7 @@ const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 var moment = require("moment");
 const { generateShopSequence, shopID } = require('../helpers/helper_function')
+const axios = require("axios");
 
 module.exports = {
 
@@ -641,6 +642,344 @@ module.exports = {
                 connection.release(); // Always release the connection
                 connection.destroy();
             }
+        }
+    },
+    sendWhatsappTemplate: async (req, res, next) => {
+
+        try {
+
+            const Templates = [
+                {
+                    TemplateName: "Customer_Birthday",
+                    TemplateValue: "customer_birthday_new_1",
+                    Url: "",
+                    MessageText:
+                        "Hi ${CustomerName},Wish You Happy Birthday! Get Special Discount Today. ${ShopName} ${ShopNumber} Thank you for being a valued customer."
+                },
+                {
+                    TemplateName: "Customer_Anniversary",
+                    TemplateValue: "customer_anniversary_new",
+                    Url: "",
+                    MessageText:
+                        "Hi ${CustomerName},Happy Anniversary. May you love bird stay happy and blessed always. ${ShopName} ${ShopNumber} Thank you for being a valued customer."
+                },
+                {
+                    TemplateName: "Customer_Bill_Advance",
+                    TemplateValue: "invoice",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, Your invoice details are as follows: Invoice No.: ${InvoiceNo}, Total Bill Amount: ${BillAmount}, Total Paid Amount: ${PaidAmount}, Total Balance Amount: ${Balance}, Bill Date: ${BillDate}, Delivery Date: ${DeliveryDate}, ${ShopName} ${ShopNumber}. This is an automated invoice notification."
+                },
+                {
+                    TemplateName: "Customer_Bill_FinalDelivery",
+                    TemplateValue: "bill",
+                    Url: "document",
+                    MessageText:
+                        "Hi ${CustomerName}, Your purchase has been completed successfully. Your bill is available and attached to this message. Store: ${ShopName}, Contact: ${ShopNumber}. Thank you."
+                },
+                {
+                    TemplateName: "Customer_Bill_OrderReady",
+                    TemplateValue: "order_ready_new",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, Your order is ready for delivery. Please collect it at your earliest convenience. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Eye_Prescription",
+                    TemplateValue: "prescription",
+                    Url: "document",
+                    MessageText:
+                        "Hi ${CustomerName}, Your eye testing prescription is ready. Please find the attached PDF copy of your prescription. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Membership_Card",
+                    TemplateValue: "membership_card_1",
+                    Url: "document",
+                    MessageText:
+                        "Hi ${CustomerName}, Your membership card is ready. Please keep it for your future reference. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Reward_Points",
+                    TemplateValue: "reward_points_new",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, This is an account notification regarding your reward points. Current balance: ${Balance}, Status: Expiring soon. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Balance_Reminder",
+                    TemplateValue: "balance_reminder",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, This is a gentle reminder that your balance amount of ${Amount}/- has been pending for the last ${Days} days. Kindly clear the payment today. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Eye_Testing_Reminder",
+                    TemplateValue: "customer_eye_testing_reminder",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, This is a reminder that your eye testing appointment is due. Please contact us to schedule or confirm your appointment. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Contact_Lens_Expiry",
+                    TemplateValue: "customer_contact_lens_expiry",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, This is a reminder that your contact lenses are nearing their expiry date. Please contact us if you need assistance or a replacement. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Solution_Expiry",
+                    TemplateValue: "customer_solution_expiry",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, This is a reminder that your contact lens solution is nearing its expiry date. Please contact us if you need a replacement. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Comfort_Feedback",
+                    TemplateValue: "customer_comfort_feedback",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, We would like to know your experience with the product you recently purchased. Your feedback helps us improve our service. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Service_Reminder",
+                    TemplateValue: "customer_service_reminder",
+                    Url: "null",
+                    MessageText:
+                        "Hi ${CustomerName}, This is a reminder that your product service is due. Please contact us to schedule your service appointment. ${ShopName} ${ShopNumber} Thank you."
+                },
+                {
+                    TemplateName: "Customer_Credit_Note",
+                    TemplateValue: "customer_credit_note",
+                    Url: "document",
+                    MessageText:
+                        "Hi ${CustomerName}, Your credit note has been generated and is attached to this message. Please save it for your future reference. ${ShopName} ${ShopNumber} Thank you."
+                }
+            ];
+
+
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+
+            const Body = req.body;
+
+
+            if (!Body || Object.keys(Body).length === 0) {
+
+                return res.send({
+                    success: false,
+                    message: "Invalid request data"
+                });
+
+            }
+
+
+            const {
+                MobileNo,
+                TemplateValue,
+                MediaURL,
+                FileName,
+                MediaType
+            } = Body;
+
+
+
+            if (!MobileNo) {
+
+                return res.send({
+                    success: false,
+                    message: "MobileNo is required"
+                });
+
+            }
+
+
+
+            if (!TemplateValue) {
+
+                return res.send({
+                    success: false,
+                    message: "TemplateValue is required"
+                });
+
+            }
+
+
+
+            /*
+                Find Template
+            */
+
+            const Template = Templates.find(
+                x => x.TemplateValue === TemplateValue
+            );
+
+
+            if (!Template) {
+
+                return res.send({
+                    success: false,
+                    message: "Invalid TemplateValue"
+                });
+
+            }
+
+
+
+            /*
+                Extract Template Variables
+            */
+
+            const TemplateFields = [
+                ...Template.MessageText.matchAll(/\$\{(.*?)\}/g)
+            ].map(
+                item => item[1]
+            );
+
+
+
+            /*
+                Required Field Validation
+            */
+
+            let missingFields = [];
+
+
+            TemplateFields.forEach(field => {
+
+                if (
+                    Body[field] === undefined ||
+                    Body[field] === null ||
+                    Body[field] === ""
+                ) {
+
+                    missingFields.push(field);
+
+                }
+
+            });
+
+
+
+            if (missingFields.length > 0) {
+
+                return res.send({
+                    success: false,
+                    message: `Missing required fields: ${missingFields.join(", ")}`
+                });
+
+            }
+
+            /*
+                Media Validation
+            */
+
+            // let isMediaRequired = Template.Url && Template.Url !== "null" && Template.Url !== "";
+
+            // let isMediaRequired = false;
+
+            // if (Template.Url === "") {
+            //     isMediaRequired = true;
+            // }
+
+            // if (isMediaRequired && !MediaURL) {
+            //     return res.send({
+            //         success: false,
+            //         message: "MediaURL is required for this template"
+            //     });
+            // }
+
+
+
+            /*
+                Create Components
+            */
+
+            let components = {};
+
+
+
+            TemplateFields.forEach((field, index) => {
+                components[`body_${index + 1}`] = {
+                    type: "text",
+                    value: String(Body[field])
+                };
+            });
+
+
+
+            if (MediaURL) {
+                if (MediaType === "image") {
+                    components.header_1 = {
+                        type: "image",
+                        value: MediaURL
+                    };
+                } else if (MediaType === "video") {
+                    components.header_1 = {
+                        type: "video",
+                        value: MediaURL
+                    };
+                } else {
+                    components.header_1 = {
+                        filename: FileName || "document.pdf",
+                        type: "document",
+                        value: MediaURL
+                    };
+                }
+            }
+
+
+
+            /*
+                MSG91 Payload
+            */
+
+            const payload = {
+                integrated_number: process.env.MSG91_INTEGRATED_NUMBER,
+                content_type: "template",
+                payload: {
+                    messaging_product: "whatsapp",
+                    type: "template",
+                    template: {
+                        name: TemplateValue,
+                        language: {
+                            code: "en",
+                            policy: "deterministic"
+                        },
+                        namespace: process.env.MSG91_NAMESPACE,
+                        to_and_components: [
+                            {
+                                to: Array.isArray(MobileNo) ? MobileNo : [MobileNo],
+                                components
+                            }
+                        ]
+                    }
+                }
+            };
+
+            console.log(JSON.stringify(payload))
+
+            const apiResponse = await axios.post(
+                "https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/",
+                payload,
+                {
+                    headers: {
+                        authkey: process.env.MSG91_AUTH_KEY,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+
+            response.data = apiResponse.data;
+            response.message = "Whatsapp message sent successfully";
+            return res.send(response);
+        }
+        catch (err) {
+            console.log(err);
+            next(err);
         }
     }
 }
