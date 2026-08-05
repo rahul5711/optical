@@ -877,7 +877,7 @@ module.exports = {
                 Media Validation
             */
 
-            // let isMediaRequired = Template.Url && Template.Url !== "null" && Template.Url !== "";
+            let isMediaRequired = Template.Url && Template.Url !== "null" && Template.Url !== "";
 
             // let isMediaRequired = false;
 
@@ -885,12 +885,12 @@ module.exports = {
             //     isMediaRequired = true;
             // }
 
-            // if (isMediaRequired && !MediaURL) {
-            //     return res.send({
-            //         success: false,
-            //         message: "MediaURL is required for this template"
-            //     });
-            // }
+            if (isMediaRequired && !MediaURL) {
+                return res.send({
+                    success: false,
+                    message: "MediaURL is required for this template"
+                });
+            }
 
 
 
