@@ -621,8 +621,6 @@ module.exports = {
             }
             connection = await db.getConnection();
 
-
-
             const { isWhatsappPaidService, ApiKey, WhatsappArray } = Body;
 
             let qry = `update shop set isWhatsappPaidService = '${isWhatsappPaidService}', ApiKey = '${ApiKey}', WhatsappArray = '${JSON.stringify(WhatsappArray)}' where CompanyID = ${CompanyID} and ID = ${shopid}`
@@ -645,101 +643,204 @@ module.exports = {
         }
     },
     sendWhatsappTemplate: async (req, res, next) => {
-
+        let connection;
+        let DB;
         try {
 
-            const Templates = [
-                {
-                    TemplateName: "Customer_Birthday",
-                    TemplateValue: "customer_birthday_new_1",
-                    Url: "",
-                    MessageText: "Hi ${CustomerName},Wish You Happy Birthday! Get Special Discount Today. ${ShopName} ${ShopNumber} Thank you for being a valued customer."
-                },
-                {
-                    TemplateName: "Customer_Anniversary",
-                    TemplateValue: "customer_anniversary_new",
-                    Url: "",
-                    MessageText: "Hi ${CustomerName},Happy Anniversary. May you love bird stay happy and blessed always. ${ShopName} ${ShopNumber} Thank you for being a valued customer."
-                },
-                {
-                    TemplateName: "Customer_Bill_Advance",
-                    TemplateValue: "invoice",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, Your invoice details are as follows: Invoice No.: ${InvoiceNo}, Total Bill Amount: ${BillAmount}, Total Paid Amount: ${PaidAmount}, Total Balance Amount: ${Balance}, Bill Date: ${BillDate}, Delivery Date: ${DeliveryDate}, ${ShopName} ${ShopNumber}. This is an automated invoice notification."
-                },
-                {
-                    TemplateName: "Customer_Bill_FinalDelivery",
-                    TemplateValue: "bill",
-                    Url: "document",
-                    MessageText: "Hi ${CustomerName}, Your purchase has been completed successfully. Your bill is available and attached to this message. Store: ${ShopName}, Contact: ${ShopNumber}. Thank you."
-                },
-                {
-                    TemplateName: "Customer_Bill_OrderReady",
-                    TemplateValue: "order_ready_new",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, Your order is ready for delivery. Please collect it at your earliest convenience. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Eye_Prescription",
-                    TemplateValue: "prescription",
-                    Url: "document",
-                    MessageText: "Hi ${CustomerName}, Your eye testing prescription is ready. Please find the attached PDF copy of your prescription. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Membership_Card",
-                    TemplateValue: "membership_card_1",
-                    Url: "document",
-                    MessageText: "Hi ${CustomerName}, Your membership card is ready. Please keep it for your future reference. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Reward_Points",
-                    TemplateValue: "reward_points_new",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, This is an account notification regarding your reward points. Current balance: ${Balance}, Status: Expiring soon. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Balance_Reminder",
-                    TemplateValue: "balance_reminder",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, This is a gentle reminder that your balance amount of ${Amount}/- has been pending for the last ${Days} days. Kindly clear the payment today. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Eye_Testing_Reminder",
-                    TemplateValue: "customer_eye_testing_reminder",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, This is a reminder that your eye testing appointment is due. Please contact us to schedule or confirm your appointment. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Contact_Lens_Expiry",
-                    TemplateValue: "customer_contact_lens_expiry",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, This is a reminder that your contact lenses are nearing their expiry date. Please contact us if you need assistance or a replacement. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Solution_Expiry",
-                    TemplateValue: "customer_solution_expiry",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, This is a reminder that your contact lens solution is nearing its expiry date. Please contact us if you need a replacement. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Comfort_Feedback",
-                    TemplateValue: "customer_comfort_feedback",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, We would like to know your experience with the product you recently purchased. Your feedback helps us improve our service. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Service_Reminder",
-                    TemplateValue: "customer_service_reminder",
-                    Url: "null",
-                    MessageText: "Hi ${CustomerName}, This is a reminder that your product service is due. Please contact us to schedule your service appointment. ${ShopName} ${ShopNumber} Thank you."
-                },
-                {
-                    TemplateName: "Customer_Credit_Note",
-                    TemplateValue: "customer_credit_note",
-                    Url: "document",
-                    MessageText: "Hi ${CustomerName}, Your credit note has been generated and is attached to this message. Please save it for your future reference. ${ShopName} ${ShopNumber} Thank you."
-                }
-            ];
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (shopid == 0 || shopid === "0") {
+                return res.status(200).json({ success: false, message: "Please select shop" });
+            }
+
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            DB = await mysql2.pool.getConnection();
+
+            const [Company] = await DB.query(`select IsPaidWhatsappMsg from company where ID = ${CompanyID}`);
+
+            if (!Company.length) {
+                return res.send({
+                    success: false,
+                    message: "Company not found."
+                });
+            }
+
+            if (String(Company[0]?.IsPaidWhatsappMsg).toLowerCase() !== "true") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp paid service is not enabled. Please contact the administrator."
+                });
+            }
+
+            // const Templates = [
+            //     {
+            //         TemplateName: "Customer_Birthday",
+            //         TemplateValue: "customer_birthday_new_1",
+            //         Url: "",
+            //         MessageText: "Hi ${CustomerName},Wish You Happy Birthday! Get Special Discount Today. ${ShopName} ${ShopNumber} Thank you for being a valued customer."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Anniversary",
+            //         TemplateValue: "customer_anniversary_new",
+            //         Url: "",
+            //         MessageText: "Hi ${CustomerName},Happy Anniversary. May you love bird stay happy and blessed always. ${ShopName} ${ShopNumber} Thank you for being a valued customer."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Bill_Advance",
+            //         TemplateValue: "invoice",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, Your invoice details are as follows: Invoice No.: ${InvoiceNo}, Total Bill Amount: ${BillAmount}, Total Paid Amount: ${PaidAmount}, Total Balance Amount: ${Balance}, Bill Date: ${BillDate}, Delivery Date: ${DeliveryDate}, ${ShopName} ${ShopNumber}. This is an automated invoice notification."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Bill_FinalDelivery",
+            //         TemplateValue: "bill",
+            //         Url: "document",
+            //         MessageText: "Hi ${CustomerName}, Your purchase has been completed successfully. Your bill is available and attached to this message. Store: ${ShopName}, Contact: ${ShopNumber}. Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Bill_OrderReady",
+            //         TemplateValue: "order_ready_new",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, Your order is ready for delivery. Please collect it at your earliest convenience. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Eye_Prescription",
+            //         TemplateValue: "prescription",
+            //         Url: "document",
+            //         MessageText: "Hi ${CustomerName}, Your eye testing prescription is ready. Please find the attached PDF copy of your prescription. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Membership_Card",
+            //         TemplateValue: "membership_card_1",
+            //         Url: "document",
+            //         MessageText: "Hi ${CustomerName}, Your membership card is ready. Please keep it for your future reference. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Reward_Points",
+            //         TemplateValue: "reward_points_new",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, This is an account notification regarding your reward points. Current balance: ${Balance}, Status: Expiring soon. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Balance_Reminder",
+            //         TemplateValue: "balance_reminder",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, This is a gentle reminder that your balance amount of ${Amount}/- has been pending for the last ${Days} days. Kindly clear the payment today. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Eye_Testing_Reminder",
+            //         TemplateValue: "customer_eye_testing_reminder",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, This is a reminder that your eye testing appointment is due. Please contact us to schedule or confirm your appointment. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Contact_Lens_Expiry",
+            //         TemplateValue: "customer_contact_lens_expiry",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, This is a reminder that your contact lenses are nearing their expiry date. Please contact us if you need assistance or a replacement. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Solution_Expiry",
+            //         TemplateValue: "customer_solution_expiry",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, This is a reminder that your contact lens solution is nearing its expiry date. Please contact us if you need a replacement. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Comfort_Feedback",
+            //         TemplateValue: "customer_comfort_feedback",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, We would like to know your experience with the product you recently purchased. Your feedback helps us improve our service. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Service_Reminder",
+            //         TemplateValue: "customer_service_reminder",
+            //         Url: "null",
+            //         MessageText: "Hi ${CustomerName}, This is a reminder that your product service is due. Please contact us to schedule your service appointment. ${ShopName} ${ShopNumber} Thank you."
+            //     },
+            //     {
+            //         TemplateName: "Customer_Credit_Note",
+            //         TemplateValue: "customer_credit_note",
+            //         Url: "document",
+            //         MessageText: "Hi ${CustomerName}, Your credit note has been generated and is attached to this message. Please save it for your future reference. ${ShopName} ${ShopNumber} Thank you."
+            //     }
+            // ];
+
+
+            const [rows] = await connection.query(`select isWhatsappPaidService, ApiKey, NameSpace, WhatsappNumber, WhatsappArray from shop where CompanyID = ${CompanyID} and ID = ${shopid}`);
+
+            if (!rows.length) {
+                return res.send({ success: false, message: "something went wrong" });
+            }
+
+            const {
+                isWhatsappPaidService,
+                ApiKey,
+                NameSpace,
+                WhatsappNumber,
+                WhatsappArray
+            } = rows[0];
+
+
+            if (String(isWhatsappPaidService).toLowerCase() !== "true") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp paid service is not enabled."
+                });
+            }
+
+            if (!ApiKey || ApiKey.trim() === "") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp API Key is not configured."
+                });
+            }
+
+            if (!NameSpace || NameSpace.trim() === "") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp Namespace is not configured."
+                });
+            }
+
+            if (!WhatsappNumber || WhatsappNumber.trim() === "") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp Number is not configured."
+                });
+            }
+
+            let Templates = [];
+
+            try {
+                Templates = WhatsappArray ? JSON.parse(WhatsappArray) : [];
+            } catch (err) {
+                return res.send({
+                    success: false,
+                    message: "Invalid WhatsApp template configuration."
+                });
+            }
+
+            if (!Templates.length) {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp templates not configured."
+                });
+            }
+
+            // console.log("Templates :-", Templates)
+
+            console.table({
+                isWhatsappPaidService,
+                ApiKey,
+                NameSpace,
+                WhatsappNumber
+            })
 
 
             const response = {
@@ -923,7 +1024,7 @@ module.exports = {
             */
 
             const payload = {
-                integrated_number: process.env.MSG91_INTEGRATED_NUMBER,
+                integrated_number: `${WhatsappNumber}`,
                 content_type: "template",
                 payload: {
                     messaging_product: "whatsapp",
@@ -934,7 +1035,7 @@ module.exports = {
                             code: "en",
                             policy: "deterministic"
                         },
-                        namespace: process.env.MSG91_NAMESPACE,
+                        namespace: `${NameSpace}`,
                         to_and_components: [
                             {
                                 to: Array.isArray(MobileNo) ? MobileNo : [MobileNo],
@@ -952,7 +1053,7 @@ module.exports = {
                 payload,
                 {
                     headers: {
-                        authkey: process.env.MSG91_AUTH_KEY,
+                        authkey: `${ApiKey}`,
                         "Content-Type": "application/json"
                     }
                 }
@@ -965,6 +1066,23 @@ module.exports = {
         catch (err) {
             console.log(err);
             next(err);
+        } finally {
+            if (DB) {
+                try {
+                    DB.release();
+                    console.log("✅ MySQL pool connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing MySQL pool connection:", releaseErr);
+                }
+            }
+            if (connection) {
+                try {
+                    connection.release();
+                    console.log("✅ Company DB connection released");
+                } catch (releaseErr) {
+                    console.error("⚠️ Error releasing company DB connection:", releaseErr);
+                }
+            }
         }
     }
 }

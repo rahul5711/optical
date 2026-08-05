@@ -62,7 +62,7 @@ router.post('/send-pdf', Controller2.sendPDF);
 
 router.post('/updateWhatsappConfig', verifyAccessTokenAdmin, dbConnection, Controller.updateWhatsappConfig)
 
-router.post('/sendMessage', Controller.sendWhatsappTemplate)
+router.post('/sendMessage', verifyAccessTokenAdmin, dbConnection, Controller.sendWhatsappTemplate)
 
 
 
