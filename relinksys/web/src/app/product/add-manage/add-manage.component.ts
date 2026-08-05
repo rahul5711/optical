@@ -51,7 +51,7 @@ export class AddManageComponent implements OnInit {
     {Name: 'Customer Category',value:'CustomerCategory'},
     {Name: 'Expense Type',value:'ExpenseType'},
     {Name: 'Location Tracker',value:'LocationTracker'},
-    {Name: 'Other',value:'Other'},
+    {Name: 'Other / MemberShip',value:'Other'},
     {Name: 'Lens Type',value:'LensType'},
     {Name: 'Axis',value:'Axis'},
     {Name: 'Addition',value:'Addition'},

@@ -87,6 +87,20 @@ export class ShopService {
     .pipe(catchError(this.handleError));
   }
 
+  updateWhatsappConfig( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/updateWhatsappConfig', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
+  sendWhatsappTemplate( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/sendMessage', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
       console.error('Client Side Error: ', errorResponse.error.message);

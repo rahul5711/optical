@@ -30,6 +30,16 @@
     transform: 0.5ms !important;
 }
 
+.whatsapp input{
+    border: 2px solid #d1d0d0;height: 32px;
+}
+.whatsapp input:focus{
+    border: 2px solid #ff5500;
+}
+
+.whatsapp .table tbody tr td {
+    font-size: 15px !important;
+}
 
 @media (max-width: 768px){
   .fit-picture{

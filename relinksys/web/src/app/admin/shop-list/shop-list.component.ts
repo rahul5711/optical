@@ -85,6 +85,29 @@ export class ShopListComponent implements OnInit {
   CategoryList: any = [];
   CategoryLists: any = [];
 
+  
+  whatsappSettingList: any = [
+    {TemplateName: 'Customer_Birthday', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Anniversary', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Bill_Advance', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Bill_FinalDelivery', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Bill_OrderReady', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Eye_Prescription', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Membership_Card', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Reward_Points', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Balance_Reminder', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Eye_Testing_Reminder', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Contact_Lens_Expiry', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Solution_Expiry', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Credit_Note', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Comfort_Feedback', TemplateValue:'', MessageText: '',Url:''},
+    {TemplateName: 'Customer_Service_Reminder', TemplateValue:'', MessageText: '',Url:''},
+  ];
+
+  whatsappApi : any = {
+    isWhatsappPaidService:true, ApiKey:'', NameSpace:'',WhatsappNumber:'', WhatsappArray :''
+  }
+
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'ShopList') {
@@ -200,11 +223,16 @@ export class ShopListComponent implements OnInit {
     this.companyImage = datas.LogoURL;
     this.waterImage = datas.WaterMark;
     this.signatureImage  = datas.Signature;
+    this.whatsappApi.ApiKey = datas.ApiKey;
+    this.whatsappApi.NameSpace = datas.NameSpace;
+    this.whatsappApi.WhatsappNumber = datas.WhatsappNumber;
     this.data = datas;
   
     if (datas !== null && datas !== undefined && datas.length !== 0) {
       this.wlcmArray1 = datas.WelcomeNote ? JSON.parse(datas.WelcomeNote) : [];
-  
+
+      this.whatsappSettingList = datas.WhatsappArray ? JSON.parse(datas.WhatsappArray) : this.whatsappSettingList;
+      
       const stringToBoolean = (value: string) => value.toLowerCase() === 'true';
       this.data.Discount = stringToBoolean(datas.Discount.toString());
       this.data.GSTnumber = stringToBoolean(datas.GSTnumber.toString());
@@ -227,6 +255,7 @@ export class ShopListComponent implements OnInit {
       this.data.ShowPower = stringToBoolean(datas.ShowPower.toString());
       this.data.ProductGST = stringToBoolean(datas.ProductGST.toString());
       this.data.OrderRequest = stringToBoolean(datas.OrderRequest.toString());
+      this.whatsappApi.isWhatsappPaidService = stringToBoolean(datas.isWhatsappPaidService.toString());
     }
   }
   
@@ -586,5 +615,47 @@ getCategoryLists(){
   })
  }
 
+   uploadImageUrl(e: any, mode: any,index: number) {
+  
+      this.img = e.target.files[0];
+       if (!this.img) {
+      return; // No file selected
+    }
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+      this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+        // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+        this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
+          if (data.body !== undefined && mode === 'signature') {
+            this.whatsappSettingList[index].Images = data.body?.download;
+            this.as.successToast(data.body?.message)
+          }
+        });
+      })
+  
+    }
+
+ updateWhatsappConfig(){
+  this.sp.show();
+  let dtm = {
+    isWhatsappPaidService:this.whatsappApi.isWhatsappPaidService,
+    ApiKey:this.whatsappApi.ApiKey, 
+    NameSpace:this.whatsappApi.NameSpace,
+    WhatsappNumber:this.whatsappApi.WhatsappNumber,
+    WhatsappArray : this.whatsappSettingList,
+  }
+  const subs: Subscription = this.ss.updateWhatsappConfig(dtm).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        console.log(res);
+        
+      } else {
+        this.as.errorToast(res.message)
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => console.log(err.message),
+    complete: () => subs.unsubscribe(),
+  });
+ }
 
 }

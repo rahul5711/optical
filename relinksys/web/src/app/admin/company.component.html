@@ -252,6 +252,11 @@
                                                 #WhatsappMsgcontrol [(ngModel)]="data.WhatsappMsg"
                                                 class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Whatsapp</mat-slide-toggle>
                                         </div>
+                                        <div class="col-xl-1 col-lg-1 col-md-3 col-4 p-md-0 " >
+                                            <mat-slide-toggle type="button" name="IsPaidWhatsappMsg " color="primary"
+                                                #IsPaidWhatsappMsg control [(ngModel)]="data.IsPaidWhatsappMsg "
+                                                class="example-margin" [disabled]="user?.UserGroup !== 'SuperAdmin'">Paid Whatsapp</mat-slide-toggle>
+                                        </div>
                                         <div class="col-xl-1 col-lg-1 col-md-3 col-4 " style="margin-top: -13px;">
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Code</mat-label>
