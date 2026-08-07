@@ -1201,21 +1201,13 @@ module.exports = {
 
         }
         catch (error) {
-
             console.log(error);
-
             next(error);
-
         }
         finally {
-
             if (connection) {
-
                 connection.release();
-
             }
-
         }
-
     },
 }
