@@ -1084,5 +1084,138 @@ module.exports = {
                 }
             }
         }
-    }
+    },
+    fetchCustomerForWhatsapp: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID || 0;
+            const shopid = await shopID(req.headers) || 0;
+
+            if (!shopid || shopid == 0) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Please select shop"
+                });
+            }
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const {
+                CategoryID,
+                ProductDescription = ""
+            } = Body;
+
+            let categoryFilter = "";
+
+            /*
+                Category Filter
+            */
+
+            if (CategoryID) {
+                const [fetchCategory] = await connection.query(`SELECT Fromm, Too FROM customercategory WHERE CompanyID = ? AND Status = 1 AND CategoryID = ?`, [CompanyID, CategoryID]);
+                if (fetchCategory.length) {
+                    const { Fromm, Too } = fetchCategory[0];
+                    categoryFilter = ` AND billmaster.TotalAmount BETWEEN ${Fromm} AND ${Too}`;
+                }
+            }
+
+            /*
+                Fetch Distinct Customers
+            */
+
+            const [fetchCustomer] = await connection.query(
+                `SELECT
+                c.ID AS CustomerID,
+                c.Email AS Email,
+                CASE
+                    WHEN c.Title IS NULL OR c.Title = ''
+                    THEN c.Name
+                    ELSE CONCAT(c.Title,' ',c.Name)
+                END AS CustomerName,
+                CASE
+                    WHEN c.MobileNo1 IS NOT NULL
+                     AND c.MobileNo1 <> ''
+                    THEN c.MobileNo1
+                    WHEN c.MobileNo2 IS NOT NULL
+                     AND c.MobileNo2 <> ''
+                    THEN c.MobileNo2
+                    WHEN c.PhoneNo IS NOT NULL
+                     AND c.PhoneNo <> ''
+                    THEN c.PhoneNo
+                    ELSE ''
+                END AS Mobile,
+                CONCAT(
+                    COALESCE(shop.Name,''),
+                    CASE
+                        WHEN shop.Name IS NOT NULL
+                         AND shop.AreaName IS NOT NULL
+                        THEN '('
+                        ELSE ''
+                    END,
+                    COALESCE(shop.AreaName,''),
+                    CASE
+                        WHEN shop.Name IS NOT NULL
+                         AND shop.AreaName IS NOT NULL
+                        THEN ')'
+                        ELSE ''
+                    END
+                ) AS ShopName
+
+            FROM billmaster
+            INNER JOIN customer c
+                ON c.ID = billmaster.CustomerID
+            LEFT JOIN shop
+                ON shop.ID = billmaster.ShopID
+            LEFT JOIN billdetail
+                ON billdetail.BillID = billmaster.ID
+                AND billdetail.Status = 1
+            WHERE
+                billmaster.CompanyID = ?
+                AND billmaster.Status = 1
+                AND billmaster.ShopID = ?
+                ${categoryFilter}
+                ${ProductDescription}
+            GROUP BY billmaster.CustomerID
+            HAVING Mobile <> ''
+            ORDER BY CustomerName ASC`,
+                [CompanyID, shopid]
+            );
+
+            response.data = fetchCustomer;
+            response.message = "Customer data fetched successfully";
+
+            return res.status(200).json(response);
+
+        }
+        catch (error) {
+
+            console.log(error);
+
+            next(error);
+
+        }
+        finally {
+
+            if (connection) {
+
+                connection.release();
+
+            }
+
+        }
+
+    },
 }
