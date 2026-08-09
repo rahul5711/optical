@@ -2495,7 +2495,90 @@ isHoveredRow(row: any): boolean {
     this.columnVisibility5[column] = !this.columnVisibility5[column];
   }
 
-  sendWhatsapp(data: any, mode: any) {
+     getWhatsAppField(
+  list: any[],
+  templateName: string,
+  field: 'TemplateValue' | 'MessageText' | 'Url'
+) {
+  const item = list?.find(x => x.TemplateName === templateName);
+  return item ? item[field] : '';
+}
+
+sendWhatsapp(data: any,mode:any){
+  let shops = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+  if(shops[0].isWhatsappPaidService == 'true'){
+    this.paidSendWhatsapp(data,mode)
+  }else{
+    this.freeSendWhatsapp(data,mode)
+  }
+}
+
+
+paidSendWhatsapp(data:any,mode:any) {
+     
+
+  let shops = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+
+   const mobile = data?.MobileNo1?.toString().trim();
+  if (!/^\d{10}$/.test(mobile)) {
+    this.as.errorToast('Please enter a valid 10-digit mobile number');
+    return;
+  }
+
+    let daysPending: number = 0;
+      
+    if (data.BillDate) {
+      let billDate = new Date(data.BillDate as string);
+      daysPending = Math.floor((new Date().getTime() - billDate.getTime()) / (1000 * 60 * 60 * 24));
+    } else if (data.OrderDate) {
+      let orderDate = new Date(data.OrderDate as string);
+      daysPending = Math.floor((new Date().getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+  const temp = JSON.parse(shops[0].WhatsappArray);
+  let dtm = {}
+  let type = '';
+
+  if (mode === 'bill') {
+    type = this.getWhatsAppField(
+      temp,
+      'Customer_Balance_Reminder',
+      'TemplateValue'
+    );
+    
+  } 
+
+   dtm = {
+    CustomerName: data.CustomerName,
+    MobileNo: '91' + mobile,
+    ShopName: `${shops[0].Name} (${shops[0].AreaName})`,
+    ShopNumber: shops[0].MobileNo1,
+    Amount : data.TotalDueAmount,
+    Days : daysPending,
+    TemplateValue: type,
+
+  };
+
+  console.log(dtm);
+
+  const subs: Subscription = this.ss.sendWhatsappTemplate(dtm).subscribe({
+    next: (res: any) => {
+       if (res.success) {
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp Send Error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+  freeSendWhatsapp(data: any, mode: any) {
 
     let shoplist = this.shopList
     let shop = shoplist.filter((s: any) => s.ID === Number(this.selectedShop[0]));

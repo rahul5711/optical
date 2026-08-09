@@ -42,18 +42,111 @@
 
                                 <div class="col-xl-8" style="border-left: 1px solid red; border-top: 1px solid red">
                                     <div class="row">
-                                        <div class="col-xl-3 col-lg-2 col-md-3 col-6 mb-0 pt-2">
+                                        <div class="col-xl-3 col-lg-2 col-md-3 col-12 mb-0 pt-2">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Customer Category</mat-label>
-                                                <mat-select name="CustomerCategory" [(ngModel)]="CustomerCategory"
+                                                <mat-select name="CustomerCategory" [(ngModel)]="filter.CustomerCategory"
                                                     required #GSTTypecontrol1>
                                                     <mat-option [value]=0> All</mat-option>
-                                                    <mat-option [value]="p.Name" *ngFor="let p of customerCategoryList">
+                                                    <mat-option [value]="p.ID" *ngFor="let p of customerCategoryList">
                                                         {{p.Name}} </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
+
+                                         <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-0 pt-2">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Product Search</mat-label>
+                          <input matInput name="Productsearch" [(ngModel)]="Productsearch" #StringProductNamecontrol>
+                          <mat-error>
+                            Productsearch required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+
+                                        <div class="col-xl-3 col-lg-2 col-md-3 col-12 mb-0 pt-2">
+                                        <mat-form-field class="example-full-width mb-0">
+                                            <mat-label>Select Product</mat-label>
+                                            <mat-select name="FieldType" [(ngModel)]="filter.ProductCategory"
+                                                (selectionChange)="getFieldList()" required #Typecontrol>
+                                                <mat-option>
+                                                    <ngx-mat-select-search matInput [(ngModel)]="searchValue" (ngModelChange)="searchValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                    </ngx-mat-select-search>
+                                                </mat-option>
+                                                <mat-option [value]=0>All</mat-option>
+                                                <mat-option *ngFor="let prod of prodList | prodnamefilterbluk: searchValue  let i = index;"
+                                                    [value]="prod.ID">
+                                                    {{prod.Name | uppercase}}
+                                                </mat-option>
+                                            </mat-select>
+                                            <mat-error>
+                                                Select Product Type
+                                            </mat-error>
+                                        </mat-form-field>
                                     </div>
+                                    <div class="col-xl-3 col-lg-2 col-md-3 col-12 mb-0 pt-2"
+                                        *ngFor="let spec of specList ; let i = index;">
+                                        <div *ngIf="spec.FieldType === 'DropDown'" class="d-flex">
+                                            <mat-form-field class=" me-2 mb-0" *ngIf="spec.DisplayAdd === 0">
+                                                <mat-label>{{spec.FieldName}}</mat-label>
+                                                <mat-select name="{{spec.FieldName+'0'}}"
+                                                    [(ngModel)]="spec.SelectedValue"
+                                                    (selectionChange)="getFieldSupportData(i)" editable="true"
+                                                    [required]="spec.Required === 1" #singleSelect>
+                                                    <mat-option>
+                                                        <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
+                                                        </ngx-mat-select-search>
+                                                    </mat-option>
+                                                    <mat-option *ngFor="let val of spec.SptFilterData | proditemfilterbluk: spec.EnteredValue"
+                                                        [value]="val.TableValue1">
+                                                        {{val.TableValue}}
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-error>
+                                                    {{spec.FieldName}} is Required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="spec.FieldType === 'Text'" class="d-flex">
+                                            <mat-form-field class=" mr-0 mb-0">
+                                                <mat-label>{{spec.FieldName}}</mat-label>
+                                                <input matInput name="{{spec.FieldName+'2'}}"
+                                                    [(ngModel)]="spec.SelectedValue"
+                                                    (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                    [required]="spec.Required === 1" (blur)="getFieldSupportData(i)">
+                                                <mat-error>
+                                                    {{spec.FieldName}} is Required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="spec.FieldType === 'Date'" class="d-flex">
+                                            <mat-form-field class=" mr-0 mb-0">
+                                                <mat-label>{{spec.FieldName}}</mat-label>
+                                                <input type="date" matInput name="{{spec.FieldName+'3'}}"
+                                                    [(ngModel)]="spec.SelectedValue"
+                                                    (ngModelChange)="spec.SelectedValue = onChange($event)"
+                                                    editable="true" [required]="spec.Required === 1">
+                                                <mat-error>
+                                                    {{spec.FieldName}} is Required
+                                                </mat-error>
+                                            </mat-form-field>
+                                        </div>
+                                        <div *ngIf="spec.FieldType === 'boolean'" class="d-flex">
+                                            <mat-slide-toggle name="{{spec.FieldName+'3'}}" color="primary"
+                                                class="example-margin" #Multiplecontrolx
+                                                [(ngModel)]="spec.SelectedValue">
+                                                {{spec.FieldName}}</mat-slide-toggle>
+                                        </div>
+                                    </div>
+                                    <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-3 col-12  mb-sm-0 pt-2">
+                                    <button type="submit" mat-raised-button color="primary"
+                                     (click)="searchData()"   >Search</button>
+                                </div>
+                                    </div>
+
+
+
+
                                     <div class="row">
                                         <div class="col-xl-12" style="overflow: auto; height: 350px;">
                                             <table
@@ -67,17 +160,17 @@
                                                         <th>S No. </th>
                                                         <th>Customer Name</th>
                                                         <th>Moblie No</th>
-                                                        <th>Email</th>
+                                                        <th>ShopName</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody class="text-center">
-                                                    <tr>
+                                                    <tr *ngFor="let data of dataList let i = index;">
                                                         <td><mat-checkbox type="checkbox" class="input"></mat-checkbox>
                                                         </td>
-                                                        <td>1 </td>
-                                                        <td>Vinay tayade</td>
-                                                        <td>8770303677</td>
-                                                        <td>vinaytayadegmail.com</td>
+                                                        <td>{{1+i}} </td>
+                                                        <td>{{data.CustomerName}}</td>
+                                                        <td>{{data.Mobile}}</td>
+                                                        <td>{{data.ShopName}}</td>
                                                     </tr>
                                                 </tbody>
 

@@ -14,6 +14,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MomentInput } from 'moment';
 import * as moment from 'moment';
 import { SupportService } from 'src/app/service/support.service';
+import { ProductService } from 'src/app/service/product.service';
+import { ShopService } from 'src/app/service/shop.service';
 
 @Component({
   selector: 'app-bulk-sms',
@@ -32,15 +34,31 @@ export class BulkSmsComponent implements OnInit {
     private sp: NgxSpinnerService,
     private excelService: ExcelService,
     private modalService: NgbModal,
-    private supps: SupportService
+    private supps: SupportService,
+    private ps: ProductService,
+       private ss: ShopService,
   ) { }
 
   data: any = {TemplateID: null, Message: null, };
-  CustomerCategory=0
+  filter: any = {
+     CustomerCategory :0 , stringProductName: '', ProductCategory: 0, ProductName: '',
+  }
+ 
   customerCategoryList:any
+  env = environment;
+  term: any;
+  searchValue: any;
+  selectedProduct: any;
+  prodList: any;
+  specList: any;
+  dataList: any;
+  Productsearch: any = '';
+  dataListt: any = [];
+
 
   ngOnInit(): void {
-    this.getCATEGORYList()
+    this.getCATEGORYList();
+    this.getProductList()
   }
 
   getCATEGORYList() {
@@ -56,4 +74,150 @@ export class BulkSmsComponent implements OnInit {
       complete: () => subs.unsubscribe(),
     });
   }
+
+
+  
+  getProductList() {
+    this.sp.show()
+    const subs: Subscription = this.ps.getList().subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.prodList = res.data.sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
+          this.as.successToast(res.message)
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  getFieldList() {
+    if (this.filter.ProductCategory !== 0) {
+      this.prodList.forEach((element: any) => {
+        if (element.ID === this.filter.ProductCategory) {
+          this.selectedProduct = element.Name;
+        }
+      })
+      const subs: Subscription = this.ps.getFieldList(this.selectedProduct).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.specList = res.data;
+            this.getSptTableData();
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+    else {
+      this.specList = [];
+      this.filter.ProductName = '';
+      this.filter.ProductCategory = 0;
+    }
+  }
+
+  getSptTableData() {
+    this.specList.forEach((element: any) => {
+      if (element.FieldType === 'DropDown' && element.Ref === '0') {
+        const subs: Subscription = this.ps.getProductSupportData('0', element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+             
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  getFieldSupportData(index: any) {
+    this.specList.forEach((element: any) => {
+      if (element.Ref === this.specList[index].FieldName.toString()) {
+        const subs: Subscription = this.ps.getProductSupportData(this.specList[index].SelectedValue, element.SptTableName).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+              element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
+             
+            } else {
+              this.as.errorToast(res.message)
+            }
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+    });
+  }
+
+  onChange(event: any) {
+    if (this.companySetting.DataFormat === '1') {
+      event = event.toUpperCase()
+    } else if (this.companySetting.DataFormat == '2') {
+      event = event.toTitleCase()
+    }
+    return event;
+  }
+
+  filters() {
+    let productName = '';
+    this.specList.forEach((element: any) => {
+      if (productName === '') {
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName = valueToAdd;
+      } else if (element.SelectedValue !== '') {
+        let valueToAdd = element.SelectedValue;
+        valueToAdd = valueToAdd.replace(/^\d+_/, "");
+        productName += '/' + valueToAdd;
+      }
+    });
+    this.filter.ProductName = productName;
+  }
+
+  
+    searchData() {
+      this.sp.show()
+    let ProductDescription = ''
+    if(this.filter.ProductCategory != 0){
+       this.filters()
+      ProductDescription += ` and billdetail.ProductTypeID = ${this.filter.ProductCategory} and billdetail.ProductTypeName = '${this.selectedProduct}' and billdetail.ProductName LIKE '${this.filter.ProductName.trim()}%' `;
+    }
+if(this.Productsearch != ''){
+
+  ProductDescription += `and billdetail.ProductName like '%${this.Productsearch}%'`
+}
+
+    let Parem = {
+       CategoryID: this.filter.CustomerCategory,
+       ProductDescription: ProductDescription
+    };
+  
+  
+      const subs: Subscription = this.ss.fetchCustomerForWhatsapp(Parem).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.as.successToast(res.message)
+              this.dataList = res.data
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide()
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
 }

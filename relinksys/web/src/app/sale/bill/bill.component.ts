@@ -4241,6 +4241,10 @@ let dtm
             this.BillLink = url
             
             // this.getTinyUrl(this.BillLink )
+
+            if(this.loginShop.isWhatsappPaidService == 'true'){
+              this.paidSendWhatsapp('Invoice')
+            }
             if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Invoice')
             }
@@ -4255,6 +4259,10 @@ let dtm
             url = this.env.apiUrl + "/uploads/" + this.BillMaster.Receipt + cacheBuster;
             this.BillLink = url
             // this.getTinyUrl(this.BillLink )
+             if(this.loginShop.isWhatsappPaidService == 'true'){
+              this.paidSendWhatsapp('Receipt')
+            }
+
              if(this.BillMaster.CompanyID == 128){
               this.sendWhatsappMessageInBackground('Receipt')
             }
@@ -4483,6 +4491,9 @@ async printPDF(pdfUrl: string) {
           this.BillMaster.Invoice = res;
           const url = this.env.apiUrl + "/uploads/" + this.BillMaster.Invoice;
           this.CreditPDF = url
+          if(this.loginShop.isWhatsappPaidService == 'true'){
+              this.paidSendWhatsapp('Credit')
+            }
           window.open(url, "_blank")
         } else {
           this.as.errorToast(res.message)
@@ -4533,9 +4544,84 @@ sendCreditWhatsappMessageInBackground(){
 }
 }
 
-  sendWhatsapp(mode: any) {
+sendWhatsapp(mode: any){
+  if(this.loginShop.isWhatsappPaidService == 'true'){
+    this.paidSendWhatsapp(mode)
+  }else{
+    this.freeSendWhatsapp(mode)
+  }
+}
+
+paidSendWhatsapp(mode:any) {
+     
+   const mobile = this.customer?.MobileNo1?.toString().trim();
+  if (!/^\d{10}$/.test(mobile)) {
+    this.as.errorToast('Please enter a valid 10-digit mobile number');
+    return;
+  }
+
+  const temp = JSON.parse(this.loginShop.WhatsappArray);
+  let dtm = {}
+  let type = '';
+  let typeOfPdf = '';
+
+  if (mode === 'Invoice') {
+    type = this.getWhatsAppField(
+      temp,
+      'Customer_Bill_FinalDelivery',
+      'TemplateValue'
+    );
+    typeOfPdf = this.BillLink
+  } else if (mode === 'Receipt') {
+    type = this.getWhatsAppField(
+      temp,
+      'Customer_Bill_FinalDelivery',
+      'TemplateValue'
+    );
+    typeOfPdf = this.BillLink
+  } else if (mode === 'Credit') {
+    type = this.getWhatsAppField(
+      temp,
+      'Customer_Credit_Note',
+      'TemplateValue'
+    );
+    typeOfPdf = this.CreditPDF
+  }
+
+   dtm = {
+    CustomerName: this.customer.Name,
+    MobileNo: '91' + mobile,
+    ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`,
+    ShopNumber: this.loginShop.MobileNo1,
+    // MediaURL: typeOfPdf,
+    MediaURL: 'https://theopticalguru.relinksys.com/uploads/Bill-1358795-341.pdf?v=1785948158',
+    TemplateValue: type,
+    FileName: 'InvoiceNo - ' + this.BillMaster.InvoiceNo
+  };
+
+  console.log(dtm);
+
+  const subs: Subscription = this.ss.sendWhatsappTemplate(dtm).subscribe({
+    next: (res: any) => {
+       if (res.success) {
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp Send Error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+  freeSendWhatsapp(mode: any) {
     this.sp.show()
-    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+    let temp = JSON.parse(this.companySetting.WhatsappSetting)
+
     let WhatsappMsg = '';
     
       if (mode === 'credit') {
@@ -4599,7 +4685,6 @@ sendCreditWhatsappMessageInBackground(){
           showConfirmButton: true,
         })
       }
-
   }
 
   getWhatsAppMessage(temp: any, messageName: any) {
@@ -4609,6 +4694,15 @@ sendCreditWhatsappMessageInBackground(){
     }
     return '';
   }
+
+ getWhatsAppField(
+  list: any[],
+  templateName: string,
+  field: 'TemplateValue' | 'MessageText' | 'Url'
+) {
+  const item = list?.find(x => x.TemplateName === templateName);
+  return item ? item[field] : '';
+}
 
 
   isDisableds() {

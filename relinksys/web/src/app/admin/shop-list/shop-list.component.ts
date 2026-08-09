@@ -626,7 +626,7 @@ getCategoryLists(){
         // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
         this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
           if (data.body !== undefined && mode === 'signature') {
-            this.whatsappSettingList[index].Images = data.body?.download;
+            this.whatsappSettingList[index].Url = data.body?.download;
             this.as.successToast(data.body?.message)
           }
         });

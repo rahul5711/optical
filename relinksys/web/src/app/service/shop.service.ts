@@ -100,6 +100,13 @@ export class ShopService {
     return this.httpClient.post<any>(this.url + '/sendMessage', Body, { headers, params })
     .pipe(catchError(this.handleError));
   }
+  
+  fetchCustomerForWhatsapp( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/fetchCustomerForWhatsapp', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {

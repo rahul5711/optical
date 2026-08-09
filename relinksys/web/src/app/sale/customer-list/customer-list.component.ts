@@ -14,7 +14,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 import { BillService } from 'src/app/service/bill.service';
-
+import { ShopService } from 'src/app/service/shop.service';
 
 @Component({
   selector: 'app-customer-list',
@@ -52,6 +52,7 @@ export class CustomerListComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
         public bill: BillService,
+        private ss: ShopService,
   ) { }
 
   editCustomerSearch = false
@@ -244,7 +245,74 @@ export class CustomerListComponent implements OnInit {
     return moment(date).format(this.companySetting?.DateFormat || 'YYYY-MM-DD');
   }
 
-  sendWhatsapp(mode: any,customer:any) {
+   getWhatsAppField(
+  list: any[],
+  templateName: string,
+  field: 'TemplateValue' | 'MessageText' | 'Url'
+) {
+  const item = list?.find(x => x.TemplateName === templateName);
+  return item ? item[field] : '';
+}
+
+sendWhatsapp(mode: any,customer:any){
+  if(this.loginShop.isWhatsappPaidService == 'true'){
+    this.paidSendWhatsapp(mode,customer)
+  }else{
+    this.freeSendWhatsapp(mode,customer)
+  }
+}
+
+
+paidSendWhatsapp(mode:any,customer:any) {
+     
+   const mobile = customer?.MobileNo1?.toString().trim();
+  if (!/^\d{10}$/.test(mobile)) {
+    this.as.errorToast('Please enter a valid 10-digit mobile number');
+    return;
+  }
+
+  const temp = JSON.parse(this.loginShop.WhatsappArray);
+  let dtm = {}
+  let type = '';
+
+  if (mode === 'Fbill') {
+    type = this.getWhatsAppField(
+      temp,
+      'Customer_Bill_OrderReady',
+      'TemplateValue'
+    );
+    
+  } 
+
+   dtm = {
+    CustomerName: customer.Name,
+    MobileNo: '91' + mobile,
+    ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`,
+    ShopNumber: this.loginShop.MobileNo1,
+    TemplateValue: type,
+
+  };
+
+  console.log(dtm);
+
+  const subs: Subscription = this.ss.sendWhatsappTemplate(dtm).subscribe({
+    next: (res: any) => {
+       if (res.success) {
+        this.as.successToast(res.message)
+      }else{
+        this.as.errorToast(res.message);
+      }
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp Send Error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+}
+
+  freeSendWhatsapp(mode: any,customer:any) {
     let temp = JSON.parse(this.companySetting.WhatsappSetting);
     let WhatsappMsg = '';
     let msg = ''

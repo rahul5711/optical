@@ -50,7 +50,8 @@ import { CompanyOptionHideComponent } from './company-option-hide/company-option
 import { CompanyName} from './../filterDropDown/nameFilter';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { PlanExpiryComponent } from './plan-expiry/plan-expiry.component';
-
+import { ProductNameFilterBluk} from './../filterDropDown/nameFilter';
+import { ProductItemFilterBluk} from './../filterDropDown/nameFilter';
 
 @NgModule({
     declarations: [
@@ -79,7 +80,9 @@ import { PlanExpiryComponent } from './plan-expiry/plan-expiry.component';
         RecycleComponent,
         CompanyOptionHideComponent,
         CompanyName,
-        PlanExpiryComponent
+        PlanExpiryComponent,
+        ProductItemFilterBluk,
+        ProductNameFilterBluk
     ],
     exports: [
         FormsModule, ReactiveFormsModule,
