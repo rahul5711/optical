@@ -15,6 +15,8 @@ var fs = require("fs")
 const axios = require('axios');
 const clientConfig = require("../helpers/constants");
 
+
+
 let dbCache = {}; // Cache for storing database instances
 
 async function dbConnection(CompanyID) {
@@ -39,6 +41,174 @@ async function extractEmailsAsString(data) {
 }
 
 module.exports = {
+
+
+// techtoguruExcelConvert : async (req, res) => {
+
+//     try {
+
+//         const inputFile = path.join(__dirname,"../assest/s.xlsx");
+//         console.log(inputFile);
+        
+//         const workbook = new ExcelJS.Workbook();
+//         console.log("2");
+//         console.log(fs.existsSync(inputFile));   // true aana chahiye
+// console.log(fs.statSync(inputFile).size);
+//         await workbook.xlsx.readFile(inputFile);
+//         console.log(workbook.worksheets.length);
+//         console.log("1");
+//         const sheet = workbook.getWorksheet(1);
+//         console.log(sheet.name);
+// console.log(sheet.rowCount);
+// console.log(sheet.columnCount);
+//         let result = [];
+
+//         for (let i = 1; i <= sheet.rowCount; i++) {
+
+//             const row = sheet.getRow(i).values;
+//    console.log("Row :", i);
+//     console.log(row);
+//             const dvIndex = row.findIndex(x => x == "DV");
+//             console.log("DV Index :", dvIndex);
+
+//             if (dvIndex == -1)
+//                 continue;
+
+//             let obj = {
+
+//                 SystemID: result.length + 1,
+
+//                 REDPSPH: "",
+//                 REDPCYL: "",
+//                 REDPAxis: "",
+//                 REDPD: "",
+
+//                 LEDPSPH: "",
+//                 LEDPCYL: "",
+//                 LEDPAxis: "",
+//                 LEDPD: "",
+
+//                 RENPSPH: "",
+//                 RENPCYL: "",
+//                 RENPAxis: "",
+//                 RENPD: "",
+
+//                 LENPSPH: "",
+//                 LENPCYL: "",
+//                 LENPAxis: "",
+//                 LENPD: "",
+
+//                 R_Addition: "",
+//                 L_Addition: ""
+
+//             };
+
+//             //---------------- DV ----------------//
+
+//             obj.REDPSPH = row[dvIndex + 1] || "";
+//             obj.REDPCYL = row[dvIndex + 2] || "";
+//             obj.REDPAxis = row[dvIndex + 3] || "";
+//             obj.REDPD = row[dvIndex + 4] || "";
+
+//             obj.LEDPSPH = row[dvIndex + 5] || "";
+//             obj.LEDPCYL = row[dvIndex + 6] || "";
+//             obj.LEDPAxis = row[dvIndex + 7] || "";
+//             obj.LEDPD = row[dvIndex + 8] || "";
+
+//             //---------------- NV ----------------//
+
+//             const nvRow = sheet.getRow(i + 1).values;
+
+//             const nvIndex = nvRow.findIndex(x => x == "NV");
+
+//             if (nvIndex != -1) {
+
+//                 obj.RENPSPH = nvRow[nvIndex + 1] || "";
+//                 obj.RENPCYL = nvRow[nvIndex + 2] || "";
+//                 obj.RENPAxis = nvRow[nvIndex + 3] || "";
+//                 obj.RENPD = nvRow[nvIndex + 4] || "";
+
+//                 obj.LENPSPH = nvRow[nvIndex + 5] || "";
+//                 obj.LENPCYL = nvRow[nvIndex + 6] || "";
+//                 obj.LENPAxis = nvRow[nvIndex + 7] || "";
+//                 obj.LENPD = nvRow[nvIndex + 8] || "";
+
+//             }
+
+//             //---------------- ADD ----------------//
+
+//             const addRow = sheet.getRow(i + 2).values;
+
+//             const addIndex = addRow.findIndex(x => x == "ADD");
+
+//             if (addIndex != -1) {
+
+//                 obj.R_Addition = addRow[addIndex + 1] || "";
+//                 obj.L_Addition = addRow[addIndex + 5] || "";
+
+//             }
+
+//             result.push(obj);
+
+//         }
+
+//         //---------------- CREATE OUTPUT ----------------//
+
+//         const output = new ExcelJS.Workbook();
+
+//         const ws = output.addWorksheet("Prescription");
+
+//         ws.columns = [
+
+//             { header: "SystemID", key: "SystemID" },
+
+//             { header: "REDPSPH", key: "REDPSPH" },
+//             { header: "REDPCYL", key: "REDPCYL" },
+//             { header: "REDPAxis", key: "REDPAxis" },
+//             { header: "REDPD", key: "REDPD" },
+
+//             { header: "LEDPSPH", key: "LEDPSPH" },
+//             { header: "LEDPCYL", key: "LEDPCYL" },
+//             { header: "LEDPAxis", key: "LEDPAxis" },
+//             { header: "LEDPD", key: "LEDPD" },
+
+//             { header: "RENPSPH", key: "RENPSPH" },
+//             { header: "RENPCYL", key: "RENPCYL" },
+//             { header: "RENPAxis", key: "RENPAxis" },
+//             { header: "RENPD", key: "RENPD" },
+
+//             { header: "LENPSPH", key: "LENPSPH" },
+//             { header: "LENPCYL", key: "LENPCYL" },
+//             { header: "LENPAxis", key: "LENPAxis" },
+//             { header: "LENPD", key: "LENPD" },
+
+//             { header: "R_Addition", key: "R_Addition" },
+//             { header: "L_Addition", key: "L_Addition" }
+
+//         ];
+
+//         ws.addRows(result);
+//         console.log(result);
+        
+//         const outputPath = path.join(
+//             __dirname,
+//             "../assest/Converted.xlsx"
+//         );
+
+//         await output.xlsx.writeFile(outputPath);
+
+//         return res.download(outputPath);
+
+//     } catch (err) {
+
+//         console.log(err);
+
+//         return res.status(500).json(err);
+
+//     }
+
+// },
+
     getBirthDayReminder: async (req, res, next) => {
         let connection;
         try {
