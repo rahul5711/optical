@@ -1,12 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { NgForm } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
-import Swal from 'sweetalert2'; 
+import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/service/helpers/alert.service';
 import { map, filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { fromEvent   } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -25,7 +25,10 @@ import { ShopService } from 'src/app/service/shop.service';
 export class BulkSmsComponent implements OnInit {
   user = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
-  companySetting:any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
+  shop = JSON.parse(localStorage.getItem('shop') || '');
+  selectedShop = JSON.parse(localStorage.getItem('selectedShop') || '');
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -36,15 +39,15 @@ export class BulkSmsComponent implements OnInit {
     private modalService: NgbModal,
     private supps: SupportService,
     private ps: ProductService,
-       private ss: ShopService,
+    private ss: ShopService,
   ) { }
 
-  data: any = {TemplateID: null, Message: null, };
+  data: any = { TemplateName: null, Message: null, };
   filter: any = {
-     CustomerCategory :0 , stringProductName: '', ProductCategory: 0, ProductName: '',
+    CustomerCategory: 0, stringProductName: '', ProductCategory: 0, ProductName: '',
   }
- 
-  customerCategoryList:any
+
+  customerCategoryList: any
   env = environment;
   term: any;
   searchValue: any;
@@ -54,11 +57,14 @@ export class BulkSmsComponent implements OnInit {
   dataList: any;
   Productsearch: any = '';
   dataListt: any = [];
-
-
+  filterList: any = [];
+  whatsappTemplateList: any[] = [];
+  loginShop:any
   ngOnInit(): void {
     this.getCATEGORYList();
-    this.getProductList()
+    this.getProductList();
+    [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+    this.whatsappTemplateList = JSON.parse(this.loginShop.WhatsappArray || '[]')
   }
 
   getCATEGORYList() {
@@ -76,7 +82,7 @@ export class BulkSmsComponent implements OnInit {
   }
 
 
-  
+
   getProductList() {
     this.sp.show()
     const subs: Subscription = this.ps.getList().subscribe({
@@ -130,7 +136,7 @@ export class BulkSmsComponent implements OnInit {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-             
+
             } else {
               this.as.errorToast(res.message)
             }
@@ -150,7 +156,7 @@ export class BulkSmsComponent implements OnInit {
             if (res.success) {
               element.SptTableData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
               element.SptFilterData = res.data.sort((a: { TableValue: string; }, b: { TableValue: any; }) => (a.TableValue.trim()).localeCompare(b.TableValue));
-             
+
             } else {
               this.as.errorToast(res.message)
             }
@@ -187,37 +193,142 @@ export class BulkSmsComponent implements OnInit {
     this.filter.ProductName = productName;
   }
 
-  
-    searchData() {
-      this.sp.show()
+
+  searchData() {
+    this.sp.show()
     let ProductDescription = ''
-    if(this.filter.ProductCategory != 0){
-       this.filters()
+    if (this.filter.ProductCategory != 0) {
+      this.filters()
       ProductDescription += ` and billdetail.ProductTypeID = ${this.filter.ProductCategory} and billdetail.ProductTypeName = '${this.selectedProduct}' and billdetail.ProductName LIKE '${this.filter.ProductName.trim()}%' `;
     }
-if(this.Productsearch != ''){
 
-  ProductDescription += `and billdetail.ProductName like '%${this.Productsearch}%'`
-}
+    if (this.Productsearch != '') {
+      ProductDescription += `and billdetail.ProductName like '%${this.Productsearch}%'`
+    }
 
     let Parem = {
-       CategoryID: this.filter.CustomerCategory,
-       ProductDescription: ProductDescription
+      CategoryID: this.filter.CustomerCategory,
+      ProductDescription: ProductDescription
     };
-  
-  
-      const subs: Subscription = this.ss.fetchCustomerForWhatsapp(Parem).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.as.successToast(res.message)
-              this.dataList = res.data
-          } else {
-            this.as.errorToast(res.message)
-          }
-          this.sp.hide()
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+
+    const subs: Subscription = this.ss.fetchCustomerForWhatsapp(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.dataList = res.data
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+    multicheck() {
+    for (var i = 0; i < this.dataList.length; i++) {
+      const index = this.dataList.findIndex(((x: any) => x === this.dataList[i]));
+      if (this.dataList[index].Sel == null || this.dataList[index].Sel === 0 || this.dataList[index].Sel === undefined) {
+        this.dataList[index].Sel = 1;
+      } else {
+        this.dataList[index].Sel = 0;
+      }
     }
+  }
+
+    validate(v: any, event: any) {
+    if (v.Sel === 0 || v.Sel === null || v.Sel === undefined) {
+      v.Sel = 1;
+    } else {
+      v.Sel = 0;
+    }
+  }
+
+  
+    onSubmit() {
+  this.sp.show();
+    
+  this.filterList = this.dataList.filter((d: any) => d.Sel === 1);
+
+  if (this.filterList.length === 0) {
+    this.sp.hide();
+    this.as.errorToast('Please select at least one customer');
+    return;
+  }
+
+//   const mobileNumbers = this.filterList
+//     .map((customer: any) => {
+//       const mobile = customer?.Mobile?.toString().trim();
+    
+//       if (/^\d{10}$/.test(mobile)) {
+//         return '91' + mobile.toString();
+//       }
+
+//       return null;
+//     })
+//     .filter((mobile: any) => mobile !== null).join(',');
+
+//  const customername = this.filterList
+//   .map((customer: any) => customer?.CustomerName?.toString().trim() || '')
+//   .filter((name: string) => name !== '')
+//   .join(',');
+  
+
+  const dtm = {
+      CustomerName: this.filterList.map(
+    (customer: any) => customer?.CustomerName?.toString().trim() || ''
+  ),
+
+  MobileNo: this.filterList.map(
+    (customer: any) => '91' + customer.Mobile.toString().trim()
+  ),
+    ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`,
+    ShopNumber: this.loginShop.MobileNo1,
+    TemplateValue: this.getWhatsAppField(
+      JSON.parse(this.loginShop.WhatsappArray),
+      this.data.TemplateName,
+      'TemplateValue'
+    )
+  };
+
+  console.log(dtm);
+
+  const subs: Subscription = this.ss.sendWhatsappTemplate(dtm).subscribe({
+    next: (res: any) => {
+      if (res.success) {
+        this.as.successToast(res.message);
+      } else {
+        this.as.errorToast(res.message);
+      }
+
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp Send Error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe()
+  });
+}
+
+
+  getWhatsAppField(list: any[], templateName: string, field: 'TemplateValue' | 'MessageText' | 'Url') {
+    const item = list?.find(x => x.TemplateName === templateName);
+    return item ? item[field] : '';
+  }
+
+// sendWhatsapp(data: any) {
+//   let shop = this.shop.filter(
+//     (s: any) => s.ID === Number(this.selectedShop[0])
+//   );
+
+//   if (shop[0].isWhatsappPaidService == 'true') {
+//     this.paidSendWhatsapp(data);
+//   } else {
+//     alert('Only paid version');
+//   }
+// }
+
+
 }
