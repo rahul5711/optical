@@ -1085,6 +1085,892 @@ module.exports = {
             }
         }
     },
+    sendWhatsappBulkTemplate: async (req, res, next) => {
+        let connection;
+        let DB;
+        try {
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            if (shopid == 0 || shopid === "0") {
+                return res.status(200).json({
+                    success: false,
+                    message: "Please select shop"
+                });
+            }
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+            /*
+            |--------------------------------------------------------------------------
+            | Company WhatsApp Paid Service
+            |--------------------------------------------------------------------------
+            */
+
+            DB = await mysql2.pool.getConnection();
+            const [Company] = await DB.query(
+                `SELECT IsPaidWhatsappMsg
+             FROM company
+             WHERE ID = ?`,
+                [CompanyID]
+            );
+
+            if (!Company.length) {
+                return res.send({
+                    success: false,
+                    message: "Company not found."
+                });
+            }
+
+            if (
+                String(Company[0]?.IsPaidWhatsappMsg).toLowerCase() !== "true"
+            ) {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp paid service is not enabled. Please contact the administrator."
+                });
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Get Shop WhatsApp Configuration
+            |--------------------------------------------------------------------------
+            */
+
+            const [rows] = await connection.query(
+                `SELECT
+                isWhatsappPaidService,
+                ApiKey,
+                NameSpace,
+                WhatsappNumber,
+                WhatsappArray
+             FROM shop
+             WHERE CompanyID = ?
+             AND ID = ?`,
+                [CompanyID, shopid]
+            );
+
+            if (!rows.length) {
+                return res.send({
+                    success: false,
+                    message: "Shop WhatsApp configuration not found."
+                });
+            }
+
+            const {
+                isWhatsappPaidService,
+                ApiKey,
+                NameSpace,
+                WhatsappNumber,
+                WhatsappArray
+            } = rows[0];
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Shop WhatsApp Validation
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                String(isWhatsappPaidService).toLowerCase() !== "true"
+            ) {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp paid service is not enabled."
+                });
+            }
+
+            if (!ApiKey || ApiKey.trim() === "") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp API Key is not configured."
+                });
+            }
+
+            if (!NameSpace || NameSpace.trim() === "") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp Namespace is not configured."
+                });
+            }
+
+            if (!WhatsappNumber || WhatsappNumber.trim() === "") {
+                return res.send({
+                    success: false,
+                    message: "WhatsApp Number is not configured."
+                });
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Parse WhatsApp Templates
+            |--------------------------------------------------------------------------
+            */
+
+            let Templates = [];
+
+            try {
+
+                Templates = WhatsappArray
+                    ? JSON.parse(WhatsappArray)
+                    : [];
+
+            } catch (err) {
+
+                return res.send({
+                    success: false,
+                    message: "Invalid WhatsApp template configuration."
+                });
+
+            }
+
+
+            if (!Templates.length) {
+
+                return res.send({
+                    success: false,
+                    message: "WhatsApp templates not configured."
+                });
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Request Body
+            |--------------------------------------------------------------------------
+            */
+
+            const Body = req.body;
+
+            if (!Body || Object.keys(Body).length === 0) {
+
+                return res.send({
+                    success: false,
+                    message: "Invalid request data"
+                });
+
+            }
+
+
+            const {
+                MobileNo,
+                TemplateValue,
+                MediaURL,
+                FileName,
+                MediaType
+            } = Body;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Common Validation
+            |--------------------------------------------------------------------------
+            */
+
+            if (!MobileNo) {
+
+                return res.send({
+                    success: false,
+                    message: "MobileNo is required"
+                });
+
+            }
+
+            if (!TemplateValue) {
+
+                return res.send({
+                    success: false,
+                    message: "TemplateValue is required"
+                });
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Find Template
+            |--------------------------------------------------------------------------
+            */
+
+            const Template = Templates.find(
+                x => x.TemplateValue === TemplateValue
+            );
+
+            if (!Template) {
+
+                return res.send({
+                    success: false,
+                    message: "Invalid TemplateValue"
+                });
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Extract Template Variables
+            |--------------------------------------------------------------------------
+            |
+            | Example:
+            |
+            | Hi ${CustomerName}
+            | ${ShopName}
+            | ${ShopNumber}
+            |
+            */
+
+            const TemplateFields = [
+                ...Template.MessageText.matchAll(/\$\{(.*?)\}/g)
+            ].map(item => item[1]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Mobile Numbers
+            |--------------------------------------------------------------------------
+            |
+            | Request:
+            |
+            | MobileNo:
+            | "919766666248,918777030367"
+            |
+            */
+
+            let MobileNumbers = String(MobileNo)
+                .split(",")
+                .map(mobile => mobile.trim())
+                .filter(Boolean);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Remove Duplicate Mobile Numbers
+            |--------------------------------------------------------------------------
+            */
+
+            MobileNumbers = [...new Set(MobileNumbers)];
+
+
+            if (!MobileNumbers.length) {
+
+                return res.send({
+                    success: false,
+                    message: "Valid MobileNo is required"
+                });
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Normalize Mobile Number
+            |--------------------------------------------------------------------------
+            |
+            | 9766666248
+            |        ↓
+            | 919766666248
+            |
+            | Already 91:
+            |
+            | 919766666248
+            |        ↓
+            | 919766666248
+            |
+            */
+
+            const normalizeMobileNumber = (mobile) => {
+
+                let number = String(mobile)
+                    .replace(/\D/g, "");
+
+                // Indian 10 digit number
+                if (number.length === 10) {
+                    number = `91${number}`;
+                }
+
+                return number;
+            };
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Validate Mobile Numbers
+            |--------------------------------------------------------------------------
+            */
+
+            const ValidMobileNumbers = [];
+            const InvalidMobileNumbers = [];
+
+            MobileNumbers.forEach(mobile => {
+
+                const normalizedMobile = normalizeMobileNumber(mobile);
+
+                /*
+                 * Basic international WhatsApp number validation.
+                 * Country code + number should normally be between
+                 * 10 and 15 digits.
+                 */
+
+                if (
+                    normalizedMobile.length >= 10 &&
+                    normalizedMobile.length <= 15
+                ) {
+
+                    ValidMobileNumbers.push(normalizedMobile);
+
+                } else {
+
+                    InvalidMobileNumbers.push(mobile);
+
+                }
+
+            });
+
+
+            if (!ValidMobileNumbers.length) {
+
+                return res.send({
+                    success: false,
+                    message: "No valid mobile numbers found.",
+                    invalidMobileNumbers: InvalidMobileNumbers
+                });
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Find Customers From Database
+            |--------------------------------------------------------------------------
+            |
+            | We search MobileNo1, MobileNo2 and PhoneNo.
+            |
+            */
+
+            const CustomerConditions = [];
+            const CustomerParams = [];
+
+            ValidMobileNumbers.forEach(mobile => {
+
+                const numberWithoutCountryCode =
+                    mobile.startsWith("91") && mobile.length === 12
+                        ? mobile.substring(2)
+                        : mobile;
+
+                CustomerConditions.push(`
+                c.MobileNo1 IN (?, ?)
+                OR c.MobileNo2 IN (?, ?)
+                OR c.PhoneNo IN (?, ?)
+            `);
+
+                CustomerParams.push(
+                    mobile,
+                    numberWithoutCountryCode,
+                    mobile,
+                    numberWithoutCountryCode,
+                    mobile,
+                    numberWithoutCountryCode
+                );
+
+            });
+
+
+            const CustomerWhereCondition =
+                CustomerConditions.join(" OR ");
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Fetch Customers
+            |--------------------------------------------------------------------------
+            */
+
+            const [Customers] = await connection.query(
+                `
+            SELECT
+                c.ID AS CustomerID,
+
+                CASE
+                    WHEN c.Title IS NULL OR c.Title = ''
+                    THEN c.Name
+                    ELSE CONCAT(c.Title, ' ', c.Name)
+                END AS CustomerName,
+
+                c.MobileNo1,
+                c.MobileNo2,
+                c.PhoneNo
+
+            FROM customer c
+
+            WHERE c.CompanyID = ?
+            AND (
+                ${CustomerWhereCondition}
+            )
+            `,
+                [
+                    CompanyID,
+                    ...CustomerParams
+                ]
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Create Customer Mobile Map
+            |--------------------------------------------------------------------------
+            */
+
+            const CustomerMap = new Map();
+
+
+            Customers.forEach(customer => {
+
+                const customerName =
+                    customer.CustomerName || "";
+
+                const customerMobiles = [
+                    customer.MobileNo1,
+                    customer.MobileNo2,
+                    customer.PhoneNo
+                ];
+
+                customerMobiles.forEach(mobile => {
+
+                    if (!mobile) {
+                        return;
+                    }
+
+                    const normalized = normalizeMobileNumber(mobile);
+
+                    if (normalized) {
+
+                        CustomerMap.set(
+                            normalized,
+                            {
+                                CustomerID: customer.CustomerID,
+                                CustomerName: customerName
+                            }
+                        );
+
+                    }
+
+                });
+
+            });
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Media Validation
+            |--------------------------------------------------------------------------
+            */
+
+            const isMediaRequired =
+                Template.Url &&
+                String(Template.Url).toLowerCase() !== "null" &&
+                String(Template.Url).trim() !== "";
+
+
+            if (isMediaRequired && !MediaURL) {
+
+                return res.send({
+                    success: false,
+                    message: "MediaURL is required for this template"
+                });
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Send Message One By One
+            |--------------------------------------------------------------------------
+            */
+
+            const results = [];
+
+            for (const mobile of ValidMobileNumbers) {
+
+                try {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Find Customer
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const Customer = CustomerMap.get(mobile);
+
+
+                    if (!Customer) {
+
+                        results.push({
+                            MobileNo: mobile,
+                            success: false,
+                            message: "Customer not found"
+                        });
+
+                        continue;
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Template Body Validation
+                    |--------------------------------------------------------------------------
+                    |
+                    | CustomerName is fetched from database.
+                    |
+                    */
+
+                    const CustomerBody = {
+                        ...Body,
+                        CustomerName: Customer.CustomerName
+                    };
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Validate Template Fields
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const missingFields = [];
+
+
+                    TemplateFields.forEach(field => {
+
+                        if (
+                            CustomerBody[field] === undefined ||
+                            CustomerBody[field] === null ||
+                            String(CustomerBody[field]).trim() === ""
+                        ) {
+
+                            missingFields.push(field);
+
+                        }
+
+                    });
+
+
+                    if (missingFields.length > 0) {
+
+                        results.push({
+                            MobileNo: mobile,
+                            CustomerID: Customer.CustomerID,
+                            CustomerName: Customer.CustomerName,
+                            success: false,
+                            message:
+                                `Missing required fields: ${missingFields.join(", ")}`
+                        });
+
+                        continue;
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Create Components
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const components = {};
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Body Components
+                    |--------------------------------------------------------------------------
+                    */
+
+                    TemplateFields.forEach((field, index) => {
+
+                        components[`body_${index + 1}`] = {
+                            type: "text",
+                            value: String(CustomerBody[field])
+                        };
+
+                    });
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Header Media
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (MediaURL && isMediaRequired) {
+
+                        const mediaType =
+                            String(MediaType || Template.Url)
+                                .toLowerCase();
+
+
+                        if (mediaType === "image") {
+
+                            components.header_1 = {
+                                type: "image",
+                                value: MediaURL
+                            };
+
+                        }
+                        else if (mediaType === "video") {
+
+                            components.header_1 = {
+                                type: "video",
+                                value: MediaURL
+                            };
+
+                        }
+                        else {
+
+                            components.header_1 = {
+                                filename: FileName || "document.pdf",
+                                type: "document",
+                                value: MediaURL
+                            };
+
+                        }
+
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | MSG91 Payload
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const payload = {
+
+                        integrated_number: String(WhatsappNumber),
+
+                        content_type: "template",
+
+                        payload: {
+
+                            messaging_product: "whatsapp",
+
+                            type: "template",
+
+                            template: {
+
+                                name: TemplateValue,
+
+                                language: {
+                                    code: "en",
+                                    policy: "deterministic"
+                                },
+
+                                namespace: String(NameSpace),
+
+                                to_and_components: [
+
+                                    {
+                                        to: [mobile],
+                                        components
+                                    }
+
+                                ]
+
+                            }
+
+                        }
+
+                    };
+
+
+                    console.log(
+                        `Sending WhatsApp to ${mobile} (${Customer.CustomerName})`
+                    );
+
+                    console.log(
+                        JSON.stringify(payload)
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | MSG91 API
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const apiResponse = await axios.post(
+
+                        "https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/",
+
+                        payload,
+
+                        {
+                            headers: {
+                                authkey: String(ApiKey),
+                                "Content-Type": "application/json"
+                            }
+                        }
+
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Success Result
+                    |--------------------------------------------------------------------------
+                    */
+
+                    results.push({
+
+                        MobileNo: mobile,
+
+                        CustomerID: Customer.CustomerID,
+
+                        CustomerName: Customer.CustomerName,
+
+                        success: true,
+
+                        message: "Whatsapp message sent successfully",
+
+                        data: apiResponse.data
+
+                    });
+
+
+                }
+                catch (error) {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Individual Number Error
+                    |--------------------------------------------------------------------------
+                    |
+                    | One customer's failure will NOT stop other messages.
+                    |
+                    */
+
+                    console.error(
+                        `WhatsApp failed for ${mobile}:`,
+                        error?.response?.data || error.message
+                    );
+
+
+                    results.push({
+
+                        MobileNo: mobile,
+
+                        success: false,
+
+                        message:
+                            error?.response?.data?.message ||
+                            error?.response?.data ||
+                            error.message
+
+                    });
+
+                }
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Final Response
+            |--------------------------------------------------------------------------
+            */
+
+            const successCount =
+                results.filter(x => x.success).length;
+
+            const failedCount =
+                results.filter(x => !x.success).length;
+
+
+            return res.send({
+
+                success: successCount > 0,
+
+                message:
+                    `WhatsApp processing completed. ${successCount} sent, ${failedCount} failed.`,
+
+                total: ValidMobileNumbers.length,
+
+                successCount,
+
+                failedCount,
+
+                invalidMobileNumbers: InvalidMobileNumbers,
+
+                data: results
+
+            });
+
+
+        }
+        catch (err) {
+
+            console.log(err);
+
+            next(err);
+
+        }
+        finally {
+
+            if (DB) {
+
+                try {
+
+                    DB.release();
+
+                    console.log(
+                        "✅ MySQL pool connection released"
+                    );
+
+                }
+                catch (releaseErr) {
+
+                    console.error(
+                        "⚠️ Error releasing MySQL pool connection:",
+                        releaseErr
+                    );
+
+                }
+
+            }
+
+
+            if (connection) {
+
+                try {
+
+                    connection.release();
+
+                    console.log(
+                        "✅ Company DB connection released"
+                    );
+
+                }
+                catch (releaseErr) {
+
+                    console.error(
+                        "⚠️ Error releasing company DB connection:",
+                        releaseErr
+                    );
+
+                }
+
+            }
+
+        }
+    },
     fetchCustomerForWhatsapp: async (req, res, next) => {
         let connection;
         try {

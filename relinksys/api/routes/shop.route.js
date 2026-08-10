@@ -64,6 +64,8 @@ router.post('/updateWhatsappConfig', verifyAccessTokenAdmin, dbConnection, Contr
 
 router.post('/sendMessage', verifyAccessTokenAdmin, dbConnection, Controller.sendWhatsappTemplate)
 
+router.post('/sendBulkMessage', verifyAccessTokenAdmin, dbConnection, Controller.sendWhatsappBulkTemplate)
+
 router.post('/fetchCustomerForWhatsapp', verifyAccessTokenAdmin, dbConnection, Controller.fetchCustomerForWhatsapp)
 
 
