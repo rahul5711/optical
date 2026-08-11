@@ -10,20 +10,41 @@
                     <div class="body">
                         <form autocomplete="off" #f="ngForm">
                             <div class="row">
-                                <div class="col-xl-4 col-lg-3"  style="border: 1px solid rgb(211, 211, 211); ">
+                                <div class="col-xl-4 col-lg-3" style="border: 1px solid rgb(211, 211, 211); ">
                                     <div class="row">
                                         <div class="col-xl-12 col-lg-3 col-md-3 col-sm-3 mb-0">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>TemplateName</mat-label>
-                                                <mat-select name="TemplateName"
-                                                    [(ngModel)]="data.TemplateName" required #GSTTypecontrol1>
-                                                    <mat-option [value]="p.TemplateName" *ngFor="let p of whatsappTemplateList">
+                                                <mat-select name="TemplateName" [(ngModel)]="data.TemplateName"
+                                                    (selectionChange)="templateChange($event.value)" required
+                                                    #GSTTypecontrol1>
+                                                    <mat-option [value]="p.TemplateName"
+                                                        *ngFor="let p of whatsappTemplateList">
                                                         {{p.TemplateName}} </mat-option>
+                                                    <mat-option value="Custom"> Custom </mat-option>
+
                                                 </mat-select>
                                             </mat-form-field>
-                                       
+
+                                            <div class="message-preview mb-3" *ngIf="data.TemplateName != 'Custom'">
+
+                                                <div class="preview-title">
+                                                    Message Preview
+                                                </div>
+
+                                                <div class="whatsapp-preview">
+
+                                                    <div class="whatsapp-message">
+                                                        {{ data.Message }}
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
                                         </div>
-                                        <div class="col-xl-12 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                        <div class="col-xl-12 col-lg-3 col-md-3 col-sm-3 mb-0"
+                                            *ngIf="data.TemplateName == 'Custom'">
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Message</mat-label>
                                                 <textarea rows="10" matInput name="Message" [(ngModel)]="data.Message"
@@ -34,12 +55,12 @@
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xxl-12 col-xl-12 col-lg-2 col-md-6 col-12  mb-3 ">
-                                             <button type="submit" [disabled]="!f2.valid || !f.valid"
-                                                (click)="onSubmit()"   mat-raised-button color="primary">
-                                                    Send
-                                                </button>
+                                            <button type="submit" [disabled]="!f2.valid || !f.valid"
+                                                (click)="onSubmit()" mat-raised-button color="primary">
+                                                Send
+                                            </button>
                                             <button type="button" mat-raised-button color="warn"
-                                                class="ms-3 me-3">Clear</button>
+                                                class="ms-3 me-3" (click)="reset()">Clear</button>
                                         </div>
                                     </div>
                                 </div>
@@ -157,7 +178,7 @@
                                         </div>
                                     </div>
 
-                                    <form #f2="ngForm" >
+                                    <form #f2="ngForm">
                                         <div class="row">
                                             <div class="col-xl-12" style="overflow: auto; height: 350px;">
                                                 <table
@@ -194,11 +215,12 @@
 
                                                 </table>
                                             </div>
-                                           
+
                                         </div>
                                     </form>
                                 </div>
-                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-0" style="background-color: #dcdcdc; height: 30px;">
+                                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 mb-0"
+                                    style="background-color: #dcdcdc; height: 30px;">
                                     <!-- <table class="table table-striped table-hover table-sm table-bordered mx-auto"
                                         style=" width: 100%; white-space: nowrap;" id="CaseConExcel">
                                         <tfoot class="hide-on-print">
@@ -209,12 +231,13 @@
                                         </tfoot>
                                     </table> -->
                                 </div>
-                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mb-0 " >
+                                <div class="col-xl-8 col-lg-8 col-md-8 col-sm-12 mb-0 ">
                                     <table class="table table-striped table-hover table-sm table-bordered mx-auto"
                                         style=" width: 100%; white-space: nowrap;" id="CaseConExcel">
                                         <tfoot class="hide-on-print">
                                             <tr style="background-color: #dcdcdc;">
-                                                <th style="border: 1px solid #dcdcdc; color:red"> Total Customer - 0000000</th>
+                                                <th style="border: 1px solid #dcdcdc; color:red"> Total Customer -
+                                                    0000000</th>
                                                 <!-- <th style="border: 1px solid #ff1d1d;"> Total Mob. - 0000000</th> -->
                                             </tr>
                                         </tfoot>

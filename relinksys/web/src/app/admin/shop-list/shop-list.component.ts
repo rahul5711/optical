@@ -87,21 +87,21 @@ export class ShopListComponent implements OnInit {
 
   
   whatsappSettingList: any = [
-    {TemplateName: 'Customer_Birthday', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Anniversary', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Bill_Advance', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Bill_FinalDelivery', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Bill_OrderReady', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Eye_Prescription', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Membership_Card', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Reward_Points', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Balance_Reminder', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Eye_Testing_Reminder', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Contact_Lens_Expiry', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Solution_Expiry', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Credit_Note', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Comfort_Feedback', TemplateValue:'', MessageText: '',Url:''},
-    {TemplateName: 'Customer_Service_Reminder', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Birthday', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Anniversary', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Bill_Advance', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Bill_FinalDelivery', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Bill_OrderReady', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Eye_Prescription', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Membership_Card', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Reward_Points', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Balance_Reminder', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Eye_Testing_Reminder', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Contact_Lens_Expiry', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Solution_Expiry', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Credit_Note', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Comfort_Feedback', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'Customer_Service_Reminder', TemplateValue:'', MessageText: '',Url:''},
   ];
 
   whatsappApi : any = {
