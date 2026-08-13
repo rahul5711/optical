@@ -9,7 +9,7 @@
                         <div class="header">
                             <div class="row">
                                 <div class="col-lg-2 col-md-2 col-3">
-                                    <h4 class="d-none d-md-block" style="font-weight: 600;" > Customer ID <b
+                                    <h4 class="d-none d-md-block" style="font-weight: 600;"> Customer ID <b
                                             style="color:#000">{{this.data.Idd}}</b> / <b
                                             style="color:#000">{{this.data.Category}}</b> </h4>
                                     <h4 class="d-block d-md-none" style="font-weight: 600;"> ID <b
@@ -189,7 +189,8 @@
                                                     <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol
                                                         [disabled]="!optometristDisabled ">
                                                         <mat-option></mat-option>
-                                                         <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}} </mat-option>
+                                                        <mat-option [value]="g.Name"
+                                                            *ngFor="let g of genderList">{{g.Name}} </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
@@ -205,8 +206,8 @@
                                                 <mat-form-field class="example-full-width"
                                                     *ngIf="optometristDisabled == true">
                                                     <mat-label>Address</mat-label>
-                                                    <textarea rows="1" minlength="2" type="text" aria-label="Text" matInput name="Address"
-                                                        [(ngModel)]="data.Address"
+                                                    <textarea rows="1" minlength="2" type="text" aria-label="Text"
+                                                        matInput name="Address" [(ngModel)]="data.Address"
                                                         (ngModelChange)="data.Address = onChange($event)"
                                                         [formControl]="myControl2" [matAutocomplete]="auto"
                                                         (input)="customerSearch(myControl2.value, 'Address')"> </textarea>
@@ -268,23 +269,23 @@
                                                 class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton"
                                                 style="text-align:right;">
 
-                                                <button *ngIf="id != 0 && company.OldBill == 'true' " class="me-2 " mat-raised-button color="primary"
-                                                    style="padding: 0px 10px;" type="button"
-                                                    [routerLink]="['/sale/oldBilllist/',data.ID]">
+                                                <button *ngIf="id != 0 && company.OldBill == 'true' " class="me-2 "
+                                                    mat-raised-button color="primary" style="padding: 0px 10px;"
+                                                    type="button" [routerLink]="['/sale/oldBilllist/',data.ID]">
                                                     <span class="first-letter">O</span>ld Bill
                                                 </button>
-                                                
-                                               <ng-container *ngIf="OptometristBtn == 'true'">
-                                                  <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
-                                                     style="padding: 0px 10px;" type="button"
-                                                     [routerLink]="['/sale/optometrist/', data.ID]">
-                                                     Opto
-                                                  </button>
+
+                                                <ng-container *ngIf="OptometristBtn == 'true'">
+                                                    <button *ngIf="id != 0" class="me-2" mat-raised-button
+                                                        color="primary" style="padding: 0px 10px;" type="button"
+                                                        [routerLink]="['/sale/optometrist/', data.ID]">
+                                                        Opto
+                                                    </button>
                                                 </ng-container>
 
-                                                <button *ngIf="id != 0 && this.shop.RoleName != 'Sale'" class="me-2" mat-raised-button color="primary"
-                                                    style="padding: 0px 10px;" type="button"
-                                                    [routerLink]="['/sale/billinglist/',data.ID]"><span
+                                                <button *ngIf="id != 0 && this.shop.RoleName != 'Sale'" class="me-2"
+                                                    mat-raised-button color="primary" style="padding: 0px 10px;"
+                                                    type="button" [routerLink]="['/sale/billinglist/',data.ID]"><span
                                                         class="first-letter">B</span>ill History</button>
 
                                                 <button *ngIf="id != 0 " (click)="updateCustomer()"
@@ -292,13 +293,16 @@
                                                     type="button" style="padding: 0px 18px;">Up<span
                                                         class="first-letter">d</span>ate</button>
                                                 <button *ngIf="id == 0 && company.ID == 84" (click)="onsubmit()"
-                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''" mat-raised-button
-                                                    color="primary" type="button" style="padding: 0px 22px;">
+                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''"
+                                                    mat-raised-button color="primary" type="button"
+                                                    style="padding: 0px 22px;">
                                                     <span class="first-letter">S</span>ave
                                                 </button>
-                                                <button *ngIf="id == 0 && company.ID != 84 && this.shop.RoleName != 'Sale'" (click)="onsubmit()"
-                                                    [disabled]="!f.valid || data.Name == ''" mat-raised-button
-                                                    color="primary" type="button" style="padding: 0px 22px;">
+                                                <button
+                                                    *ngIf="id == 0 && company.ID != 84 && this.shop.RoleName != 'Sale'"
+                                                    (click)="onsubmit()" [disabled]="!f.valid || data.Name == ''"
+                                                    mat-raised-button color="primary" type="button"
+                                                    style="padding: 0px 22px;">
                                                     <span class="first-letter">S</span>ave
                                                 </button>
                                                 <button class="ms-2" type="button" (click)="clearFrom()"
@@ -397,7 +401,9 @@
                                                                     class="example-margin"
                                                                     #Multiplecontrol></mat-slide-toggle>
 
-                                                                    <button *ngIf="this.company.Plan == 1" (click)="openModalP(power)" class="powerValue">i</button>
+                                                                <button *ngIf="this.company.Plan == 1"
+                                                                    (click)="openModalP(power)"
+                                                                    class="powerValue">i</button>
                                                             </div>
                                                             <div class="col-md-3 col-3 ">
                                                                 <span class="right_letf">Left Eye</span>
@@ -625,7 +631,9 @@
                                                                 </button>
                                                             </div>
                                                             <div class="col-3 mx-auto">
-                                                                <button *ngIf="this.company.Plan == 1" (click)="openModalP(power)" mat-raised-button class="primary">Power</button>
+                                                                <button *ngIf="this.company.Plan == 1"
+                                                                    (click)="openModalP(power)" mat-raised-button
+                                                                    class="primary">Power</button>
                                                             </div>
                                                             <div class="col-4 ms-auto ps-4">
                                                                 <button mat-raised-button color="primary"
@@ -869,22 +877,25 @@
                                                             </mat-form-field>
                                                         </div>
                                                         <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                            <button type="button" autofocus class="btn_icon" (click)="showDoctorAdd = !showDoctorAdd;">
-                                                                <mat-icon class="col-white plus_icon" >add</mat-icon>
+                                                            <button type="button" autofocus class="btn_icon"
+                                                                (click)="showDoctorAdd = !showDoctorAdd;">
+                                                                <mat-icon class="col-white plus_icon">add</mat-icon>
                                                             </button>
                                                         </div>
                                                         <div *ngIf="showDoctorAdd" class="col-md-2 col-4 mb-0">
-                                                                <mat-form-field class="example-full-width mb-0">
-                                                                  <mat-label>Add Rx</mat-label>
-                                                                    <input matInput name="Name" [(ngModel)]="rxDoc.Name"  #NameTypecontrol>
-                                                                </mat-form-field>
+                                                            <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Add Rx</mat-label>
+                                                                <input matInput name="Name" [(ngModel)]="rxDoc.Name"
+                                                                    #NameTypecontrol>
+                                                            </mat-form-field>
                                                         </div>
-                                                         <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                           <button type="button"  mat-mini-fab color="primary" (click)="showDoctorAdd = !showDoctorAdd; docSave()"
-                                                              aria-label="Example icon button with a bookmark icon">
-                                                              <mat-icon>save</mat-icon>
-                                                             </button>
-                                                         </div>
+                                                        <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                            <button type="button" mat-mini-fab color="primary"
+                                                                (click)="showDoctorAdd = !showDoctorAdd; docSave()"
+                                                                aria-label="Example icon button with a bookmark icon">
+                                                                <mat-icon>save</mat-icon>
+                                                            </button>
+                                                        </div>
 
                                                         <div class="col-md-3 col-3 p-md-0">
                                                             <mat-form-field class="example-full-width mb-0">
@@ -1000,12 +1011,17 @@
                                                                                     class="whatsapp  "><i
                                                                                         class="fa-brands fa-whatsapp"></i></button>
 
-                                                                                        <button type="button"  *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail(i, 'spectacle')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
+                                                                                <button type="button"
+                                                                                    *ngIf="this.company.EmailMsg == 'true'"
+                                                                                    (click)="sendEmail(i, 'spectacle')"
+                                                                                    class="email_icon ms-1"><i
+                                                                                        class="fa-solid fa-envelope"></i></button>
                                                                             </td>
                                                                             <td class="text-left">
                                                                                 {{spectacleLists.length -
                                                                                 i }}</td>
-                                                                            <td>{{s.VisitDate | date: 'dd-MM-yyyy'}}</td>
+                                                                            <td>{{s.VisitDate | date: 'dd-MM-yyyy'}}
+                                                                            </td>
                                                                             <td>{{s.Family}}</td>
                                                                             <td>{{s.RefferedByDoc}}</td>
                                                                             <td>{{s.REDPSPH}}</td>
@@ -1041,7 +1057,7 @@
                                                                             <td>{{s.DistanceWork}}</td>
                                                                             <td>{{s.UpdatedOn}}</td>
                                                                         </tr>
-                                                                       
+
                                                                     </tbody>
                                                                 </table>
 
@@ -1501,23 +1517,26 @@
                                                                 </mat-error>
                                                             </mat-form-field>
                                                         </div>
-                                                         <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                            <button type="button" autofocus class="btn_icon" (click)="showDoctorAdd = !showDoctorAdd;">
-                                                                <mat-icon class="col-white plus_icon" >add</mat-icon>
+                                                        <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                            <button type="button" autofocus class="btn_icon"
+                                                                (click)="showDoctorAdd = !showDoctorAdd;">
+                                                                <mat-icon class="col-white plus_icon">add</mat-icon>
                                                             </button>
                                                         </div>
                                                         <div *ngIf="showDoctorAdd" class="col-md-2 col-4 mb-0">
-                                                                <mat-form-field class="example-full-width mb-0">
-                                                                  <mat-label>Add Rx</mat-label>
-                                                                    <input matInput name="Name" [(ngModel)]="rxDoc.Name"  #NameTypecontrol>
-                                                                </mat-form-field>
+                                                            <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Add Rx</mat-label>
+                                                                <input matInput name="Name" [(ngModel)]="rxDoc.Name"
+                                                                    #NameTypecontrol>
+                                                            </mat-form-field>
                                                         </div>
-                                                         <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                           <button type="button"  mat-mini-fab color="primary" (click)="showDoctorAdd = !showDoctorAdd; docSave()"
-                                                              aria-label="Example icon button with a bookmark icon">
-                                                              <mat-icon>save</mat-icon>
-                                                             </button>
-                                                         </div>
+                                                        <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                            <button type="button" mat-mini-fab color="primary"
+                                                                (click)="showDoctorAdd = !showDoctorAdd; docSave()"
+                                                                aria-label="Example icon button with a bookmark icon">
+                                                                <mat-icon>save</mat-icon>
+                                                            </button>
+                                                        </div>
                                                         <div class="col-md-1 col-3 p-md-0 ps-1">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>PD_R</mat-label>
@@ -1647,12 +1666,17 @@
                                                                                     class="whatsapp  "><i
                                                                                         class="fa-brands fa-whatsapp"></i></button>
 
-                                                                                        <button type="button" *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail(i, 'clens')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
+                                                                                <button type="button"
+                                                                                    *ngIf="this.company.EmailMsg == 'true'"
+                                                                                    (click)="sendEmail(i, 'clens')"
+                                                                                    class="email_icon ms-1"><i
+                                                                                        class="fa-solid fa-envelope"></i></button>
                                                                             </td>
                                                                             <td class="text-left">{{contactList.length -
                                                                                 i
                                                                                 }}</td>
-                                                                            <td>{{cl.VisitDate | date: 'dd-MM-yyyy'}}</td>
+                                                                            <td>{{cl.VisitDate | date: 'dd-MM-yyyy'}}
+                                                                            </td>
                                                                             <td>{{cl.Family}}</td>
                                                                             <td>{{cl.RefferedByDoc}}</td>
                                                                             <td>{{cl.REDPSPH}}</td>
@@ -1812,23 +1836,26 @@
                                                                 </mat-error>
                                                             </mat-form-field>
                                                         </div>
-                                                         <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                            <button type="button" autofocus class="btn_icon" (click)="showDoctorAdd = !showDoctorAdd;">
-                                                                <mat-icon class="col-white plus_icon" >add</mat-icon>
+                                                        <div *ngIf="!showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                            <button type="button" autofocus class="btn_icon"
+                                                                (click)="showDoctorAdd = !showDoctorAdd;">
+                                                                <mat-icon class="col-white plus_icon">add</mat-icon>
                                                             </button>
                                                         </div>
                                                         <div *ngIf="showDoctorAdd" class="col-md-2 col-4 mb-0">
-                                                                <mat-form-field class="example-full-width mb-0">
-                                                                  <mat-label>Add Rx</mat-label>
-                                                                    <input matInput name="Name" [(ngModel)]="rxDoc.Name"  #NameTypecontrol>
-                                                                </mat-form-field>
+                                                            <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Add Rx</mat-label>
+                                                                <input matInput name="Name" [(ngModel)]="rxDoc.Name"
+                                                                    #NameTypecontrol>
+                                                            </mat-form-field>
                                                         </div>
-                                                         <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
-                                                           <button type="button"  mat-mini-fab color="primary" (click)="showDoctorAdd = !showDoctorAdd; docSave()"
-                                                              aria-label="Example icon button with a bookmark icon">
-                                                              <mat-icon>save</mat-icon>
-                                                             </button>
-                                                         </div>
+                                                        <div *ngIf="showDoctorAdd" class="col-md-1 col-2 b-0">
+                                                            <button type="button" mat-mini-fab color="primary"
+                                                                (click)="showDoctorAdd = !showDoctorAdd; docSave()"
+                                                                aria-label="Example icon button with a bookmark icon">
+                                                                <mat-icon>save</mat-icon>
+                                                            </button>
+                                                        </div>
                                                         <div class="col-md-3 col-12 mb-0" style="margin: 0; ">
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Treatment</mat-label>
@@ -1902,12 +1929,17 @@
                                                                                     class="whatsapp  "><i
                                                                                         class="fa-brands fa-whatsapp"></i></button>
 
-                                                                                        <button type="button" *ngIf="this.company.EmailMsg == 'true'" (click)="sendEmail(i, 'other')" class="email_icon ms-1"><i class="fa-solid fa-envelope"></i></button>
+                                                                                <button type="button"
+                                                                                    *ngIf="this.company.EmailMsg == 'true'"
+                                                                                    (click)="sendEmail(i, 'other')"
+                                                                                    class="email_icon ms-1"><i
+                                                                                        class="fa-solid fa-envelope"></i></button>
                                                                             </td>
                                                                             <td class="text-left">{{otherList.length - i
                                                                                 }}
                                                                             </td>
-                                                                            <td>{{other.VisitDate | date: 'dd-MM-yyyy'}}</td>
+                                                                            <td>{{other.VisitDate | date: 'dd-MM-yyyy'}}
+                                                                            </td>
                                                                             <td>{{other.Family}}</td>
                                                                             <td>{{other.RefferedByDoc}}</td>
                                                                             <td>{{other.BP}}</td>
@@ -1947,17 +1979,17 @@
                                                     style="color:#000;">{{this.rewardBalance}}</b> </span>
                                             <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
                                                     style="color:#000;">{{this.data.Category}}</b></span>
-                                            
-                                <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
 
-                                            
+                                            <button type="button" (click)="openModalN(contentN)" class="ms-5"
+                                                mat-raised-button color="primary">Create Credit Note</button>
+
                                         </h2>
                                         <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
                                             (click)="modal.dismiss('Cross click')"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row mt-3 mt-md-0">
-                                            <div class="col-md-7 col-12">
+                                            <div class="col-md-10 col-12">
                                                 <div class="row ">
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
@@ -1976,11 +2008,10 @@
                                                             </mat-error>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
+                                                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Email</mat-label>
                                                             <input matInput name="Email" [(ngModel)]="data.Email"
-                                                                
                                                                 pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                                 #Emailcontrol />
                                                             <mat-error>
@@ -1996,7 +2027,18 @@
                                                                 [(ngModel)]="data.Anniversary">
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>GST/VAT No</mat-label>
+                                                            <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                                (ngModelChange)="data.GSTNo = onChange($event)"
+                                                                #GSTNocontrol />
+                                                            <mat-error>
+                                                                GST No is required
+                                                            </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Reference Type </mat-label>
                                                             <mat-select name="ReferenceType"
@@ -2015,18 +2057,8 @@
                                                             </mat-select>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>GST/VAT No</mat-label>
-                                                            <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
-                                                                (ngModelChange)="data.GSTNo = onChange($event)"
-                                                                #GSTNocontrol />
-                                                            <mat-error>
-                                                                GST No is required
-                                                            </mat-error>
-                                                        </mat-form-field>
-                                                    </div>
-                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                   
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label> Other </mat-label>
                                                             <mat-select name="Other" [(ngModel)]="data.Other"
@@ -2044,60 +2076,335 @@
                                                             </mat-select>
                                                         </mat-form-field>
                                                     </div>
+                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label> MemberType </mat-label>
+                                                            <mat-select name="MemberType" [(ngModel)]="memberCard.MemberType"
+                                                                #MemberTypecontrol>
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search matInput
+                                                                        [(ngModel)]="searchValue"
+                                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option [value]="m.Name"
+                                                                    *ngFor="let m of memberList | nameFilterS: searchValue">
+                                                                    {{m.Name}} </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+
+                                                    
                                                 </div>
+                                            </div>
 
-                                                <div class="row" *ngIf="company.PrimeMembership == 'true'">
-                                                    <div id="membershipCard" class="col-6"
-                                                        style="background-image: linear-gradient(2deg, #ffc10731, #ffc10737),url(https://png.pngtree.com/thumb_back/fh260/background/20220428/pngtree-abstract-3d-elegant-golden-ribbon-elements-and-lighting-effect-sparking-glitter-image_1108708.jpg); border-radius: 4px; padding: 4px 15px;background-size: 100%; box-shadow: 0px 0px 3px 0px #7a672d;">
-                                                        <div class="row pt-2" style="border-radius: 4px;">
-                                                            <div class="col-12 ">
-                                                                <h4 class="m-0"
-                                                                    style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
-                                                                    {{this.data.Title}} {{this.data.Name}}</h4>
-
-                                                                <h4 class="m-0"
-                                                                    style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
-                                                                    {{this.data.MobileNo1}}</h4>
+                                            <div class="col-md-2 col-12">
+                                                <div class="row ">
+                                                    <div class="col-md-12 col-12 ms-md-auto">
+                                                        <div *ngIf="company.PhotoClick == 'true'" class="row ">
+                                                            <div class="col-10 mt-md-0 ">
+                                                                <img class="fit-picture" width="170" height="130"
+                                                                    [src]="customerImage">
                                                             </div>
-
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <h1 class="m-0 " style="font-weight: 800;
-                                                                text-shadow: 2px 2px 2px #ffffff;
-                                                                color: #7c6131;
-                                                                letter-spacing: .8px;
-                                                                font-size: 2rem;">Prime Membership</h1>
+                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                                                (click)="fileInput.click()" style="cursor: pointer;">
+                                                                <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                                    <span style="font-size: 10px;letter-spacing: 2px;">
+                                                                        Image
+                                                                    </span>
+                                                                </i>
+                                                                <input #fileInput id="my-input" name='PhotoURL'
+                                                                    type="file" (change)="uploadImage($event, 'User')"
+                                                                    style="display:none;">
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-12"
-                                                                style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
-                                                                <h4 style="font-weight: 800; margin:0">CARD NUMBER ****
-                                                                    **** *{{this.data.Idd}}</h4>
-                                                            </div>
-                                                            <div class="col-12 pt-1 pb-1">
-                                                                <span
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.Name}}</span>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <span
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.MobileNo1}}</span>
-                                                            </div>
-                                                            <div class="col-6" style="text-align: right;">
-                                                                <span *ngIf="ActiveDeactive == true"
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:green;">Valid
-                                                                    {{this.ExpiryDateFormember}}</span>
-                                                                <span *ngIf="ActiveDeactive == false"
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
-                                                                    {{this.ExpiryDateFormember}}</span>
-                                                            </div>
-
-
                                                         </div>
                                                     </div>
-                                                    <div class="col-6">
-                                                        <form #fmc="ngForm">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Gold'">
+                                                    <div class="membership-card-inner">
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div  style="background-image:url('../../../assets/images/pmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#FFD181">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Gold'}} -->
+                                                                    Gold
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Gold'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/pcmbg.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardGold"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Silver'">
+                                                    <div class="membership-card-inner">
+
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/spmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#eaeaea">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Silver'}} -->
+                                                                    Silver
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Silver'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/sbpmc.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardSilver"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Platinum'">
+                                                    <div class="membership-card-inner">
+
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/ppmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#dfd1c6">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Platinum'}} -->
+                                                                    Platinum
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Platinum'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/pbpmc.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardPlatinum"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                 <div class="col-md-5 col-12 mt-3">
+                                                <form #fmc="ngForm">
                                                             <div class="row">
                                                                 <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
@@ -2115,67 +2422,33 @@
                                                                             autocomplete="false">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-6">
+                                                                <div class="col-12">
                                                                     <button (click)="membarshipSave()" mat-raised-button
                                                                         type="submit" [disabled]="!fmc.valid"
                                                                         color="primary">Save
                                                                     </button>
-                                                                    <button class="ms-1" (click)="shareOnWhatsApp()"
+                                                                    <button class="ms-2" (click)="shareOnWhatsApp()"
                                                                         mat-raised-button type="button" color="primary"
                                                                         [disabled]="this.membarshipList.length == 0"><i
                                                                             class="fa-brands fa-whatsapp "
                                                                             style="color:greenyellow"></i>
                                                                     </button>
                                                                 </div>
-                                                                <div class="col-6">
-                                                                    <!-- <mat-slide-toggle name="Preorder" color="primary" 
-                                                            class="example-margin"  [(ngModel)]="ActiveDeactive"  #Multiplecontrol style="color:#ff651e;">
-                                                            Active/Deactive</mat-slide-toggle> -->
-                                                                </div>
+                                                               
                                                             </div>
                                                         </form>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-5 col-12">
-                                                <div class="row ">
-                                                    <div class="col-md-7 col-12 p-0">
-                                                        <textarea name="Remark" rows="5"
-                                                            style="height:100%; width:100%">
-                                                            {{this.data.Remarks}}
-                                                         </textarea>
-                                                    </div>
-
-                                                      <div class="col-md-5 col-12 ms-md-auto">
-                                                <div *ngIf="company.PhotoClick == 'true'" class="row ">
-                                                    <div class="col-10 mt-md-0 ">
-                                                        <img class="fit-picture" width="170" height="100"
-                                                            [src]="customerImage">
-                                                    </div>
-                                                    <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
-                                                        (click)="fileInput.click()" style="cursor: pointer;">
-                                                        <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                            <span style="font-size: 10px;letter-spacing: 2px;"> Image
-                                                            </span>
-                                                        </i>
-                                                        <input #fileInput id="my-input" name='PhotoURL' type="file"
-                                                            (change)="uploadImage($event, 'User')"
-                                                            style="display:none;">
-                                                    </div>
-                                                </div>
-                                            </div> 
-
-                                                    <div *ngIf="company.PrimeMembership == 'true'" class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
+                                                   <div *ngIf="company.PrimeMembership == 'true'" class="col-md-7 col-12 mt-3" style="height: 150px;overflow: auto; padding: 0;
                                                     margin: 0px;">
                                                         <div class="table-responsive">
                                                             <table
-                                                                class="table table-striped table-hover table-sm table-bordered"
-                                                                style="border: 2px solid #fff !important;  ">
+                                                                class="table table-striped table-hover table-sm table-bordered "
+                                                                style="border: 1px solid #cfcfcf !important;  ">
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Action</th>
                                                                         <th>S.No</th>
+                                                                        <th>MemberType</th>
                                                                         <th>IssueDate</th>
                                                                         <th>ExpiryDate</th>
                                                                     </tr>
@@ -2192,6 +2465,7 @@
                                                                             </button>
                                                                         </td>
                                                                         <td>{{membarshipList.length - i }}</td>
+                                                                        <td>{{data.MemberType || '-'}}</td>
                                                                         <td>{{dateFormat(data.IssueDate)}}</td>
                                                                         <td>{{dateFormat(data.ExpiryDate)}}</td>
 
@@ -2200,25 +2474,23 @@
                                                             </table>
                                                         </div>
                                                     </div>
-                                                </div>
 
                                             </div>
-                                           
-
                                         </div>
                                     </div>
                                 </ng-template>
                                 <ng-template #contentN role="document" let-modal>
-    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-        <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Credit Note </h2>
-        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-            (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-        <form #fn="ngForm" autocomplete="off"  (ngSubmit)="saveCustomerCredit()">
-           <div class="row">
-           
-            <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                        <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Credit Note
+                                        </h2>
+                                        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                            (click)="modal.dismiss('Cross click')"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form #fn="ngForm" autocomplete="off" (ngSubmit)="saveCustomerCredit()">
+                                            <div class="row">
+
+                                                <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>Shop Name</mat-label>
                     <mat-select name="ShopID" [(ngModel)]="note.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
@@ -2230,44 +2502,47 @@
                     <mat-error> Select Shop</mat-error>
                 </mat-form-field>
             </div> -->
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Credit Number</mat-label>
-                    <input matInput name="CreditNumber" type="text" [(ngModel)]="note.CreditNumber"
-                    required  #CreditNumbercontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Credit Date</mat-label>
-                    <input matInput name="CreditDate" type="date" [(ngModel)]="note.CreditDate"
-                    required  #CreditDatecontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Amount</mat-label>
-                    <input matInput name="Amount" type="number" min="0" [(ngModel)]="note.Amount"
-                    required #Amountcontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Remark</mat-label>
-                    <textarea matInput name="Remark" type="text" [(ngModel)]="note.Remark"
-                        #Remarkcontrol></textarea>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!fn.valid" >Save</button>
-            </div>
-             <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-              <button type="button" class="me-3" mat-raised-button color="primary"  (click)="CreditManualPDF()">PDF</button> 
-            </div>
-           </div>
-        </form>
-    </div>
-</ng-template>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Credit Number</mat-label>
+                                                        <input matInput name="CreditNumber" type="text"
+                                                            [(ngModel)]="note.CreditNumber" required
+                                                            #CreditNumbercontrol>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Credit Date</mat-label>
+                                                        <input matInput name="CreditDate" type="date"
+                                                            [(ngModel)]="note.CreditDate" required #CreditDatecontrol>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Amount</mat-label>
+                                                        <input matInput name="Amount" type="number" min="0"
+                                                            [(ngModel)]="note.Amount" required #Amountcontrol>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Remark</mat-label>
+                                                        <textarea matInput name="Remark" type="text"
+                                                            [(ngModel)]="note.Remark" #Remarkcontrol></textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <button type="submit" class="me-3" mat-raised-button color="primary"
+                                                        [disabled]="!fn.valid">Save</button>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <button type="button" class="me-3" mat-raised-button color="primary"
+                                                        (click)="CreditManualPDF()">PDF</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </ng-template>
                                 <!--Customer Extra model popup end -->
 
                                 <!--spectacle Extra model popup start -->
@@ -2689,16 +2964,17 @@
                                                 <mat-form-field class="example-full-width mb-0">
                                                     <mat-label>Gender </mat-label>
                                                     <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol>
-                                                       <mat-option></mat-option>
-                                                         <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}} </mat-option>
+                                                        <mat-option></mat-option>
+                                                        <mat-option [value]="g.Name"
+                                                            *ngFor="let g of genderList">{{g.Name}} </mat-option>
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-2 col-lg-5 col-md-6  col-8 mb-0">
                                                 <mat-form-field class="example-full-width">
                                                     <mat-label>Address</mat-label>
-                                                    <textarea rows="1" minlength="2" type="text" aria-label="Text" matInput name="Address"
-                                                        [(ngModel)]="data.Address"
+                                                    <textarea rows="1" minlength="2" type="text" aria-label="Text"
+                                                        matInput name="Address" [(ngModel)]="data.Address"
                                                         (ngModelChange)="data.Address = onChange($event)"
                                                         [formControl]="myControl2" [matAutocomplete]="auto"
                                                         (input)="customerSearch(myControl2.value, 'Address')"></textarea>
@@ -2745,18 +3021,19 @@
                                                 </mat-form-field>
                                             </div>
                                             <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  ">
-                                                <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION' && company.OldBill == 'true'"
+                                                <button
+                                                    *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION' && company.OldBill == 'true'"
                                                     class="me-2 " mat-raised-button color="primary"
                                                     style="padding: 5px 10px;"
                                                     [routerLink]="['/sale/oldBilllist/',data.ID]"><span
                                                         class="first-letter">O</span>ld Bill
                                                 </button>
-                                               <ng-container *ngIf="OptometristBtn == 'true'">
-                                                  <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
-                                                     style="padding: 0px 10px;" type="button"
-                                                     [routerLink]="['/sale/optometrist/', data.ID]">
-                                                     Opto
-                                                  </button>
+                                                <ng-container *ngIf="OptometristBtn == 'true'">
+                                                    <button *ngIf="id != 0" class="me-2" mat-raised-button
+                                                        color="primary" style="padding: 0px 10px;" type="button"
+                                                        [routerLink]="['/sale/optometrist/', data.ID]">
+                                                        Opto
+                                                    </button>
                                                 </ng-container>
                                                 <button *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION'"
                                                     class="me-2" mat-raised-button color="primary"
@@ -2764,12 +3041,14 @@
                                                     [routerLink]="['/sale/billinglist/',data.ID]"><span
                                                         class="first-letter">B</span>ill History</button>
 
-                                                <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid" 
-                                                  type="button"  mat-raised-button color="primary" style="padding: 5px 18px;">up<span
+                                                <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
+                                                    type="button" mat-raised-button color="primary"
+                                                    style="padding: 5px 18px;">up<span
                                                         class="first-letter">d</span>ate</button>
                                                 <button *ngIf="id == 0 && company.ID == 84" (click)="onsubmit()"
-                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''" mat-raised-button
-                                                    color="primary" type="button" style="padding: 0px 22px;">
+                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''"
+                                                    mat-raised-button color="primary" type="button"
+                                                    style="padding: 0px 22px;">
                                                     <span class="first-letter">S</span>ave
                                                 </button>
                                                 <button *ngIf="id == 0 && company.ID != 84" (click)="onsubmit()"
@@ -2799,10 +3078,11 @@
                                                         style="color:#000;">{{this.rewardBalance}}</b> </span>
                                                 <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
                                                         style="color:#000;">{{this.data.Category}}</b></span>
-                                                          <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
+                                                <button type="button" (click)="openModalN(contentN)" class="ms-5"
+                                                    mat-raised-button color="primary">Create Credit Note</button>
                                             </h2>
-                                          <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-                                            (click)="modal.dismiss('Cross click')"></button>
+                                            <button type="button" title="Close Botton" class="btn-close"
+                                                aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="row mt-3 mt-md-0">
@@ -2829,7 +3109,6 @@
                                                             <mat-form-field class="example-full-width mb-0">
                                                                 <mat-label>Email</mat-label>
                                                                 <input matInput name="Email" [(ngModel)]="data.Email"
-                                                                    
                                                                     pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                                     #Emailcontrol />
                                                                 <mat-error>
@@ -2878,7 +3157,7 @@
                                                         </div>
                                                         <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                             <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label> Other </mat-label>
+                                                                <mat-label> Other / MemberShip</mat-label>
                                                                 <mat-select name="Other" [(ngModel)]="data.Other"
                                                                     #Othercontrol>
                                                                     <mat-option>
@@ -2915,12 +3194,12 @@
                                                                     <h4 class="m-0"
                                                                         style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
                                                                         {{this.data.Title}} {{this.data.Name}}</h4>
-    
+
                                                                     <h4 class="m-0"
                                                                         style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
                                                                         {{this.data.MobileNo1}}</h4>
                                                                 </div>
-    
+
                                                             </div>
                                                             <div class="row">
                                                                 <div class="col-12">
@@ -2934,7 +3213,8 @@
                                                             <div class="row">
                                                                 <div class="col-12"
                                                                     style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
-                                                                    <h4 style="font-weight: 800; margin:0">CARD NUMBER ****
+                                                                    <h4 style="font-weight: 800; margin:0">CARD NUMBER
+                                                                        ****
                                                                         **** *{{this.data.Idd}}</h4>
                                                                 </div>
                                                                 <div class="col-12 pt-1 pb-1">
@@ -2953,8 +3233,8 @@
                                                                         style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
                                                                         {{this.ExpiryDateFormember}}</span>
                                                                 </div>
-    
-    
+
+
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
@@ -2964,25 +3244,27 @@
                                                                         <mat-form-field class="example-full-width mb-0">
                                                                             <mat-label>IssueDate</mat-label>
                                                                             <input matInput name="IssueDate" type="date"
-                                                                                [(ngModel)]="memberCard.IssueDate" required
-                                                                                autocomplete="false">
+                                                                                [(ngModel)]="memberCard.IssueDate"
+                                                                                required autocomplete="false">
                                                                         </mat-form-field>
                                                                     </div>
                                                                     <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
                                                                         <mat-form-field class="example-full-width mb-0">
                                                                             <mat-label>ExpiryDate</mat-label>
-                                                                            <input matInput name="ExpiryDate" type="date"
-                                                                                required [(ngModel)]="memberCard.ExpiryDate"
+                                                                            <input matInput name="ExpiryDate"
+                                                                                type="date" required
+                                                                                [(ngModel)]="memberCard.ExpiryDate"
                                                                                 autocomplete="false">
                                                                         </mat-form-field>
                                                                     </div>
                                                                     <div class="col-6">
-                                                                        <button (click)="membarshipSave()" mat-raised-button
-                                                                            type="submit" [disabled]="!fmc.valid"
-                                                                            color="primary">Save
+                                                                        <button (click)="membarshipSave()"
+                                                                            mat-raised-button type="submit"
+                                                                            [disabled]="!fmc.valid" color="primary">Save
                                                                         </button>
                                                                         <button class="ms-1" (click)="shareOnWhatsApp()"
-                                                                            mat-raised-button type="button" color="primary"
+                                                                            mat-raised-button type="button"
+                                                                            color="primary"
                                                                             [disabled]="this.membarshipList.length == 0"><i
                                                                                 class="fa-brands fa-whatsapp "
                                                                                 style="color:greenyellow"></i>
@@ -2998,11 +3280,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
-    
+
                                                 <div class="col-md-5 col-12">
                                                     <div class="row ">
                                                         <div class="col-md-7 col-12 p-0">
-                                                            <textarea name="Remark"  rows="5"
+                                                            <textarea name="Remark" rows="5"
                                                                 style=" height:100%; width:100%">
                                                                 {{this.data.Remarks}}
                                                              </textarea>
@@ -3014,18 +3296,23 @@
                                                                         [src]="customerImage">
                                                                 </div>
                                                                 <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
-                                                                    (click)="fileInput.click()" style="cursor: pointer;">
+                                                                    (click)="fileInput.click()"
+                                                                    style="cursor: pointer;">
                                                                     <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                                        <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                                        <span
+                                                                            style="font-size: 10px;letter-spacing: 2px;">
+                                                                            Image
                                                                         </span>
                                                                     </i>
-                                                                    <input #fileInput id="my-input" name='PhotoURL' type="file"
+                                                                    <input #fileInput id="my-input" name='PhotoURL'
+                                                                        type="file"
                                                                         (change)="uploadImage($event, 'User')"
                                                                         style="display:none;">
                                                                 </div>
                                                             </div>
-                                                        </div> 
-                                                        <div *ngIf="company.PrimeMembership == 'true'" class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
+                                                        </div>
+                                                        <div *ngIf="company.PrimeMembership == 'true'"
+                                                            class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
                                                         margin: 0px;">
                                                             <div class="table-responsive">
                                                                 <table
@@ -3053,30 +3340,32 @@
                                                                             <td>{{membarshipList.length - i }}</td>
                                                                             <td>{{dateFormat(data.IssueDate)}}</td>
                                                                             <td>{{dateFormat(data.ExpiryDate)}}</td>
-    
+
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
                                                             </div>
                                                         </div>
                                                     </div>
-    
+
                                                 </div>
-                                                
-                                                </div> 
+
+                                            </div>
                                         </div>
                                     </ng-template>
                                     <ng-template #contentN role="document" let-modal>
-    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-        <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Credit Note </h2>
-        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-            (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-        <form #fn="ngForm" autocomplete="off"  (ngSubmit)="saveCustomerCredit()">
-           <div class="row">
-           
-            <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                                        <div class="modal-header"
+                                            style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                            <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Credit
+                                                Note </h2>
+                                            <button type="button" title="Close Botton" class="btn-close"
+                                                aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form #fn="ngForm" autocomplete="off" (ngSubmit)="saveCustomerCredit()">
+                                                <div class="row">
+
+                                                    <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>Shop Name</mat-label>
                     <mat-select name="ShopID" [(ngModel)]="note.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
@@ -3088,44 +3377,48 @@
                     <mat-error> Select Shop</mat-error>
                 </mat-form-field>
             </div> -->
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Credit Number</mat-label>
-                    <input matInput name="CreditNumber" type="text" [(ngModel)]="note.CreditNumber"
-                    required  #CreditNumbercontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Credit Date</mat-label>
-                    <input matInput name="CreditDate" type="date" [(ngModel)]="note.CreditDate"
-                    required  #CreditDatecontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Amount</mat-label>
-                    <input matInput name="Amount" type="number" min="0" [(ngModel)]="note.Amount"
-                    required #Amountcontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Remark</mat-label>
-                    <textarea matInput name="Remark" type="text" [(ngModel)]="note.Remark"
-                        #Remarkcontrol></textarea>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!fn.valid" >Save</button>
-            </div>
-             <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <button type="button" class="me-3" mat-raised-button color="primary" (click)="CreditManualPDF()">PDF</button> 
-            </div>
-           </div>
-        </form>
-    </div>
-</ng-template>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Credit Number</mat-label>
+                                                            <input matInput name="CreditNumber" type="text"
+                                                                [(ngModel)]="note.CreditNumber" required
+                                                                #CreditNumbercontrol>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Credit Date</mat-label>
+                                                            <input matInput name="CreditDate" type="date"
+                                                                [(ngModel)]="note.CreditDate" required
+                                                                #CreditDatecontrol>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Amount</mat-label>
+                                                            <input matInput name="Amount" type="number" min="0"
+                                                                [(ngModel)]="note.Amount" required #Amountcontrol>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Remark</mat-label>
+                                                            <textarea matInput name="Remark" type="text"
+                                                                [(ngModel)]="note.Remark" #Remarkcontrol></textarea>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                        <button type="submit" class="me-3" mat-raised-button
+                                                            color="primary" [disabled]="!fn.valid">Save</button>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                        <button type="button" class="me-3" mat-raised-button
+                                                            color="primary" (click)="CreditManualPDF()">PDF</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </ng-template>
                                     <!--Customer Extra model popup end -->
                                 </div>
                             </form>
@@ -3258,16 +3551,17 @@
                                             <mat-form-field class="example-full-width mb-0">
                                                 <mat-label>Gender </mat-label>
                                                 <mat-select name="Gender" [(ngModel)]="data.Gender" #Gendercontrol>
-                                                  <mat-option></mat-option>
-                                                         <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}} </mat-option>
+                                                    <mat-option></mat-option>
+                                                    <mat-option [value]="g.Name" *ngFor="let g of genderList">{{g.Name}}
+                                                    </mat-option>
                                                 </mat-select>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-2 col-lg-5 col-md-3  col-8 mb-0">
                                             <mat-form-field class="example-full-width">
                                                 <mat-label>Address</mat-label>
-                                                <textarea rows="1" minlength="2" type="text" aria-label="Text" matInput name="Address"
-                                                    [(ngModel)]="data.Address"
+                                                <textarea rows="1" minlength="2" type="text" aria-label="Text" matInput
+                                                    name="Address" [(ngModel)]="data.Address"
                                                     (ngModelChange)="data.Address = onChange($event)"
                                                     [formControl]="myControl2" [matAutocomplete]="auto"
                                                     (input)="customerSearch(myControl2.value, 'Address')"></textarea>
@@ -3306,46 +3600,47 @@
                                                 <mat-label>Remark/TLN </mat-label>
                                                 <textarea matInput name="Remarks" [(ngModel)]="data.Remarks"
                                                     (ngModelChange)="data.Remarks = onChange($event)" #Remarkscontrol
-                                                    [style.height.px]="minHeight"
-                                                    style="overflow-y: auto;"></textarea>
+                                                    [style.height.px]="minHeight" style="overflow-y: auto;"></textarea>
                                                 <mat-error>
                                                     Remarks is required
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
                                         <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  ">
-                                            <button *ngIf="id != 0 && company.OldBill == 'true'" class="me-2 " mat-raised-button color="primary"
-                                                style="padding: 5px 10px;"
+                                            <button *ngIf="id != 0 && company.OldBill == 'true'" class="me-2 "
+                                                mat-raised-button color="primary" style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"><span
                                                     class="first-letter">O</span>ld Bill
                                             </button>
                                             <ng-container *ngIf="OptometristBtn == 'true'">
-                                                  <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
-                                                     style="padding: 0px 10px;" type="button"
-                                                     [routerLink]="['/sale/optometrist/', data.ID]">
-                                                     Opto
-                                                  </button>
-                                                </ng-container>
+                                                <button *ngIf="id != 0" class="me-2" mat-raised-button color="primary"
+                                                    style="padding: 0px 10px;" type="button"
+                                                    [routerLink]="['/sale/optometrist/', data.ID]">
+                                                    Opto
+                                                </button>
+                                            </ng-container>
                                             <button *ngIf="id != 0 " class="me-2" mat-raised-button color="primary"
                                                 style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/billinglist/',data.ID]"><span
                                                     class="first-letter">B</span>ill History</button>
 
                                             <button *ngIf="id != 0" (click)="updateCustomer()" [disabled]="!f.valid"
-                                              type="button"  mat-raised-button color="primary" style="padding: 5px 18px;">up<span
+                                                type="button" mat-raised-button color="primary"
+                                                style="padding: 5px 18px;">up<span
                                                     class="first-letter">d</span>ate</button>
                                             <button *ngIf="id == 0 && company.ID == 84" (click)="onsubmit()"
-                                                    [disabled]="!f.valid || data.Name == '' || data.DOB == ''" mat-raised-button
-                                                    color="primary" type="button" style="padding: 0px 22px;">
-                                                    <span class="first-letter">S</span>ave
-                                                </button>
-                                                <button *ngIf="id == 0 && company.ID != 84" (click)="onsubmit()"
-                                                    [disabled]="!f.valid || data.Name == ''" mat-raised-button
-                                                    color="primary" type="button" style="padding: 0px 22px;">
-                                                    <span class="first-letter">S</span>ave
-                                                </button>
+                                                [disabled]="!f.valid || data.Name == '' || data.DOB == ''"
+                                                mat-raised-button color="primary" type="button"
+                                                style="padding: 0px 22px;">
+                                                <span class="first-letter">S</span>ave
+                                            </button>
+                                            <button *ngIf="id == 0 && company.ID != 84" (click)="onsubmit()"
+                                                [disabled]="!f.valid || data.Name == ''" mat-raised-button
+                                                color="primary" type="button" style="padding: 0px 22px;">
+                                                <span class="first-letter">S</span>ave
+                                            </button>
                                             <button class="ms-2 me-2" (click)="clearFrom()" mat-raised-button
-                                              type="button"  color="primary" style="padding: 5px 22px">
+                                                type="button" color="primary" style="padding: 5px 22px">
                                                 <span class="first-letter">C</span>lear
                                             </button>
 
@@ -3365,9 +3660,10 @@
                                             <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
                                                     style="color:#000;">{{this.data.Category}}</b></span>
 
-                                                     <button type="button" (click)="openModalN(contentN)" class="ms-5" mat-raised-button color="primary">Create Credit Note</button>
+                                            <button type="button" (click)="openModalN(contentN)" class="ms-5"
+                                                mat-raised-button color="primary">Create Credit Note</button>
                                         </h2>
-                                      <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
                                             (click)="modal.dismiss('Cross click')"></button>
                                     </div>
                                     <div class="modal-body">
@@ -3395,7 +3691,6 @@
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Email</mat-label>
                                                             <input matInput name="Email" [(ngModel)]="data.Email"
-                                                               
                                                                 pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
                                                                 #Emailcontrol />
                                                             <mat-error>
@@ -3443,7 +3738,7 @@
                                                     </div>
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label> Other </mat-label>
+                                                            <mat-label> Other / MemberShip</mat-label>
                                                             <mat-select name="Other" [(ngModel)]="data.Other"
                                                                 #Othercontrol>
                                                                 <mat-option>
@@ -3566,7 +3861,7 @@
                                             <div class="col-md-5 col-12">
                                                 <div class="row ">
                                                     <div class="col-md-7 col-12 p-0">
-                                                        <textarea name="Remark"  rows="5"
+                                                        <textarea name="Remark" rows="5"
                                                             style="height: 100%; width:100%">
                                                             {{this.data.Remarks}}
                                                          </textarea>
@@ -3580,16 +3875,18 @@
                                                             <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
                                                                 (click)="fileInput.click()" style="cursor: pointer;">
                                                                 <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                                    <span style="font-size: 10px;letter-spacing: 2px;"> Image
+                                                                    <span style="font-size: 10px;letter-spacing: 2px;">
+                                                                        Image
                                                                     </span>
                                                                 </i>
-                                                                <input #fileInput id="my-input" name='PhotoURL' type="file"
-                                                                    (change)="uploadImage($event, 'User')"
+                                                                <input #fileInput id="my-input" name='PhotoURL'
+                                                                    type="file" (change)="uploadImage($event, 'User')"
                                                                     style="display:none;">
                                                             </div>
                                                         </div>
-                                                    </div> 
-                                                    <div *ngIf="company.PrimeMembership == 'true'" class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
+                                                    </div>
+                                                    <div *ngIf="company.PrimeMembership == 'true'"
+                                                        class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
                                                     margin: 0px;">
                                                         <div class="table-responsive">
                                                             <table
@@ -3626,22 +3923,23 @@
                                                 </div>
 
                                             </div>
-                                            
-                                            </div> 
+
+                                        </div>
 
                                     </div>
                                 </ng-template>
                                 <ng-template #contentN role="document" let-modal>
-    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
-        <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Credit Note </h2>
-        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
-            (click)="modal.dismiss('Cross click')"></button>
-    </div>
-    <div class="modal-body">
-        <form #fn="ngForm" autocomplete="off"  (ngSubmit)="saveCustomerCredit()">
-           <div class="row">
-           
-            <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
+                                    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                        <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Credit Note
+                                        </h2>
+                                        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                            (click)="modal.dismiss('Cross click')"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form #fn="ngForm" autocomplete="off" (ngSubmit)="saveCustomerCredit()">
+                                            <div class="row">
+
+                                                <!-- <div class="col-xl-4  col-lg-3 col-md-6 col-sm-12 mb-0 ">
                 <mat-form-field class="example-full-width mb-0">
                     <mat-label>Shop Name</mat-label>
                     <mat-select name="ShopID" [(ngModel)]="note.ShopID" required [disabled]="user.UserGroup !== 'CompanyAdmin'">
@@ -3653,44 +3951,47 @@
                     <mat-error> Select Shop</mat-error>
                 </mat-form-field>
             </div> -->
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Credit Number</mat-label>
-                    <input matInput name="CreditNumber" type="text" [(ngModel)]="note.CreditNumber"
-                    required  #CreditNumbercontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Credit Date</mat-label>
-                    <input matInput name="CreditDate" type="date" [(ngModel)]="note.CreditDate"
-                    required  #CreditDatecontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Amount</mat-label>
-                    <input matInput name="Amount" type="number" min="0" [(ngModel)]="note.Amount"
-                    required #Amountcontrol>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
-                <mat-form-field class="example-full-width mb-0">
-                    <mat-label>Remark</mat-label>
-                    <textarea matInput name="Remark" type="text" [(ngModel)]="note.Remark"
-                        #Remarkcontrol></textarea>
-                </mat-form-field>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!fn.valid" >Save</button>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
-                <button  type="button" class="me-3" mat-raised-button color="primary" (click)="CreditManualPDF()">PDF</button> 
-            </div>
-           </div>
-        </form>
-    </div>
-</ng-template>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Credit Number</mat-label>
+                                                        <input matInput name="CreditNumber" type="text"
+                                                            [(ngModel)]="note.CreditNumber" required
+                                                            #CreditNumbercontrol>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Credit Date</mat-label>
+                                                        <input matInput name="CreditDate" type="date"
+                                                            [(ngModel)]="note.CreditDate" required #CreditDatecontrol>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Amount</mat-label>
+                                                        <input matInput name="Amount" type="number" min="0"
+                                                            [(ngModel)]="note.Amount" required #Amountcontrol>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-6 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Remark</mat-label>
+                                                        <textarea matInput name="Remark" type="text"
+                                                            [(ngModel)]="note.Remark" #Remarkcontrol></textarea>
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <button type="submit" class="me-3" mat-raised-button color="primary"
+                                                        [disabled]="!fn.valid">Save</button>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6 mb-0">
+                                                    <button type="button" class="me-3" mat-raised-button color="primary"
+                                                        (click)="CreditManualPDF()">PDF</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </ng-template>
 
 
 
@@ -3719,503 +4020,497 @@
     </div>
     <div class="modal-body d-block d-lg-none">
         <mat-tab-group>
-            <mat-tab  label="Right Eye">
+            <mat-tab label="Right Eye">
                 <div class="row ">
-                     <!-- ================= RIGHT EYE ================= -->
-    <div class="col-12 ">
-        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Right Eye</h3>
+                    <!-- ================= RIGHT EYE ================= -->
+                    <div class="col-12 ">
+                        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Right Eye</h3>
 
-        <!-- SPH -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                   
-                    <tr class="table-header ">
-                        <th colspan="2">SPH</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('SPH', '+', 'RE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('SPH', '-', 'RE')">-</th>
-                        <th colspan="8"></th>
-                    </tr>
-                    <tr *ngFor="let row of sphValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('SPH', val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['SPH']['RE'] === val }">
-                            {{formatValue('SPH', val, 'RE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- SPH -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
 
-        <!-- CYL -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">CYL</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('CYL', '+', 'RE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('CYL', '-', 'RE')">-</th>
-                         <th colspan="8"></th>
-                    </tr>
-                    <tr *ngFor="let row of cylValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('CYL', val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['CYL']['RE'] === val }">
-                            {{formatValue('CYL', val, 'RE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                                    <tr class="table-header ">
+                                        <th colspan="2">SPH</th>
+                                        <th colspan="1" style="background:#31a136;color:#fff"
+                                            (click)="setSign('SPH', '+', 'RE')">+</th>
+                                        <th colspan="1" style="background:#c12121;color:#fff"
+                                            (click)="setSign('SPH', '-', 'RE')">-</th>
+                                        <th colspan="8"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of sphValues">
+                                        <td *ngFor="let val of row" (click)="selectValue('SPH', val, 'RE')"
+                                            [ngClass]="{ 'selected': selectedValues['SPH']['RE'] === val }">
+                                            {{formatValue('SPH', val, 'RE') }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- AXIS -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">AXIS</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of asixValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue1(val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['ASIX']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- CYL -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">CYL</th>
+                                        <th colspan="1" style="background:#31a136;color:#fff"
+                                            (click)="setSign('CYL', '+', 'RE')">+</th>
+                                        <th colspan="1" style="background:#c12121;color:#fff"
+                                            (click)="setSign('CYL', '-', 'RE')">-</th>
+                                        <th colspan="8"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of cylValues">
+                                        <td *ngFor="let val of row" (click)="selectValue('CYL', val, 'RE')"
+                                            [ngClass]="{ 'selected': selectedValues['CYL']['RE'] === val }">
+                                            {{formatValue('CYL', val, 'RE') }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- ADD -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">ADD</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of addValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValueAdd(val, 'RE');calculate('Lens','R',0.00)"
-                            [ngClass]="{ 'selected': selectedValues['ADD']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- AXIS -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">AXIS</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of asixValues">
+                                        <td *ngFor="let val of row" (click)="selectValue1(val, 'RE')"
+                                            [ngClass]="{ 'selected': selectedValues['ASIX']['RE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- VA DV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">VA (DV)</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of vaDvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue2(val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['VADV']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- ADD -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">ADD</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of addValues">
+                                        <td *ngFor="let val of row"
+                                            (click)="selectValueAdd(val, 'RE');calculate('Lens','R',0.00)"
+                                            [ngClass]="{ 'selected': selectedValues['ADD']['RE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- VA NV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">VA (NV)</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of vaNvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue3(val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['VANV']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                        <!-- VA DV -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">VA (DV)</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of vaDvValues">
+                                        <td *ngFor="let val of row" (click)="selectValue2(val, 'RE')"
+                                            [ngClass]="{ 'selected': selectedValues['VADV']['RE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- VA NV -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">VA (NV)</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of vaNvValues">
+                                        <td *ngFor="let val of row" (click)="selectValue3(val, 'RE')"
+                                            [ngClass]="{ 'selected': selectedValues['VANV']['RE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </mat-tab>
-            <mat-tab  label="Left Eye">
+            <mat-tab label="Left Eye">
                 <div class="row ">
-                    
-    <!-- ================= LEFT EYE ================= -->
-    <div class="col-12">
-        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Left Eye</h3>
 
-        <!-- SPH -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">SPH</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('SPH','+','LE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('SPH','-','LE')">-</th>
-                         <th colspan="8"></th>
-                    </tr>
-                    <tr *ngFor="let row of sphValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('SPH', val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['SPH']['LE'] === val }">
-                            {{ formatValue('SPH', val, 'LE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                    <!-- ================= LEFT EYE ================= -->
+                    <div class="col-12">
+                        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Left Eye</h3>
 
-        <!-- CYL -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">CYL</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('CYL','+','LE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('CYL','-','LE')">-</th>
-                         <th colspan="8"></th>
-                    </tr>
-                    <tr *ngFor="let row of cylValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('CYL', val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['CYL']['LE'] === val }">
-                            {{ formatValue('CYL', val, 'LE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- SPH -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">SPH</th>
+                                        <th colspan="1" style="background:#31a136;color:#fff"
+                                            (click)="setSign('SPH','+','LE')">+</th>
+                                        <th colspan="1" style="background:#c12121;color:#fff"
+                                            (click)="setSign('SPH','-','LE')">-</th>
+                                        <th colspan="8"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of sphValues">
+                                        <td *ngFor="let val of row" (click)="selectValue('SPH', val, 'LE')"
+                                            [ngClass]="{ 'selected': selectedValues['SPH']['LE'] === val }">
+                                            {{ formatValue('SPH', val, 'LE') }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- AXIS -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">AXIS</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of asixValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue1(val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['ASIX']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- CYL -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">CYL</th>
+                                        <th colspan="1" style="background:#31a136;color:#fff"
+                                            (click)="setSign('CYL','+','LE')">+</th>
+                                        <th colspan="1" style="background:#c12121;color:#fff"
+                                            (click)="setSign('CYL','-','LE')">-</th>
+                                        <th colspan="8"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of cylValues">
+                                        <td *ngFor="let val of row" (click)="selectValue('CYL', val, 'LE')"
+                                            [ngClass]="{ 'selected': selectedValues['CYL']['LE'] === val }">
+                                            {{ formatValue('CYL', val, 'LE') }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- ADD -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">ADD</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of addValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValueAdd(val, 'LE');calculate('Lens','L',0.00)"
-                            [ngClass]="{ 'selected': selectedValues['ADD']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- AXIS -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">AXIS</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of asixValues">
+                                        <td *ngFor="let val of row" (click)="selectValue1(val, 'LE')"
+                                            [ngClass]="{ 'selected': selectedValues['ASIX']['LE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- VA DV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">VA (DV)</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of vaDvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue2(val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['VADV']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                        <!-- ADD -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">ADD</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of addValues">
+                                        <td *ngFor="let val of row"
+                                            (click)="selectValueAdd(val, 'LE');calculate('Lens','L',0.00)"
+                                            [ngClass]="{ 'selected': selectedValues['ADD']['LE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-        <!-- VA NV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="2">VA (NV)</th>
-                        <th colspan="10"></th>
-                    </tr>
-                    <tr *ngFor="let row of vaNvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue3(val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['VANV']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+                        <!-- VA DV -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">VA (DV)</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of vaDvValues">
+                                        <td *ngFor="let val of row" (click)="selectValue2(val, 'LE')"
+                                            [ngClass]="{ 'selected': selectedValues['VADV']['LE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- VA NV -->
+                        <div class="table-responsive">
+                            <table>
+                                <tbody>
+                                    <tr class="table-header">
+                                        <th colspan="2">VA (NV)</th>
+                                        <th colspan="10"></th>
+                                    </tr>
+                                    <tr *ngFor="let row of vaNvValues">
+                                        <td *ngFor="let val of row" (click)="selectValue3(val, 'LE')"
+                                            [ngClass]="{ 'selected': selectedValues['VANV']['LE'] === val }">
+                                            {{ val }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </mat-tab>
         </mat-tab-group>
     </div>
-        <div class="modal-body  d-none d-lg-block">
-    <div class="row ">
+    <div class="modal-body  d-none d-lg-block">
+        <div class="row ">
 
-    <!-- ================= RIGHT EYE ================= -->
-    <div class="col-xl-6 col-lg-6 col-md-12 ">
-        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Right Eye</h3>
+            <!-- ================= RIGHT EYE ================= -->
+            <div class="col-xl-6 col-lg-6 col-md-12 ">
+                <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Right Eye</h3>
 
-        <!-- SPH -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                   
-                    <tr class="table-header ">
-                        <th colspan="10">SPH</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('SPH', '+', 'RE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('SPH', '-', 'RE')">-</th>
-                    </tr>
-                    <tr *ngFor="let row of sphValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('SPH', val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['SPH']['RE'] === val }">
-                            {{formatValue('SPH', val, 'RE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                <!-- SPH -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+
+                            <tr class="table-header ">
+                                <th colspan="10">SPH</th>
+                                <th colspan="1" style="background:#31a136;color:#fff"
+                                    (click)="setSign('SPH', '+', 'RE')">+</th>
+                                <th colspan="1" style="background:#c12121;color:#fff"
+                                    (click)="setSign('SPH', '-', 'RE')">-</th>
+                            </tr>
+                            <tr *ngFor="let row of sphValues">
+                                <td *ngFor="let val of row" (click)="selectValue('SPH', val, 'RE')"
+                                    [ngClass]="{ 'selected': selectedValues['SPH']['RE'] === val }">
+                                    {{formatValue('SPH', val, 'RE') }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- CYL -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="10">CYL</th>
+                                <th colspan="1" style="background:#31a136;color:#fff"
+                                    (click)="setSign('CYL', '+', 'RE')">+</th>
+                                <th colspan="1" style="background:#c12121;color:#fff"
+                                    (click)="setSign('CYL', '-', 'RE')">-</th>
+                            </tr>
+                            <tr *ngFor="let row of cylValues">
+                                <td *ngFor="let val of row" (click)="selectValue('CYL', val, 'RE')"
+                                    [ngClass]="{ 'selected': selectedValues['CYL']['RE'] === val }">
+                                    {{formatValue('CYL', val, 'RE') }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- AXIS -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="12">AXIS</th>
+                            </tr>
+                            <tr *ngFor="let row of asixValues">
+                                <td *ngFor="let val of row" (click)="selectValue1(val, 'RE')"
+                                    [ngClass]="{ 'selected': selectedValues['ASIX']['RE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ADD -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="14">ADD</th>
+                            </tr>
+                            <tr *ngFor="let row of addValues">
+                                <td *ngFor="let val of row"
+                                    (click)="selectValueAdd(val, 'RE');calculate('Lens','R',0.00)"
+                                    [ngClass]="{ 'selected': selectedValues['ADD']['RE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- VA DV -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="12">VA (DV)</th>
+                            </tr>
+                            <tr *ngFor="let row of vaDvValues">
+                                <td *ngFor="let val of row" (click)="selectValue2(val, 'RE')"
+                                    [ngClass]="{ 'selected': selectedValues['VADV']['RE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- VA NV -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="12">VA (NV)</th>
+                            </tr>
+                            <tr *ngFor="let row of vaNvValues">
+                                <td *ngFor="let val of row" (click)="selectValue3(val, 'RE')"
+                                    [ngClass]="{ 'selected': selectedValues['VANV']['RE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ================= LEFT EYE ================= -->
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Left Eye</h3>
+
+                <!-- SPH -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="10">SPH</th>
+                                <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('SPH','+','LE')">
+                                    +</th>
+                                <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('SPH','-','LE')">
+                                    -</th>
+                            </tr>
+                            <tr *ngFor="let row of sphValues">
+                                <td *ngFor="let val of row" (click)="selectValue('SPH', val, 'LE')"
+                                    [ngClass]="{ 'selected': selectedValues['SPH']['LE'] === val }">
+                                    {{ formatValue('SPH', val, 'LE') }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- CYL -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="10">CYL</th>
+                                <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('CYL','+','LE')">
+                                    +</th>
+                                <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('CYL','-','LE')">
+                                    -</th>
+                            </tr>
+                            <tr *ngFor="let row of cylValues">
+                                <td *ngFor="let val of row" (click)="selectValue('CYL', val, 'LE')"
+                                    [ngClass]="{ 'selected': selectedValues['CYL']['LE'] === val }">
+                                    {{ formatValue('CYL', val, 'LE') }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- AXIS -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="12">AXIS</th>
+                            </tr>
+                            <tr *ngFor="let row of asixValues">
+                                <td *ngFor="let val of row" (click)="selectValue1(val, 'LE')"
+                                    [ngClass]="{ 'selected': selectedValues['ASIX']['LE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ADD -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="14">ADD</th>
+                            </tr>
+                            <tr *ngFor="let row of addValues">
+                                <td *ngFor="let val of row"
+                                    (click)="selectValueAdd(val, 'LE');calculate('Lens','L',0.00)"
+                                    [ngClass]="{ 'selected': selectedValues['ADD']['LE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- VA DV -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="12">VA (DV)</th>
+                            </tr>
+                            <tr *ngFor="let row of vaDvValues">
+                                <td *ngFor="let val of row" (click)="selectValue2(val, 'LE')"
+                                    [ngClass]="{ 'selected': selectedValues['VADV']['LE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- VA NV -->
+                <div class="table-responsive">
+                    <table>
+                        <tbody>
+                            <tr class="table-header">
+                                <th colspan="12">VA (NV)</th>
+                            </tr>
+                            <tr *ngFor="let row of vaNvValues">
+                                <td *ngFor="let val of row" (click)="selectValue3(val, 'LE')"
+                                    [ngClass]="{ 'selected': selectedValues['VANV']['LE'] === val }">
+                                    {{ val }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-
-        <!-- CYL -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="10">CYL</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('CYL', '+', 'RE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('CYL', '-', 'RE')">-</th>
-                    </tr>
-                    <tr *ngFor="let row of cylValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('CYL', val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['CYL']['RE'] === val }">
-                            {{formatValue('CYL', val, 'RE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- AXIS -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="12">AXIS</th>
-                    </tr>
-                    <tr *ngFor="let row of asixValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue1(val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['ASIX']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- ADD -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="14">ADD</th>
-                    </tr>
-                    <tr *ngFor="let row of addValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValueAdd(val, 'RE');calculate('Lens','R',0.00)"
-                            [ngClass]="{ 'selected': selectedValues['ADD']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- VA DV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="12">VA (DV)</th>
-                    </tr>
-                    <tr *ngFor="let row of vaDvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue2(val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['VADV']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- VA NV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="12">VA (NV)</th>
-                    </tr>
-                    <tr *ngFor="let row of vaNvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue3(val, 'RE')"
-                            [ngClass]="{ 'selected': selectedValues['VANV']['RE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ================= LEFT EYE ================= -->
-    <div class="col-xl-6 col-lg-6 col-md-12">
-        <h3 style="margin: 0; text-align: center; background: #3f51b5;color:#fff"> Left Eye</h3>
-
-        <!-- SPH -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="10">SPH</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('SPH','+','LE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('SPH','-','LE')">-</th>
-                    </tr>
-                    <tr *ngFor="let row of sphValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('SPH', val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['SPH']['LE'] === val }">
-                            {{ formatValue('SPH', val, 'LE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- CYL -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="10">CYL</th>
-                        <th colspan="1" style="background:#31a136;color:#fff" (click)="setSign('CYL','+','LE')">+</th>
-                        <th colspan="1" style="background:#c12121;color:#fff" (click)="setSign('CYL','-','LE')">-</th>
-                    </tr>
-                    <tr *ngFor="let row of cylValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue('CYL', val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['CYL']['LE'] === val }">
-                            {{ formatValue('CYL', val, 'LE') }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- AXIS -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="12">AXIS</th>
-                    </tr>
-                    <tr *ngFor="let row of asixValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue1(val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['ASIX']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- ADD -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="14">ADD</th>
-                    </tr>
-                    <tr *ngFor="let row of addValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValueAdd(val, 'LE');calculate('Lens','L',0.00)"
-                            [ngClass]="{ 'selected': selectedValues['ADD']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- VA DV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="12">VA (DV)</th>
-                    </tr>
-                    <tr *ngFor="let row of vaDvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue2(val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['VADV']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- VA NV -->
-        <div class="table-responsive">
-            <table>
-                <tbody>
-                    <tr class="table-header">
-                        <th colspan="12">VA (NV)</th>
-                    </tr>
-                    <tr *ngFor="let row of vaNvValues">
-                        <td *ngFor="let val of row"
-                            (click)="selectValue3(val, 'LE')"
-                            [ngClass]="{ 'selected': selectedValues['VANV']['LE'] === val }">
-                            {{ val }}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-</div>
 
     </div>
 </ng-template>
-
-

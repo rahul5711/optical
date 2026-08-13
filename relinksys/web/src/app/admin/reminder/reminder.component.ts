@@ -307,7 +307,12 @@ export class ReminderComponent implements OnInit {
 
   // Whatsapp All Message Send 
   WhatsappSend(data: any, mode: any) {
-    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+     let temp
+    if(this.shop.isWhatsappPaidService == 'true'){
+         temp = JSON.parse(this.shop.WhatsappArray);
+    }else{
+         temp = JSON.parse(this.companySetting.WhatsappSetting);
+    }
     let WhatsappMsg = '';
 
     // Customer_Birthday Condition`s  

@@ -16047,6 +16047,7 @@ module.exports = {
                     ProductList: [],
                     TaxList: [],
                     OtherDataList: [],
+                    MemberDataList: [],
                     ReferenceByList: [],
                     ServiceList: [],
                     PaymentModes: []
@@ -16086,6 +16087,7 @@ module.exports = {
             const [taxTypedata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'TaxType' order by ID desc`)
             const [paymentmodesdata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'PaymentModeType' order by ID desc`)
             const [otherdata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'Other' order by ID desc`)
+            const [memberdata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'MemberType' order by ID desc`)
             const [referenceBydata] = await connection.query(`select ID, Name, Status, TableName from supportmaster where Status = 1 and CompanyID = ${CompanyID} and TableName = 'ReferenceBy' order by ID desc`)
             const [serviceListdata] = await connection.query(`select * from servicemaster where Status = 1 and CompanyID = ${CompanyID} order by ID desc`)
 
@@ -16100,6 +16102,7 @@ module.exports = {
                 ProductList: productListData || [],
                 TaxList: taxTypedata || [],
                 OtherDataList: otherdata || [],
+                MemberDataList: memberdata || [],
                 ReferenceByList: referenceBydata || [],
                 ServiceList: serviceListdata || [],
                 PaymentModes: paymentmodesdata || [],

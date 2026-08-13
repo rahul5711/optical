@@ -29,6 +29,7 @@ import { EMPTY } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ReminderService } from 'src/app/service/reminder.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { ShopService } from 'src/app/service/shop.service';
 
 @Component({
   selector: 'app-billing',
@@ -164,7 +165,11 @@ selectedValues: any = {
   otherSpec = false
   otherContant = false
   otherNoPower = false
-
+  CompanyWelComeNote :any
+  NoteMemberCardGold :any
+  NoteMemberCardSilver :any
+  NoteMemberCardPlatinum :any
+  NoteMemberCardPl :any
   id: any = 0;
   id2: any = 0;
   customerImage: any;
@@ -205,6 +210,7 @@ selectedValues: any = {
     private msc: MembershipcardService,
      private rs: ReminderService,
      private cdr: ChangeDetectorRef,
+     private ss: ShopService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -227,7 +233,7 @@ selectedValues: any = {
   ExpiryDateFormember: any
   ActiveDeactive = false
   memberCard: any = {
-    CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', Status: '', CreatedBy: '', CreatedOn: ''
+    CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', MemberType:'', Status: '', CreatedBy: '', CreatedOn: ''
   }
 
   data: any = {
@@ -550,6 +556,7 @@ selectedValues: any = {
   CustomerPowerView = false
   numberList: any = []
   otherLists: any = []
+  memberList: any = []
   x: any
   currentTime = '';
   srcCustomerBox = false
@@ -595,6 +602,9 @@ selectedValues: any = {
     });
     this.bill.otherDataList$.subscribe((list:any) => {
       this.otherLists = list
+    });
+    this.bill.memberDataList$.subscribe((list:any) => {
+      this.memberList = list
     });
 
     // this.doctorList()
@@ -1129,6 +1139,18 @@ getWebsiteLink(){
     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
     // this.otherSuppList()
     // this.ReferenceSuppList()
+    let note = JSON.parse(this.shop.WelcomeNote);
+      this.NoteMemberCardGold = note.filter(
+  (ele: any) => ele.NoteType === "MemberCardGold"
+);
+
+this.NoteMemberCardSilver = note.filter(
+  (ele: any) => ele.NoteType === "MemberCardSilver"
+);
+
+this.NoteMemberCardPlatinum = note.filter(
+  (ele: any) => ele.NoteType === "MemberCardPlatinum"
+);
     if (this.id != 0) {
       this.getMembershipcardByCustomerID(this.id)
     }
@@ -2153,10 +2175,88 @@ getWebsiteLink(){
     }
   }
 
-
+ getWhatsAppField( list: any[],templateName: string,field: 'TemplateValue' | 'MessageText' | 'Url') {
+    const item = list?.find(x => x.TemplateName === templateName);
+    return item ? item[field] : '';
+  }
 
   sendWhatsappPower(i: any, mode: any) {
-    let temp = JSON.parse(this.companySetting.WhatsappSetting);
+     if(this.shop.isWhatsappPaidService == 'true'){
+       this.paidsendWhatsappPower(i, mode)
+    }else{
+      this.freesendWhatsappPower(i, mode)
+    }
+  }
+
+  paidsendWhatsappPower(i:any, mode:any) {
+       
+     const mobile = this.data?.MobileNo1?.toString().trim();
+    if (!/^\d{10}$/.test(mobile)) {
+      this.as.errorToast('Please enter a valid 10-digit mobile number');
+      return;
+    }
+  
+    const temp = JSON.parse(this.shop.WhatsappArray);
+    let dtm = {}
+    let type = '';
+    let typeOfPdf = '';
+
+    if (mode === 'spectacle') {
+      type = this.getWhatsAppField(
+        temp,
+        'Customer_Eye_Prescription',
+        'TemplateValue'
+      );
+       typeOfPdf = this.spectacle.FileURL
+    } else if (mode === 'other') {
+      type = this.getWhatsAppField(
+        temp,
+        'Customer_Eye_Prescription',
+        'TemplateValue'
+      );
+       typeOfPdf = this.other.FileURL
+    } else if (mode === 'contact') {
+      type = this.getWhatsAppField(
+        temp,
+        'Customer_Eye_Prescription',
+        'TemplateValue'
+      );
+       typeOfPdf = this.clens.FileURL
+    }
+  
+     dtm = {
+      CustomerName: this.data.Name,
+      MobileNo: '91' + mobile,
+      ShopName: `${this.shop.Name} (${this.shop.AreaName})`,
+      ShopNumber: this.shop.MobileNo1,
+      // MediaURL: typeOfPdf,
+      MediaURL: 'https://theopticalguru.relinksys.com/uploads/Bill-1358795-341.pdf?v=1785948158',
+      TemplateValue: type,
+      FileName: 'Eye_Prescription'
+    };
+  
+    console.log(dtm);
+  
+    const subs: Subscription = this.ss.sendWhatsappTemplate(dtm).subscribe({
+      next: (res: any) => {
+         if (res.success) {
+          this.as.successToast(res.message)
+        }else{
+          this.as.errorToast(res.message);
+        }
+        this.sp.hide();
+      },
+      error: (err: any) => {
+        console.error('WhatsApp Send Error:', err.message);
+        this.sp.hide();
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  freesendWhatsappPower(i: any, mode: any) {
+     let temp  = JSON.parse(this.companySetting.WhatsappSetting);
+    
     let WhatsappMsg = '';
     var msg
     if (mode === 'spectacle') {
@@ -2507,7 +2607,6 @@ getWebsiteLink(){
 
 
   shareOnWhatsApp() {
-
     let body = {
       customer: this.data,
       expiry: this.membarshipList[0]
@@ -2519,15 +2618,56 @@ getWebsiteLink(){
           var url = this.env.apiUrl + "/uploads/" + res;
           this.membarship = url
             window.open(this.membarship, "_blank");
-          if ((this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84 && this.data.CompanyID != 128 && this.data.CompanyID != 430) {
+            let dtm = {}
+           let type = '';
+
+          if (this.shop.isWhatsappPaidService == 'false' && (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84 && this.data.CompanyID != 128 && this.data.CompanyID != 430) {
             var mob = this.company.Code + this.data.MobileNo1;
             let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
             // var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
               var url1 = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
             window.open(url1, "_blank");
-          } else if (this.data.CompanyID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430) {
+          } else if (this.shop.isWhatsappPaidService == 'false' && this.data.CompanyID == 84 || this.data.CompanyID == 128 || this.data.CompanyID == 430) {
             this.sendWhatsappMessageInBackground('MemberShip')
+          }else if (this.shop.isWhatsappPaidService == 'true'){
+                const mobile = this.data?.MobileNo1?.toString().trim();
+                if (!/^\d{10}$/.test(mobile)) {
+                  this.sp.hide();
+                    this.as.errorToast('Please enter a valid 10-digit mobile number');
+                    
+                    return;
+                 }
+               const temp = JSON.parse(this.shop.WhatsappArray);
+               type = this.getWhatsAppField( temp, 'Customer_Membership_Card','TemplateValue');
+
+               dtm = {
+                  CustomerName: this.data.Name,
+                  MobileNo: '91' + mobile,
+                  ShopName: `${this.shop.Name} (${this.shop.AreaName})`,
+                  ShopNumber: this.shop.MobileNo1,
+                   MediaURL: this.membarship,
+                  // MediaURL: 'https://theopticalguru.relinksys.com/uploads/Bill-1358795-341.pdf?v=1785948158',
+                  TemplateValue: type,
+                  FileName: 'Membership_Card' 
+               };
+
+                 const subs: Subscription = this.ss.sendWhatsappTemplate(dtm).subscribe({
+                   next: (res: any) => {
+                      if (res.success) {
+                       this.as.successToast(res.message)
+                     }else{
+                       this.as.errorToast(res.message);
+                     }
+                     this.sp.hide();
+                   },
+                   error: (err: any) => {
+                     console.error('WhatsApp Send Error:', err.message);
+                     this.sp.hide();
+                   },
+                   complete: () => subs.unsubscribe(),
+                 });
           }
+
           else {
             Swal.fire({
               position: 'center',
@@ -2553,7 +2693,7 @@ getWebsiteLink(){
       const subs: Subscription = this.msc.saveMemberCard(this.memberCard).subscribe({
         next: (res: any) => {
           if (res) {
-            this.memberCard = { CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', Status: '', CreatedBy: '', CreatedOn: '' }
+            this.memberCard = { CustomerID: '', CompanyID: '', ShopID: '', IssueDate: '', ExpiryDate: '', MemberType:'', Status: '', CreatedBy: '', CreatedOn: '' }
             let IDs = res.data[0].CustomerID
             this.ExpiryDateFormember = res.data[0].ExpiryDate
             this.getMembershipcardByCustomerID(IDs)
@@ -2653,6 +2793,7 @@ getWebsiteLink(){
           this.membarshipList = res.data
           if (res.data.length != 0) {
             this.ExpiryDateFormember = res.data[0].ExpiryDate
+            this.memberCard.MemberType = res.data[0].MemberType
             const today = moment().format("YYYY-MM-DD");
             const expiryDate = moment(this.ExpiryDateFormember).format("YYYY-MM-DD");
             if (expiryDate === today) {

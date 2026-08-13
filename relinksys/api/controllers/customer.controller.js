@@ -1192,6 +1192,20 @@ module.exports = {
             connection = await db.getConnection();
             const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
             printdata.shopdetails = shopdetails[0]
+            
+            let note = JSON.parse(printdata.shopdetails.WelcomeNote);
+            
+            printdata.NoteMemberCardGold = note.filter(
+                (ele) => ele.NoteType === "MemberCardGold"
+            );
+
+            printdata.NoteMemberCardSilver = note.filter(
+                (ele) => ele.NoteType === "MemberCardSilver"
+            );
+
+            printdata.NoteMemberCardPlatinum = note.filter(
+                (ele) => ele.NoteType === "MemberCardPlatinum"
+            );
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;

@@ -101,6 +101,13 @@ export class ShopService {
     .pipe(catchError(this.handleError));
   }
   
+  sendBulkMessage( Body: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const params = new HttpParams()
+    return this.httpClient.post<any>(this.url + '/sendBulkMessage', Body, { headers, params })
+    .pipe(catchError(this.handleError));
+  }
+  
   fetchCustomerForWhatsapp( Body: any): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const params = new HttpParams()

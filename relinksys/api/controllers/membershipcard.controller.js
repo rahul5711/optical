@@ -35,7 +35,7 @@ module.exports = {
                 return res.send({ message: "Invalid Query Shop ID Data" })
             }
 
-            const [save] = await connection.query(`insert into membershipcard(CustomerID,CompanyID,ShopID,IssueDate,ExpiryDate,Status,CreatedBy,CreatedOn) values(${Body.CustomerID},${CompanyID},${shopid}, '${Body.IssueDate}','${Body.ExpiryDate}',1,'${LoggedOnUser}',now())`);
+            const [save] = await connection.query(`insert into membershipcard(CustomerID,CompanyID,ShopID,IssueDate,ExpiryDate,MemberType,Status,CreatedBy,CreatedOn) values(${Body.CustomerID},${CompanyID},${shopid}, '${Body.IssueDate}','${Body.ExpiryDate}','${Body.MemberType}',1,'${LoggedOnUser}',now())`);
 
             console.log(connected("Membershipcard Added SuccessFUlly !!!"));
 

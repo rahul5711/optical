@@ -43,6 +43,9 @@ export class BillService {
   private otherDataListSubject = new BehaviorSubject<any[]>([]);
   otherDataList$ = this.otherDataListSubject.asObservable();
 
+  private memberDataListSubject = new BehaviorSubject<any[]>([]);
+  memberDataList$ = this.memberDataListSubject.asObservable();
+
   private trayNoSubject = new BehaviorSubject<any[]>([]);
   trayNo$ = this.trayNoSubject.asObservable();
 
@@ -96,10 +99,11 @@ export class BillService {
       .subscribe({
         next: (resp: any) => {
           if (resp.success) {
-            const { Doctor, ReferenceByList, OtherDataList, TrayNo, ProductList, Employee, ServiceList,TaxList} = resp.data;
+            const { Doctor, ReferenceByList, OtherDataList, MemberDataList,TrayNo, ProductList, Employee, ServiceList,TaxList} = resp.data;
             this.doctorSubject.next(Doctor || []);
             this.referenceByListSubject.next(ReferenceByList || []);
             this.otherDataListSubject.next(OtherDataList || []);
+            this.memberDataListSubject.next(MemberDataList || []);
             this.trayNoSubject.next(TrayNo || []);
             this.productListsSubject.next(ProductList || []);
             this.employeeSubject.next(Employee || []);
