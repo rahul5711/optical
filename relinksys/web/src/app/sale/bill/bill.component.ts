@@ -4593,8 +4593,8 @@ paidSendWhatsapp(mode:any) {
     MobileNo: '91' + mobile,
     ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`,
     ShopNumber: this.loginShop.MobileNo1,
-    // MediaURL: typeOfPdf,
-    MediaURL: 'https://theopticalguru.relinksys.com/uploads/Bill-1358795-341.pdf?v=1785948158',
+    MediaURL: typeOfPdf,
+    // MediaURL: 'https://theopticalguru.relinksys.com/uploads/Bill-1358795-341.pdf?v=1785948158',
     TemplateValue: type,
     FileName: 'InvoiceNo - ' + this.BillMaster.InvoiceNo
   };
