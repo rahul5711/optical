@@ -1,0 +1,734 @@
+<section class="content">
+    <div class="container-fluid">
+        <div class="block-header"> </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt-0">
+                <div class="card">
+                    <div class="header">
+                        <h2>Eye Examination </h2>
+                    </div>
+                    <div class="body" style="zoom:120%">
+                        <form #f="ngForm" autocomplete="off" (ngSubmit)="onSubmit('Examination')">
+                            <div class="row">
+                                <div class="col-6" style="border-right: 2px solid #e4e4e4;">
+                                    <div class="row">
+                                        <div class="col-xl-2 col-lg-3 col-md-6 col-6">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Examination Date</mat-label>
+                                                <input matInput name="ExaminationDate" type="date"
+                                                    [(ngModel)]="masterObject.Exam.ExaminationDate"
+                                                    #ExaminationDatecontrol />
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-1 col-md-6 col-6">
+                                            <mat-form-field class="example-full-width mb-0">
+                                                <mat-label>Customer Age </mat-label>
+                                                <input matInput name="Age" [(ngModel)]="customerDate.Age" #Agecontrol
+                                                    disabled />
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">Patient History Ask</h4>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-1  col-md-1 col-12">
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.visionproblem" type="checkbox"
+                                                name="visionproblem"> What is your vision problem?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.DistanceNear" type="checkbox"
+                                                name="DistanceNear"> Distance Near?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.Headache" type="checkbox"
+                                                name="Headache"> Headache?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.EyeStrain" type="checkbox"
+                                                name="EyeStrain"> Eye Strain?</mat-checkbox>
+
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2  col-md-3 col-12 mx-auto">
+
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.Watering" type="checkbox"
+                                                name="Watering"> Watering?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.NightDrivingProblem"
+                                                type="checkbox" name="NightDrivingProblem"> Night Driving
+                                                Problem?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.ComputerUsage" type="checkbox"
+                                                name="ComputerUsage">Computer Usage?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.ExitingGlasses "
+                                                type="checkbox" name="ExitingGlasses">Exiting Glasses
+                                                Usage?</mat-checkbox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">Visual Acuity</h4>
+                                        </div>
+
+
+
+                                        <div class="col-xxl-7 col-xl-6 col-lg-7 col-md-12 col-12">
+
+                                            <table>
+                                                <tr class="mobbtn3" style="width:100%">
+                                                    <th></th>
+                                                    <th>Distance</th>
+                                                    <th>Near</th>
+                                                </tr>
+                                                <tr class="mobbtn3" style="width:100%">
+                                                    <td>
+                                                        <mat-checkbox [(ngModel)]="masterObject.Exam.Unaided.RightEye"
+                                                            type="checkbox" name="RightEye"> Right Eye</mat-checkbox>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="REDPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.REDPVA" id="REDPVA"
+                                                            list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+
+                                                        <input class="inputW" type="text" name="RENPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.RENPVA" id="RENPVA"
+                                                            list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+
+                                                </tr>
+                                                <tr class="mobbtn3 pt-2" style="width:100%">
+                                                    <td>
+                                                        <mat-checkbox [(ngModel)]="masterObject.Exam.Unaided.LeftEye"
+                                                            type="checkbox" name="LeftEye">Left Eye </mat-checkbox>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="LEDPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.LEDPVA" id="LEDPVA"
+                                                            list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW " type="text" name="LENPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.LENPVA" id="LENPVA"
+                                                            list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                </tr>
+                                                <tr class="mobbtn3 pt-2" style="width:100%">
+                                                    <td>
+                                                        <mat-checkbox
+                                                            [(ngModel)]="masterObject.Exam.Unaided.BothEyesWithoutGlasses"
+                                                            type="checkbox" name="BothEyesWithoutGlasses"> Both Eyes
+                                                            Without Glasses</mat-checkbox>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="BEDPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.BEDPVA" id="BEDPVA"
+                                                            list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="BENPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.BENPVA" id="BENPVA"
+                                                            list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                </tr>
+                                                <tr class="mobbtn3  pt-2" style="width:100%">
+                                                    <td>
+                                                        <mat-checkbox
+                                                            [(ngModel)]="masterObject.Exam.Unaided.BothEyesWithGlasses"
+                                                            type="checkbox" name="BothEyesWithGlasses"> Both Eyes With
+                                                            Glasses</mat-checkbox>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="BEGDPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.BEGDPVA" id="BEGDPVA"
+                                                            list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="BEGNPVA_UC"
+                                                            [(ngModel)]="masterObject.Exam.Unaided.BEGNPVA" id="BEGNPVA"
+                                                            list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="row mt-3">
+                                                <div class="col-12">
+                                                    <h4 class="OEx-h4">Auto Refractometer </h4>
+                                                </div>
+
+                                                <!-- <div class="col-3">
+                                                            <h4 class="OEx-h4">Retinoscopy <input type="checkbox"
+                                                                    id="Retinoscopy" name="Retinoscopy"
+                                                                    value="Retinoscopy"
+                                                                    (click)="checkChange('Retinoscopy')"
+                                                                    [(ngModel)]="masterObject.Comprehensive.Retinoscopy">
+                                                            </h4>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <h4 class="OEx-h4">Cycloplegia <input type="checkbox"
+                                                                    id="Cycloplegia" name="Cycloplegia"
+                                                                    value="Cycloplegia"
+                                                                    (click)="checkChange('Cycloplegia')"
+                                                                    [(ngModel)]="masterObject.Comprehensive.Cycloplegia">
+                                                            </h4>
+                                                        </div>
+                                                        <div class="col-3">
+                                                            <h4 class="OEx-h4">Post-Mydriatic <input type="checkbox"
+                                                                    id="Post-Mydriatic" name="PostMydriatic"
+                                                                    value="PostMydriatic"
+                                                                    (click)="checkChange('PostMydriatic')"
+                                                                    [(ngModel)]="masterObject.Comprehensive.PostMydriatic">
+                                                            </h4>
+                                                        </div> -->
+                                            </div>
+                                            <table>
+                                                <tr class="mobbtn1" style="width:100%">
+                                                    <th></th>
+                                                    <th>SPH</th>
+                                                    <th>CYL</th>
+                                                    <th>Axis</th>
+                                                </tr>
+                                                <tr class="mobbtn1" style="width:100%">
+                                                    <th>
+                                                        RE
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="REDPSPHA"
+                                                            [(ngModel)]="masterObject.Exam.Autorefractomer.REDPSPH"
+                                                            id="REDPSPH" list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}}</option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="REDPCYLA"
+                                                            [(ngModel)]="masterObject.Exam.Autorefractomer.REDPCYL"
+                                                            id="REDPCYL" list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" name="REDPAxisA"
+                                                            [(ngModel)]="masterObject.Exam.Autorefractomer.REDPAxis">
+                                                    </td>
+
+                                                </tr>
+                                                <tr class="mobbtn1 pt-2" style="width:100%">
+                                                    <th>
+                                                        LE
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="LEDPSPHA"
+                                                            [(ngModel)]="masterObject.Exam.Autorefractomer.LEDPSPH"
+                                                            id="LEDPSPH" list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW " type="text" name="LEDPCYLA"
+                                                            [(ngModel)]="masterObject.Exam.Autorefractomer.LEDPCYL"
+                                                            id="LEDPCYL" list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" name="LEDPAxisA"
+                                                            [(ngModel)]="masterObject.Exam.Autorefractomer.LEDPAxis">
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-12"
+                                            style="padding:0 0 0 14px">
+                                            <h4 class="OEx-h4">Final Acceptance</h4>
+                                            <table style="width:99%;border: 1px solid;" class="sub-tbl">
+                                                <tr>
+                                                    <th class="sub-pb" colspan="6" class="text-center">RightEye
+                                                    </th>
+                                                    <th class="sub-pb" colspan="5" class="text-center">LeftEye
+                                                    </th>
+
+                                                </tr>
+                                                <tr class="pt-3">
+                                                    <th class="sub-pb"></th>
+                                                    <th class="sub-pb">SPH</th>
+                                                    <th class="sub-pb">CYL</th>
+                                                    <th class="sub-pb">AXIS</th>
+                                                    <th class="sub-pb">VA</th>
+                                                    <th class="sub-pb">ADD</th>
+                                                    <th class="sub-pb">SPH</th>
+                                                    <th class="sub-pb">CYL</th>
+                                                    <th class="sub-pb">AXIS</th>
+                                                    <th class="sub-pb">VA</th>
+                                                    <th class="sub-pb">ADD</th>
+                                                </tr>
+                                                <tr class="pt-3">
+                                                    <th class="sub-pb">DP</th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="REDPSPH_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.REDPSPH"
+                                                            id="REDPSPH" list="dpsphList"
+                                                            (change)="calculate('Lens', 'RD', 0.00,'com');validateSphInputRight('REDPSPH')">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}}</option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="REDPCYL_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.REDPCYL"
+                                                            id="REDPCYL"
+                                                            (change)="calculate('Lens', 'RCYL', 0.00 ,'com');validateCyLInputRight('REDPCYL')"
+                                                            list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" name="REDPAxis_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.REDPAxis"
+                                                            (change)="calculate('Lens', 'RAxis', 0.00 ,'com')">
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" name="REDPVA_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.REDPVA"
+                                                            (focus)="VAList()" (input)="filterPVAList($event)"
+                                                            id="REDPVA" list="dpvaList" />
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of filteredPVAList">
+                                                                {{d.Name}}
+                                                            </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="R_Addition_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.R_Addition"
+                                                            (change)="calculate('Lens', 'R', 0.00 ,'com')">
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="LEDPSPH_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LEDPSPH"
+                                                            id="LEDPSPH"
+                                                            (change)="calculate('Lens', 'LD', 0.00 ,'com') ;validateSphInputLeft('LEDPSPH')"
+                                                            list="dpsphList">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="LEDPCYL_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LEDPCYL"
+                                                            id="LEDPCYL"
+                                                            (change)="calculate('Lens', 'RDSCYL', 0.00 ,'com') ;validateCyLInputLeft('LEDPCYL')"
+                                                            list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" name="LEDPAxis_SC"
+                                                            (change)="calculate('Lens', 'RDSAxis', 0.00 ,'com')"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LEDPAxis">
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="LEDPVA_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LEDPVA"
+                                                            id="LEDPVA" list="dpvaList" (focus)="VAList()"
+                                                            (input)="filterPVAList($event)">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of filteredPVAList">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="L_Addition_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.L_Addition"
+                                                            (change)="calculate('Lens', 'L', 0.00 ,'com')">
+                                                    </th>
+                                                </tr>
+                                                <tr class="pt-3">
+                                                    <th class="sub-pb">NP</th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="RENPSPH_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.RENPSPH"
+                                                            id="RENPSPH" list="dpsphList"
+                                                            (change)="calculate('Lens', 'RN', 0.00 ,'com') ;validateSphInputRight('RENPSPH')">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="RENPCYL_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.RENPCYL"
+                                                            id="RENPCYL"
+                                                            (change)="calculate('Lens', 'RNCYL', 0.00 ,'com') ;validateCyLInputRight('RENPCYL')"
+                                                            list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" name="RENPAxis_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.RENPAxis"
+                                                            (change)="calculate('Lens', 'RNAxis', 0.00 ,'com')">
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="RENPVA_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.RENPVA"
+                                                            id="RENPVA" list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb"></th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="LENPSPH_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LENPSPH"
+                                                            id="LENPSPH" list="dpsphList"
+                                                            (change)="calculate('Lens', 'LN', 0.00 ,'com') ;validateSphInputLeft('LENPSPH')">
+                                                        <datalist id="dpsphList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataSPH">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="LENPCYL_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LENPCYL"
+                                                            id="LENPCYL"
+                                                            (change)="calculate('Lens', 'LNCYL', 0.00 ,'com') ;validateCyLInputLeft('LENPCYL')"
+                                                            list="dpcylList">
+                                                        <datalist id="dpcylList">
+                                                            <option [value]="c.Name" *ngFor="let c of dataCYL">
+                                                                {{c.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" name="LENPAxis_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LENPAxis"
+                                                            (change)="calculate('Lens', 'LNAxis', 0.00 ,'com')">
+                                                    </th>
+                                                    <th class="sub-pb">
+                                                        <input class="inputW fontbold" type="text" name="LENPVA_SC"
+                                                            [(ngModel)]="masterObject.Exam.SubjectivePWR.LENPVA"
+                                                            id="LENPVA" list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </th>
+                                                    <th class="sub-pb"></th>
+                                                </tr>
+                                            </table>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <!-- <div class="row ">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">Vision Balance With Refraction</h4>
+                                        </div>
+
+
+                                        <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-12"
+                                            style="overflow: auto; ">
+                                            <table>
+                                                <tr class="mobbtn2" style="width:100%">
+                                                    <th></th>
+                                                    <th>Distance</th>
+                                                    <th>Near</th>
+                                                </tr>
+                                                <tr class="mobbtn2" style="width:100%">
+                                                    <th>
+                                                        RE
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="REDPVA_VB"
+                                                            [(ngModel)]="masterObject.Exam.VisionBalance.REDPVA"
+                                                            id="REDPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="RENPVA_VB"
+                                                            [(ngModel)]="masterObject.Exam.VisionBalance.RENPVA"
+                                                            id="RENPVA" list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                </tr>
+                                                <tr class="mobbtn2 pt-2" style="width:100%">
+                                                    <th>
+                                                        LE
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="LEDPVA_VB"
+                                                            [(ngModel)]="masterObject.Exam.VisionBalance.LEDPVA"
+                                                            id="LEDPVA" list="dpvaList">
+                                                        <datalist id="dpvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW " type="text" name="LENPVA_VB"
+                                                            [(ngModel)]="masterObject.Exam.VisionBalance.LENPVA"
+                                                            id="LENPVA" list="dpNvaList">
+                                                        <datalist id="dpNvaList">
+                                                            <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                {{d.Name}} </option>
+                                                        </datalist>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div> -->
+                                       <div class="row ">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">Basic Eye Check</h4>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-1  col-md-1 col-12">
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.EyePain" type="checkbox"
+                                                name="EyePain"> Eye Pain</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.Redness"
+                                                type="checkbox" name="Redness"> 
+                                                Redness</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.BasicWatering" type="checkbox"
+                                                name="BasicWatering"> Watering</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.Irritation"
+                                                type="checkbox" name="Irritation"> Irritation </mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.ReferralRequired"
+                                                type="checkbox" name="ReferralRequired"> Referral Required Yes/No
+                                                </mat-checkbox>
+                                            
+
+                                        </div>
+                                       
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">PD Measurement Measure</h4>
+                                        </div>
+
+                                        <div class="col-xxl-6 col-xl-7 col-lg-8 col-md-12 col-12">
+                                            <table style="width:100%">
+                                                <tr style="width:100%">
+                                                    <th style="width:30%"></th>
+                                                    <th>R_PD</th>
+                                                    <th>L_PD</th>
+                                                </tr>
+                                                <tr style="width:100%">
+                                                    <th>
+                                                        Distance PD
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="REDPD"
+                                                        [(ngModel)]="masterObject.Exam.PDMeasure.REDPD"  >
+                                                       
+                                                    </td>
+                                                    <td>
+
+                                                        <input class="inputW" type="text" name="LEDPD"
+                                                            [(ngModel)]="masterObject.Exam.PDMeasure.LEDPD">
+                                                       
+                                                    </td>
+
+                                                </tr>
+                                                <tr class=" pt-3" style="width:100% ; height: 45px;">
+                                                    <th>
+                                                        Near PD
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="RENPD"
+                                                            [(ngModel)]="masterObject.Exam.PDMeasure.RENPD">
+                                                      
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW " type="text" name="LENPD"
+                                                            [(ngModel)]="masterObject.Exam.PDMeasure.LENPD" >
+                                                      
+                                                    </td>
+                                                </tr>
+                                                <tr class=" pt-3" style="width:100%">
+                                                    <th>
+                                                        Both Eye PD
+                                                    </th>
+
+                                                    <td colspan="2">
+                                                        <input class="inputW" type="text" name="BEPD"
+                                                            [(ngModel)]="masterObject.Exam.PDMeasure.BEPD">
+                                                       
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">Lens Recommendation Recommend According To LifeStyle</h4>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-1  col-md-1 col-12">
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.OfficeUser" type="checkbox"
+                                                name="OfficeUser"> Office User</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.BlueLightProtection"
+                                                type="checkbox" name="BlueLightProtection"> Blue Light
+                                                Protection</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.AntiGlare" type="checkbox"
+                                                name="AntiGlare"> Anti Glare</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.LightweightLens"
+                                                type="checkbox" name="LightweightLens"> Lightweight Lens</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.NightDrivingLens"
+                                                type="checkbox" name="NightDrivingLens"> Night Driving
+                                                Lens?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.Photochromic" type="checkbox"
+                                                name="Photochromic">Photochromic (Optional)</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.OutdoorUser" type="checkbox"
+                                                name="OutdoorUser">Outdoor User?</mat-checkbox>
+
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2  col-md-3 col-12  mx-auto">
+
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.PolarizedSunglasses "
+                                                type="checkbox" name="PolarizedSunglasses">Polarized
+                                                Sunglasses</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.UVProtection" type="checkbox"
+                                                name="UVProtection">UV Protection</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.Glass " type="checkbox"
+                                                name="Glass"> Glass</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.ProgressiveLens"
+                                                type="checkbox" name="ProgressiveLens"> Progressive Lens</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.ReadingGlasses" type="checkbox"
+                                                name="ReadingGlasses"> Reading Glasses </mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Exam.HighContrast " type="checkbox"
+                                                name="HighContrast"> High Contrast Option </mat-checkbox>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-3 mb-3">
+                                        <div class="col-12">
+                                            <button type="submit" class="me-3" mat-raised-button color="primary"
+                                                [disabled]="!f.valid">Save</button>
+
+                                            <button *ngIf="this.masterObject.ID != null"
+                                                        (click)="onUpdate('Examination')" [disabled]="!f.valid"
+                                                        mat-raised-button color="primary" type="button"> Update
+                                                    </button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <table class="table table-striped table-hover table-sm table-bordered"
+                                                style="border: 2px solid #fff !important; margin: 0;">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="4">Actions</th>
+                                                        <th>VisitNo</th>
+                                                        <th>VisitDate</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="text-center"
+                                                        *ngFor="let s of selectedObjectList let i = index;"
+                                                        style="white-space: nowrap;">
+                                                        <td style="width: 7%;">
+                                                            <mat-icon style="color:red" class=".delete_iconO ms-1"
+                                                                (click)="deletetype(s.ID,'Examination')">delete_forever</mat-icon>
+                                                        </td>
+                                                        <td style="width: 7%;">
+                                                            <button style="background: none; border:none"
+                                                              type="button"  (click)="optometristPDF(s)">
+                                                                <i class="far fa-file-pdf"
+                                                                    style="color: #ffffff;font-size: 1.3rem;cursor: pointer;     background: #3f51b5;">
+                                                                </i>
+                                                            </button>
+                                                        </td>
+                                                        <td style="width: 7%;">
+                                                            <button [disabled]="this.pdfLink ==''"
+                                                              type="button"   style="background: none; border:none"
+                                                                (click)="optometristPDFWhats()">
+                                                                <i class="fa-brands fa-whatsapp "
+                                                                    style="color: #ffffff;font-size: 1.3rem;cursor: pointer;     background: #40d248;">
+                                                                </i>
+                                                            </button>
+                                                        </td>
+                                                        <td style="width: 7%;">
+                                                            <mat-icon style="color:rgb(7, 7, 105)"
+                                                                class=".delete_iconO ms-1"
+                                                                (click)="editMainList(s,'Examination')">edit</mat-icon>
+                                                        </td>
+                                                        <td>{{selectedObjectList.length - i}} </td>
+                                                        <td>{{s.Examination.ExaminationDate | date: 'short'}} </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

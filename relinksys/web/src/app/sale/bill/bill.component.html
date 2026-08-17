@@ -1266,11 +1266,11 @@
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-12 mobbtn" >
-                    <button *ngIf="this.id2 == 0" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
+                    <button *ngIf="this.id2 == 0 && (!(company.ID == 504 && user.PaymentView == 'true') || user.UserGroup == 'CompanyAdmin')" type="button" class=" me-md-3 me-0" mat-raised-button color="primary"
                         (click)="onSubmit(content1)"
                         [disabled]="onSubmitFrom || (!billItemList.length && !serviceLists.length)">Sav<span class="first-letter">e</span></button>
                     
-                    <button  *ngIf="id2 != 0 && !(company.ID == 504 && user.PaymentView == 'true')" type="button" class=" me-md-3 me-0" mat-raised-button color="primary" 
+                    <button  *ngIf="id2 != 0 && (!(company.ID == 504 && user.PaymentView == 'true') || user.UserGroup == 'CompanyAdmin')" type="button" class=" me-md-3 me-0" mat-raised-button color="primary" 
                         [disabled]="BillMaster.ID === null && !f2.valid" (click)="update()"><span class="first-letter">U</span>pdate</button>
 
                      <ng-container *ngIf="company.ID == 504"> 

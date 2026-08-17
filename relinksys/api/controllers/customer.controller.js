@@ -2263,7 +2263,7 @@ module.exports = {
 
             connection = await db.getConnection();
 
-            const { ID, CustomerID, Type, Comprehensive, Binocular, Contact, lowVision } = req.body;
+            const { ID, CustomerID, Type, Comprehensive, Binocular, Contact, lowVision, Examination } = req.body;
 
             if (ID !== null) {
                 return res.status(200).json({ message: 'ID must be null.' });
@@ -2281,11 +2281,12 @@ module.exports = {
                 }
 
                 qry = `INSERT INTO patientrecord 
-                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, Examination, CreatedBy, CreatedOn)
                 VALUES (
                     ${CompanyID},
                     ${CustomerID},
                     '${JSON.stringify(Comprehensive)}',
+                    '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
@@ -2299,12 +2300,13 @@ module.exports = {
                 }
 
                 qry = `INSERT INTO patientrecord 
-                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, Examination, CreatedBy, CreatedOn)
                 VALUES (
                     ${CompanyID},
                     ${CustomerID},
                     '${JSON.stringify({})}',
                     '${JSON.stringify(Binocular)}',
+                    '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
                     ${LoggedOnUser},
@@ -2317,13 +2319,14 @@ module.exports = {
                 }
 
                 qry = `INSERT INTO patientrecord 
-                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, Examination, CreatedBy, CreatedOn)
                 VALUES (
                     ${CompanyID},
                     ${CustomerID},
                     '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
                     '${JSON.stringify(Contact)}',
+                    '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
                     ${LoggedOnUser},
                     now()
@@ -2335,7 +2338,7 @@ module.exports = {
                 }
 
                 qry = `INSERT INTO patientrecord 
-                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, CreatedBy, CreatedOn)
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, Examination, CreatedBy, CreatedOn)
                 VALUES (
                     ${CompanyID},
                     ${CustomerID},
@@ -2343,11 +2346,32 @@ module.exports = {
                     '${JSON.stringify({})}',
                     '${JSON.stringify({})}',
                     '${JSON.stringify(lowVision)}',
+                    '${JSON.stringify({})}',
                     ${LoggedOnUser},
                     now()
                 )`;
 
-            } else {
+            }else if (Type === 'Examination' ) {
+                if (!Examination || Object.keys(Examination).length === 0) {
+                    return res.status(200).json({ message: 'Examination data is required.' });
+                }
+
+                qry = `INSERT INTO patientrecord 
+                (CompanyID, CustomerID, Comprehensive, Binocular, Contact, lowVision, Examination, CreatedBy, CreatedOn)
+                VALUES (
+                    ${CompanyID},
+                    ${CustomerID},
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify({})}',
+                    '${JSON.stringify(Examination)}',
+                    ${LoggedOnUser},
+                    now()
+                )`;
+
+            }
+             else {
                 return res.status(200).json({ message: 'Invalid Type specified.' });
             }
 
@@ -2383,7 +2407,7 @@ module.exports = {
 
             connection = await db.getConnection();
 
-            const { ID, CustomerID, Type, Comprehensive, Binocular, Contact, lowVision } = req.body;
+            const { ID, CustomerID, Type, Comprehensive, Binocular, Contact, lowVision, Examination } = req.body;
 
             // Validation: ID must be valid for update
             if (!ID || typeof ID !== 'number' || ID <= 0) {
@@ -2406,6 +2430,7 @@ module.exports = {
                 Binocular = '${JSON.stringify({})}',
                 Contact = '${JSON.stringify({})}',
                 lowVision = '${JSON.stringify({})}',
+                Examination = '${JSON.stringify({})}',
                 UpdatedBy = ${LoggedOnUser},
                 UpdatedOn = now()
                 WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
@@ -2420,6 +2445,7 @@ module.exports = {
                 Binocular = '${JSON.stringify(Binocular)}',
                 Contact = '${JSON.stringify({})}',
                 lowVision = '${JSON.stringify({})}',
+                Examination = '${JSON.stringify({})}',
                 UpdatedBy = ${LoggedOnUser},
                 UpdatedOn = now()
                 WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
@@ -2434,6 +2460,7 @@ module.exports = {
                 Binocular = '${JSON.stringify({})}',
                 Contact = '${JSON.stringify(Contact)}',
                 lowVision = '${JSON.stringify({})}',
+                Examination = '${JSON.stringify({})}',
                 UpdatedBy = ${LoggedOnUser},
                 UpdatedOn = now()
                 WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
@@ -2448,6 +2475,23 @@ module.exports = {
                 Binocular = '${JSON.stringify({})}',
                 Contact = '${JSON.stringify({})}',
                 lowVision = '${JSON.stringify(lowVision)}',
+                Examination = '${JSON.stringify({})}',
+                UpdatedBy = ${LoggedOnUser},
+                UpdatedOn = now()
+                WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
+
+            } 
+            else if (Type === 'Examination') {
+                if (!Examination || Object.keys(Examination).length === 0) {
+                    return res.status(200).json({ success: false, message: 'Examination data is required.' });
+                }
+
+                qry = `UPDATE patientrecord SET 
+                Comprehensive = '${JSON.stringify({})}',
+                Binocular = '${JSON.stringify({})}',
+                Contact = '${JSON.stringify({})}',
+                lowVision = '${JSON.stringify({})}',
+                Examination = '${JSON.stringify(Examination)}',
                 UpdatedBy = ${LoggedOnUser},
                 UpdatedOn = now()
                 WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
@@ -2495,8 +2539,8 @@ module.exports = {
             let limit = itemsPerPage || 10;
             let skip = page * limit - limit;
 
-            if (!Type || !["Comprehensive", "Binocular", "Contact", "lowVision"].includes(Type)) {
-                return res.status(200).json({ success: false, message: "Valid Type is required (Comprehensive, Binocular, Contact, lowVision)" });
+            if (!Type || !["Comprehensive", "Binocular", "Contact", "lowVision", "Examination"].includes(Type)) {
+                return res.status(200).json({ success: false, message: "Valid Type is required (Comprehensive, Binocular, Contact, lowVision, Examination)" });
             }
 
             let field = '';
@@ -2504,6 +2548,7 @@ module.exports = {
             else if (Type === 'Binocular') field = 'Binocular';
             else if (Type === 'Contact') field = 'Contact';
             else if (Type === 'lowVision') field = 'lowVision';
+            else if (Type === 'Examination') field = 'Examination';
 
             let qry = `SELECT patientrecord.ID, patientrecord.CompanyID, patientrecord.CustomerID, ${field}, patientrecord.CreatedOn, CASE WHEN customer.Title IS NULL OR customer.Title = '' THEN customer.Name ELSE CONCAT(customer.Title, ' ', customer.Name) END AS CustomerName, CASE WHEN customer.MobileNo1 IS NOT NULL AND customer.MobileNo1 <> '' THEN customer.MobileNo1 WHEN customer.PhoneNo IS NOT NULL AND customer.PhoneNo <> '' THEN customer.PhoneNo ELSE "" END AS Mobile FROM patientrecord LEFT JOIN customer on customer.ID = patientrecord.CustomerID  WHERE patientrecord.CompanyID = ${CompanyID} and patientrecord.${field}Status = 1  AND patientrecord.${field} IS NOT NULL AND patientrecord.${field} <> '{}'`;
 
@@ -2598,7 +2643,8 @@ module.exports = {
                 'Comprehensive': { field: 'Comprehensive', status: 'ComprehensiveStatus' },
                 'Binocular': { field: 'Binocular', status: 'BinocularStatus' },
                 'Contact': { field: 'Contact', status: 'ContactStatus' },
-                'lowVision': { field: 'lowVision', status: 'lowVisionStatus' }
+                'lowVision': { field: 'lowVision', status: 'lowVisionStatus' },
+                'Examination': { field: 'Examination', status: 'ExaminationStatus' }
             };
 
             const typeInfo = typeMap[Type];
@@ -2646,8 +2692,10 @@ module.exports = {
             BinP = ''
             ConP = ''
             LowP = ''
+            ExmP = ''
             PdfPrint = ''
-
+            console.log(masterdata.mode);
+            
             if (masterdata && masterdata.Comprehensive) {
                 titleName = "Comprehensive Eye Exam"
                 PdfPrint = 'Comprehensive'
@@ -2655,6 +2703,7 @@ module.exports = {
                 BinP = ''
                 ConP = ''
                 LowP = ''
+                ExmP = ''
             } else if (masterdata && masterdata.Binocular) {
                 titleName = "Binocular Eye Exam"
                 PdfPrint = 'Binocular'
@@ -2662,6 +2711,7 @@ module.exports = {
                 ComP = ''
                 ConP = ''
                 LowP = ''
+                ExmP = ''
             } else if (masterdata && masterdata.Contact) {
                 titleName = "Contact Eye Exam"
                 PdfPrint = 'Contact'
@@ -2669,10 +2719,21 @@ module.exports = {
                 ComP = ''
                 BinP = ''
                 LowP = ''
+                ExmP = ''
             } else if (masterdata && masterdata.lowVision) {
                 titleName = "Low Vision Eye Exam"
                 PdfPrint = 'Low'
                 LowP = masterdata.lowVision
+                ComP = ''
+                BinP = ''
+                ConP = ''
+                ExmP = ''
+            }
+             else if (masterdata && masterdata.Examination) {
+                titleName = "Eye Examination"
+                PdfPrint = 'Exam'
+                ExmP = masterdata.Examination
+                LowP= ''
                 ComP = ''
                 BinP = ''
                 ConP = ''
@@ -2731,7 +2792,9 @@ module.exports = {
             var formatName;
             if (printdata.customerdetails.CompanyID == 394) {
                 formatName = "DivineOpto.ejs";
-            } else {
+            }else if ( masterdata.mode == 'Examination') {
+                formatName = "optoExaminationPDF.ejs";
+            }else {
                 formatName = "optometristPDF.ejs";
             }
 

@@ -44,6 +44,7 @@ import { CustomerReturnComponent } from './customer-return/customer-return.compo
 import { OrderSaleComponent } from './order-sale/order-sale.component';
 import { CustomerRetrunListComponent } from './customer-retrun-list/customer-retrun-list.component';
 import { OptometristComponent } from './optometrist/optometrist.component';
+import { ExaminationComponent } from './examination/examination.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { OptometristComponent } from './optometrist/optometrist.component';
     CustomerReturnComponent,
     OrderSaleComponent,
     CustomerRetrunListComponent,
-    OptometristComponent
+    OptometristComponent,
+    ExaminationComponent
   ],
   imports: [
     CommonModule,
