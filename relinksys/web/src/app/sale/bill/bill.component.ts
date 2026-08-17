@@ -2571,6 +2571,7 @@ let dtm
             this.applyReward.RewardBalance = rewardData.data.RewardAmount;
             this.applyReward.RewardPercentage = rewardData.data.RewardPercentage;
             this.applyReward.AppliedRewardAmount = rewardData.data.AppliedRewardAmount;
+            this.applyReward.RewardCustomerRefID = res.data.CustomerID;
           } else {
             this.applyReward.RewardBalance = 0;
             this.applyReward.RewardPercentage = 0;
