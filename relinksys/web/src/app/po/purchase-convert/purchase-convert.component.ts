@@ -200,15 +200,35 @@ export class PurchaseConvertComponent implements OnInit {
     this.sp.show()
 
     let parem = ''
-    if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null) {
-      let FromDate = moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
-      parem = parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
-    }
+    // if (this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null) {
+    //   let FromDate = moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD')
+    //   parem = parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+    // }
 
-    if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null) {
-      let ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
-      parem = parem + ' and ' + `'${ToDate}'`;
-    }
+    // if (this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null) {
+    //   let ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD')
+    //   parem = parem + ' and ' + `'${ToDate}'`;
+    // }
+
+    
+      if (
+        this.PurchaseMaster.FromDate !== '' && this.PurchaseMaster.FromDate !== null && this.PurchaseMaster.ToDate !== '' && this.PurchaseMaster.ToDate !== null ) {
+        const FromDate = moment(this.PurchaseMaster.FromDate).format('YYYY-MM-DD');
+        const ToDate = moment(this.PurchaseMaster.ToDate).format('YYYY-MM-DD');
+      
+        if (this.companySetting.BillingFlow != 1) {
+      
+          parem += `
+            AND (
+              DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") BETWEEN '${FromDate}' AND '${ToDate}'
+              OR
+              DATE_FORMAT(billmaster.OrderDate, "%Y-%m-%d") BETWEEN '${FromDate}' AND '${ToDate}'
+            ) `;
+      
+        } else {
+          parem += ` AND DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") BETWEEN '${FromDate}' AND '${ToDate}' `;
+        }
+      }
 
     if (this.PurchaseMaster.ShopID != 0 && this.PurchaseMaster.ShopID !== 'Main' && this.PurchaseMaster.ShopID !== 'Other') {
       parem = parem + ' and barcodemasternew.ShopID = ' + `'${this.PurchaseMaster.ShopID}'`;
