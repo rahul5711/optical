@@ -10,6 +10,8 @@ router.post('/delete', verifyAccessTokenAdmin, dbConnection, Controller.delete)
 router.post('/getMembershipcardByCustomerID', verifyAccessTokenAdmin, dbConnection, Controller.getMembershipcardByCustomerID)
 router.post('/getMembershipcardDetailByRefID', verifyAccessTokenAdmin, dbConnection, Controller.getMembershipcardDetailByRefID)
 router.post('/report', verifyAccessTokenAdmin, dbConnection, Controller.report)
+router.post('/newReport', verifyAccessTokenAdmin, dbConnection, Controller.newReport)
+router.post('/detailedReport', verifyAccessTokenAdmin, dbConnection, Controller.detailedReport)
 
 
 

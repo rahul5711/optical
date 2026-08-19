@@ -251,5 +251,346 @@ module.exports = {
             }
         }
     },
+    newReport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0;
+
+            const { Parem } = req.body;
+
+            if (
+                Parem === "" ||
+                Parem === undefined ||
+                Parem === null
+            ) {
+                return res.status(200).send({
+                    success: false,
+                    data: null,
+                    message: "Invalid Query Data"
+                });
+            }
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const [data] = await connection.query(
+                `
+            SELECT
+                customer.ID AS CustomerID,
+
+                customer.Idd AS MemberShipRefID,
+
+                CASE
+                    WHEN customer.Title IS NULL
+                        OR customer.Title = ''
+                    THEN customer.Name
+                    ELSE CONCAT(
+                        customer.Title,
+                        ' ',
+                        customer.Name
+                    )
+                END AS CustomerName,
+
+                CASE
+                    WHEN customer.MobileNo1 IS NOT NULL
+                        AND customer.MobileNo1 <> ''
+                    THEN customer.MobileNo1
+
+                    WHEN customer.PhoneNo IS NOT NULL
+                        AND customer.PhoneNo <> ''
+                    THEN customer.PhoneNo
+
+                    ELSE ''
+                END AS Mobile,
+
+                membershipcard.IssueDate,
+                membershipcard.ExpiryDate,
+                membershipcard.MemberType,
+
+                COALESCE(bill.BillAmount, 0) AS BillAmount,
+                COALESCE(bill.BillCount, 0) AS BillCount
+
+            FROM membershipcard
+
+            INNER JOIN customer
+                ON customer.ID = membershipcard.CustomerID
+
+            LEFT JOIN (
+                SELECT
+                    CustomerID,
+                    SUM(TotalAmount) AS BillAmount,
+                    COUNT(ID) AS BillCount
+                FROM billmaster
+                WHERE CompanyID = ${CompanyID}
+                    AND Status = 1
+                GROUP BY CustomerID
+            ) AS bill
+                ON bill.CustomerID = customer.ID
+
+            WHERE membershipcard.Status = 1
+                AND membershipcard.CompanyID = ${CompanyID}
+
+            ${Parem}
+
+            ORDER BY BillAmount DESC
+            `
+            );
+
+            response.data = data || [];
+            response.message = "Data fetched successfully";
+
+            return res.status(200).send(response);
+
+        } catch (err) {
+            next(err);
+
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
+    detailedReport: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+
+            const { MemberShipRefID } = req.body;
+
+            // Validate MemberShipRefID
+            if (
+                MemberShipRefID === undefined ||
+                MemberShipRefID === null ||
+                MemberShipRefID === ""
+            ) {
+                return res.status(200).send({
+                    success: false,
+                    data: null,
+                    message: "MemberShipRefID is required"
+                });
+            }
+
+            const db = req.db;
+
+            // Check database
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            /*
+             * =========================================================
+             * 1. GET CUSTOMER + MEMBERSHIP DETAILS
+             * =========================================================
+             *
+             * MemberShipRefID is stored in customer.Idd
+             */
+            const [customerData] = await connection.query(
+                `
+            SELECT
+                customer.ID AS CustomerID,
+                customer.Idd AS MemberShipRefID,
+
+                CASE
+                    WHEN customer.Title IS NULL
+                        OR customer.Title = ''
+                    THEN customer.Name
+                    ELSE CONCAT(
+                        customer.Title,
+                        ' ',
+                        customer.Name
+                    )
+                END AS CustomerName,
+
+                CASE
+                    WHEN customer.MobileNo1 IS NOT NULL
+                        AND customer.MobileNo1 <> ''
+                    THEN customer.MobileNo1
+
+                    WHEN customer.PhoneNo IS NOT NULL
+                        AND customer.PhoneNo <> ''
+                    THEN customer.PhoneNo
+
+                    ELSE ''
+                END AS Mobile,
+
+                membershipcard.IssueDate,
+                membershipcard.ExpiryDate,
+                membershipcard.MemberType
+
+            FROM customer
+
+            LEFT JOIN membershipcard
+                ON membershipcard.CustomerID = customer.ID
+                AND membershipcard.CompanyID = ?
+                AND membershipcard.Status = 1
+
+            WHERE customer.Idd = ?
+                AND customer.CompanyID = ?
+
+            ORDER BY membershipcard.ID DESC
+
+            LIMIT 1
+            `,
+                [
+                    CompanyID,
+                    MemberShipRefID,
+                    CompanyID
+                ]
+            );
+
+            // Member not found
+            if (!customerData || customerData.length === 0) {
+                return res.status(200).send({
+                    success: false,
+                    data: null,
+                    message: "MemberShipRefID not found"
+                });
+            }
+
+            const membership = customerData[0];
+
+            /*
+             * =========================================================
+             * 2. GET ALL BILLS
+             * =========================================================
+             *
+             * Bills are directly filtered using:
+             *
+             * billmaster.MemberShipRefID
+             *
+             * Each bill can have a different CustomerID.
+             */
+            const [bills] = await connection.query(
+                `
+            SELECT
+                billmaster.CustomerID,
+                billmaster.MemberShipRefID,
+
+                CASE
+                    WHEN customer.Title IS NULL
+                        OR customer.Title = ''
+                    THEN customer.Name
+                    ELSE CONCAT(
+                        customer.Title,
+                        ' ',
+                        customer.Name
+                    )
+                END AS Name,
+
+                CASE
+                    WHEN customer.MobileNo1 IS NOT NULL
+                        AND customer.MobileNo1 <> ''
+                    THEN customer.MobileNo1
+
+                    WHEN customer.PhoneNo IS NOT NULL
+                        AND customer.PhoneNo <> ''
+                    THEN customer.PhoneNo
+
+                    ELSE ''
+                END AS Mobile,
+
+                billmaster.ShopID,
+
+                CASE
+                    WHEN shop.Name IS NULL
+                        AND shop.AreaName IS NULL
+                    THEN ''
+
+                    WHEN shop.AreaName IS NULL
+                        OR shop.AreaName = ''
+                    THEN shop.Name
+
+                    WHEN shop.Name IS NULL
+                        OR shop.Name = ''
+                    THEN shop.AreaName
+
+                    ELSE CONCAT(
+                        shop.Name,
+                        ' (',
+                        shop.AreaName,
+                        ')'
+                    )
+                END AS ShopName,
+
+                billmaster.BillDate,
+                billmaster.DeliveryDate,
+                billmaster.PaymentStatus,
+                billmaster.InvoiceNo,
+                billmaster.TotalAmount AS BillAmount
+
+            FROM billmaster
+
+            LEFT JOIN customer
+                ON customer.ID = billmaster.CustomerID
+                AND customer.CompanyID = billmaster.CompanyID
+
+            LEFT JOIN shop
+                ON shop.ID = billmaster.ShopID
+
+            WHERE billmaster.MemberShipRefID = ?
+                AND billmaster.CompanyID = ?
+                AND billmaster.Status = 1
+
+            ORDER BY
+                billmaster.BillDate DESC,
+                billmaster.ID DESC
+            `,
+                [
+                    MemberShipRefID,
+                    CompanyID
+                ]
+            );
+
+            /*
+             * =========================================================
+             * 3. FINAL RESPONSE
+             * =========================================================
+             */
+            response.data = {
+                CustomerID: membership.CustomerID,
+                MemberShipRefID: membership.MemberShipRefID,
+                CustomerName: membership.CustomerName,
+                Mobile: membership.Mobile,
+                IssueDate: membership.IssueDate,
+                ExpiryDate: membership.ExpiryDate,
+                MemberType: membership.MemberType,
+                Bills: bills || []
+            };
+
+            response.message = "Detailed report fetched successfully";
+
+            return res.status(200).send(response);
+
+        } catch (err) {
+            next(err);
+
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
 
 }
