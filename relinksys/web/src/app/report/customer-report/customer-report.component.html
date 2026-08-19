@@ -235,6 +235,8 @@
                   </div>
                 </div>
               </mat-tab>
+
+
  
               <mat-tab label="Customer Performance" ; *ngIf="companyData.PrimeMembership == 'true'">
                 <div class="body">
@@ -703,6 +705,154 @@
                                     </div>
                                 </div>
                             </mat-tab>
+
+
+                             <mat-tab label="New Member Card Report" *ngIf="companyData.PrimeMembership == 'true'">
+                <div class="body">
+                  <form class="p-3 pb-0" #fc="ngForm">
+                  <!-- <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="searchDataMember()"> -->
+                    <div class="row">
+                      <div  class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                             <mat-label>Type</mat-label>
+                                 <mat-select name="Type" [(ngModel)]="memberCard.Type" required>
+                                       <mat-option [value]="0">All</mat-option>
+                                       <mat-option value="Issue">Issue</mat-option>
+                                       <mat-option value="Active">Active</mat-option>
+                                       <mat-option value="Deactive">Deactive</mat-option>
+                                 </mat-select>
+                                 <mat-error>
+                                         Type is required
+                                   </mat-error>
+                               </mat-form-field>
+                             </div>
+
+                              <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label> MemberType </mat-label>
+                                                            <mat-select name="MemberType" [(ngModel)]="memberCard.MemberType"
+                                                                #MemberTypecontrol>
+                                                               <mat-option [value]="0">All</mat-option>
+                                                                <mat-option [value]="m.Name"
+                                                                    *ngFor="let m of memberTypeList ">
+                                                                    {{m.Name}} </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                      <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="memberCard.FromDate" #DOBcontrol />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="memberCard.ToDate" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>ShopName</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="memberCard.ShopID">
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>ShopName</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="memberCard.ShopID">
+                            <mat-option [value]="Ts.ID" *ngFor="let Ts of shopList"> {{Ts.Name}}
+                              <span [style.color]="'blue'" *ngIf="Ts.AreaName !== 'null'">({{Ts.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                       <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>MemberCradNo</mat-label>
+                          <input matInput name="MemberCradNo" type="text" [(ngModel)]="memberCard.MemberCradNo" #MemberCradNocontrol />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                                                <mat-form-field class="example-full-width">
+                                                    <mat-label>Customer</mat-label>
+                                                    <input type="text" placeholder="serach customer" aria-label="Text"
+                                                        matInput name="CustomerID" [formControl]="myControl"
+                                                        [matAutocomplete]="auto"
+                                                        (input)="customerSearchs(myControl.value, 'Name','Customer')">
+                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                        <mat-option (click)="CustomerSelections('All','0')"
+                                                            value='All'>All</mat-option>
+                                                        <mat-option (click)="CustomerSelections('Value',option.ID)"
+                                                            *ngFor="let option of filteredOptionC"
+                                                            [value]="option.Name">
+                                                            {{option.Name}} {{option.MobileNo1}}
+                                                        </mat-option>
+                                                    </mat-autocomplete>
+                                                </mat-form-field>
+                                            </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <button [disabled]="!fc.valid" class="me-2" type="submit" mat-raised-button color="primary">
+                          Search
+                        </button>
+                        <button type="button" mat-raised-button color="warn" (click)="FromReset()">
+                          Reset
+                        </button>
+
+                      </div>
+                    </div>
+                  </form>
+
+                  <div class="body p-2">
+                    <div class="row">
+                      <div id="customer-content" class="col-sm-12" style="overflow: auto; height: 450px;">
+                        <table class="table table-striped table-hover table-sm table-bordered"
+                          style="border: 2px solid #fff !important;" id="member">
+                          <thead>
+                            <tr>
+                              <th>SNo. </th>
+                              <th>Detail Button</th>
+                              <th>CustomerName </th>
+                              <th>CustomerMobileNo</th>
+                              <th>IssueDate </th>
+                              <th>ExpiryDate </th>
+                              <th>BillAmount </th>
+                            </tr>
+                            <tr>
+                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
+                                aria-hidden="true" type="button" (click)="exportEx()"> </i></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                              <th></th>
+                            </tr>
+                          </thead>
+                          <tbody class="text-center">
+                            <tr *ngFor="let data of memberCardList; let i = index">
+                              <td>{{ i + 1 }} </td>
+                              <td> <button  class="detail_icons bg-btn" >
+                              <i class="fas fa-info-circle ms-1" data-mdb-toggle="modal"
+                                data-mdb-target="#exampleModal"> </i>
+                            </button> </td>
+                              <td>{{ data.CustomerName }} </td>
+                              <td>{{ data.MobileNo }} </td>
+                              <td>{{ dateFormat(data.IssueDate) }} </td>
+                              <td>{{ dateFormat(data.ExpiryDate) }} </td>
+                              <td> </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+
             </mat-tab-group>
           </div>
         </div>

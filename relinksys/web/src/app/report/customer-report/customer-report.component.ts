@@ -31,6 +31,7 @@ export class CustomerReportComponent implements OnInit {
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   companyData: any = JSON.parse(localStorage.getItem('company') || '[]');
+  searchValue:any
 
   constructor(
     private router: Router,
@@ -55,7 +56,11 @@ export class CustomerReportComponent implements OnInit {
   Type = 'Customer'
   selectsShop :any;
   data: any = {
-    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, Type: 0
+   FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, Type: 0
+  };
+
+  memberCard: any = {
+   Type: 0,  MemberType:0, FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, MemberCradNo:'', CustomerID :0,
   };
 
     data1: any = {
@@ -101,6 +106,11 @@ searchTimer: any;
   RegisterTotalExpense:any = 0
     RegisterProfit:any = 0
   FilterTypeR:any 
+
+  memberTypeList: any = []
+ filteredOptionC :any = []
+ memberCardList :any = []
+
   ngOnInit(): void {
 
     // this.exportCustomerPower();
@@ -116,6 +126,12 @@ searchTimer: any;
         this.selectsShop = '/ ' + this.selectsShop[0].Name + ' (' + this.selectsShop[0].AreaName + ')'
       });
     }
+
+    this.bill.memberDataList$.subscribe((list:any) => {
+      this.memberTypeList = list
+    });
+
+
     this.fetchCustomerPerformance()
   }
 
@@ -773,4 +789,51 @@ searchTimer: any;
                 this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('year').format('YYYY-MM-DD');
         }
       }
+
+      
+        customerSearchs(searchKey: any, mode: any, type: any) {
+          this.filteredOptionC = []
+      
+          let dtm = { Type: '', Name: '' }
+      
+          if (type === 'Customer') {
+            dtm = {
+              Type: 'Customer',
+              Name: this.memberCard.CustomerID
+            };
+          }
+      
+          if (searchKey.length >= 2) {
+            if (mode === 'Name') {
+              dtm.Name = searchKey;
+            }
+      
+            const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+              next: (res: any) => {
+                if (res.success) {
+                  this.filteredOptionC = res.data
+                } else {
+                  this.as.errorToast(res.message)
+                }
+                this.sp.hide()
+              },
+              error: (err: any) => console.log(err.message),
+              complete: () => subs.unsubscribe(),
+            });
+          }
+      
+        }
+      
+        CustomerSelections(mode: any, ID: any) {
+          if (mode === 'Value') {
+            this.memberCard.CustomerID = ID
+          }
+        
+          if (mode === 'All') {
+            this.filteredOptionC = []
+            this.memberCard.CustomerID = 0
+          
+          }
+        }
+      
 }
