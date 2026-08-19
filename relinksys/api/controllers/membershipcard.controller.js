@@ -124,6 +124,103 @@ module.exports = {
             }
         }
     },
+    getMembershipcardDetailByRefID: async (req, res, next) => {
+        let connection;
+        try {
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const Body = req.body;
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            if (_.isEmpty(Body)) {
+                return res.status(200).json({
+                    success: false,
+                    data: null,
+                    message: "Invalid Query Data"
+                });
+            }
+
+            if (!Body.MemberShipRefID) {
+                return res.status(200).json({
+                    success: false,
+                    data: null,
+                    message: "MemberShipRefID is required"
+                });
+            }
+
+            const [data] = await connection.query(
+                `
+            SELECT
+                customer.ID AS CustomerID,
+                customer.Idd AS MemberShipRefID,
+
+                CASE
+                    WHEN customer.Title IS NULL
+                        OR customer.Title = ''
+                    THEN customer.Name
+                    ELSE CONCAT(customer.Title, ' ', customer.Name)
+                END AS CustomerName,
+
+                CASE
+                    WHEN customer.MobileNo1 IS NOT NULL
+                        AND customer.MobileNo1 <> ''
+                    THEN customer.MobileNo1
+
+                    WHEN customer.PhoneNo IS NOT NULL
+                        AND customer.PhoneNo <> ''
+                    THEN customer.PhoneNo
+
+                    ELSE ''
+                END AS Mobile,
+
+                membershipcard.IssueDate,
+                membershipcard.ExpiryDate,
+                membershipcard.MemberType
+
+            FROM customer
+
+            INNER JOIN membershipcard
+                ON membershipcard.CustomerID = customer.ID
+
+            WHERE customer.Idd = ?
+                AND customer.CompanyID = ?
+                AND customer.Status = 1
+                AND membershipcard.Status = 1
+
+            ORDER BY membershipcard.ID DESC
+            `,
+                [
+                    Body.MemberShipRefID,
+                    CompanyID
+                ]
+            );
+
+            response.data = data || [];
+            response.message = "Data fetched successfully";
+
+            return res.status(200).send(response);
+
+        } catch (err) {
+            next(err);
+
+        } finally {
+            if (connection) {
+                connection.release();
+                connection.destroy();
+            }
+        }
+    },
     report: async (req, res, next) => {
         let connection;
         try {
