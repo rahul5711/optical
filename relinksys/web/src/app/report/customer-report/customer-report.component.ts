@@ -110,6 +110,7 @@ searchTimer: any;
   memberTypeList: any = []
  filteredOptionC :any = []
  memberCardList :any = []
+ memberCardDetailList :any = []
 
   ngOnInit(): void {
 
@@ -836,4 +837,94 @@ searchTimer: any;
           }
         }
       
-}
+
+   
+  searchDataMemberCard() {
+    this.sp.show()
+    let Parem = '';
+
+    if (this.memberCard.FromDate !== '' && this.memberCard.FromDate !== null) {
+      let FromDate = moment(this.memberCard.FromDate).format('YYYY-MM-DD')
+    
+      if(this.memberCard.Type == 'All' || this.memberCard.Type == 0){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.CreatedOn, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
+      if(this.memberCard.Type == 'Issue' ){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
+      if(this.memberCard.Type == 'Deactive'){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
+      }
+      if(this.memberCard.Type == 'Active'){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
+      }
+    }
+
+    if (this.memberCard.ToDate !== '' && this.memberCard.ToDate !== null) {
+      let ToDate = moment(this.memberCard.ToDate).format('YYYY-MM-DD')
+      Parem = Parem + ' and ' + `'${ToDate}'`;
+
+      if(this.memberCard.Type == 'Active'){
+        Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d")  < ' + `'${ToDate}'`;
+      }
+    }
+
+    if (this.memberCard.ShopID != 0) {
+      Parem = Parem + ' and membershipcard.ShopID IN ' + `(${this.memberCard.ShopID})`;
+    }
+    
+    if (this.memberCard.CustomerID != 0) {
+      Parem = Parem + ' and membershipcard.CustomerID = ' + `${this.memberCard.CustomerID}`;
+    }
+    if (this.memberCard.MemberType != 0) {
+      Parem = Parem + ' and membershipcard.MemberType = ' + `'${this.memberCard.MemberType}'`;
+    }
+    if (this.memberCard.MemberCradNo != 0) {
+      Parem = Parem + ' and customer.Idd = ' + `'${this.memberCard.MemberCradNo}'`;
+    }
+    
+    const subs: Subscription = this.msc.MembershipcardBynewReport(Parem).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.memberCardList = res.data;
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  memberCardDetail(CustomerID:any){
+   
+  }
+
+   openModalR(contentR: any, data: any) {
+     
+            this.sp.show();
+        
+            this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+       let dtm = {
+        MemberShipRefID : data.MemberShipRefID
+    }
+    const subs: Subscription = this.msc.detailedReport(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.memberCardDetailList = res.data.Bills;
+
+        } else {
+          this.as.errorToast(res.message)
+        }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
+          }
+           }
+

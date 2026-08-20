@@ -31,8 +31,8 @@
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                        <button *ngIf="user.ExcelPermission == 'false'" type="button" mat-raised-button (click)="exportCustomerPower()"
-                          style="    background-color: #458f48; color:#fff">
+                        <button *ngIf="user.ExcelPermission == 'false'" type="button" mat-raised-button
+                          (click)="exportCustomerPower()" style="    background-color: #458f48; color:#fff">
                           Excel <i class="fa fa-file-excel-o excel1" aria-hidden="true"> </i>
                         </button>
                       </div>
@@ -140,20 +140,20 @@
                 <div class="body">
                   <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="searchDataMember()">
                     <div class="row">
-                      <div  class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
-                             <mat-label>Type</mat-label>
-                                 <mat-select name="Type" [(ngModel)]="data.Type" required>
-                                       <mat-option [value]="0">All</mat-option>
-                                       <mat-option value="Issue">Issue</mat-option>
-                                       <mat-option value="Active">Active</mat-option>
-                                       <mat-option value="Deactive">Deactive</mat-option>
-                                 </mat-select>
-                                 <mat-error>
-                                         Type is required
-                                   </mat-error>
-                               </mat-form-field>
-                             </div>
+                          <mat-label>Type</mat-label>
+                          <mat-select name="Type" [(ngModel)]="data.Type" required>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option value="Issue">Issue</mat-option>
+                            <mat-option value="Active">Active</mat-option>
+                            <mat-option value="Deactive">Deactive</mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Type is required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
                       <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
@@ -185,7 +185,7 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                    
+
                       <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                         <button [disabled]="!f1.valid" class="me-2" type="submit" mat-raised-button color="primary">
                           Search
@@ -212,8 +212,8 @@
                               <th>ExpiryDate </th>
                             </tr>
                             <tr>
-                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
-                                aria-hidden="true" type="button" (click)="exportEx()"> </i></th>
+                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel"
+                                  title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportEx()"> </i></th>
                               <th></th>
                               <th></th>
                               <th></th>
@@ -237,37 +237,39 @@
               </mat-tab>
 
 
- 
+
               <mat-tab label="Customer Performance" ; *ngIf="companyData.PrimeMembership == 'true'">
                 <div class="body">
-                    <div class="row mt-2">
-                      
-                <div class="col-md-1 col-3  order-1 order-md-1 ms-1">
-                  <select class=" form-control"
-                    style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
-                    [(ngModel)]="itemsPerPage" (change)="fetchCustomerPerformance();">
-                    <option [ngValue]="10">Show 10 Row</option>
-                    <option [ngValue]="25">Show 25 Row</option>
-                    <option [ngValue]="50">Show 50 Row</option>
-                    <option [ngValue]="100">Show 100 Row</option>
-                    <option [ngValue]="250">Show 250Row</option>
-                    <option [ngValue]="500">Show 500 Row</option>
-                  </select>
-                </div>
-                <div class="col-md-3 d-md-block d-none mx-md-auto order-2 order-md-1" style="margin-top:0px;">
-                  <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
-                    [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
-                    (pageChange)="fetchCustomerPerformance()" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
-                  </ngb-pagination>
-                </div>
-                <div class="d-md-none d-block col-6 mx-md-auto order-2 order-md-1" style="margin-top:0px;">
-                  <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
-                    [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
-                    (pageChange)="fetchCustomerPerformance()" [maxSize]="2" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
-                  </ngb-pagination>
-                </div>
+                  <div class="row mt-2">
+
+                    <div class="col-md-1 col-3  order-1 order-md-1 ms-1">
+                      <select class=" form-control"
+                        style="width: auto; border-radius: 22px; font-size: 10px !important; border: 2px solid #c3c3c3; box-shadow: inset 2px 2px 10px #adaaaad4;"
+                        [(ngModel)]="itemsPerPage" (change)="fetchCustomerPerformance();">
+                        <option [ngValue]="10">Show 10 Row</option>
+                        <option [ngValue]="25">Show 25 Row</option>
+                        <option [ngValue]="50">Show 50 Row</option>
+                        <option [ngValue]="100">Show 100 Row</option>
+                        <option [ngValue]="250">Show 250Row</option>
+                        <option [ngValue]="500">Show 500 Row</option>
+                      </select>
                     </div>
-                 
+                    <div class="col-md-3 d-md-block d-none mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                      <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                        [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                        (pageChange)="fetchCustomerPerformance()" [maxSize]="5" [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true">
+                      </ngb-pagination>
+                    </div>
+                    <div class="d-md-none d-block col-6 mx-md-auto order-2 order-md-1" style="margin-top:0px;">
+                      <ngb-pagination style="margin: 0px 0 !important;" [ellipses]="false" ngbPaginationEllipsis
+                        [collectionSize]="collectionSize" #numPages [pageSize]="itemsPerPage" [(page)]="currentPage"
+                        (pageChange)="fetchCustomerPerformance()" [maxSize]="2" [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true">
+                      </ngb-pagination>
+                    </div>
+                  </div>
+
 
                   <div class="body p-2">
                     <div class="row">
@@ -287,8 +289,9 @@
                               <th>ShopName</th>
                             </tr>
                             <tr>
-                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
-                                aria-hidden="true" type="button" (click)="exportExPerformance()"> </i></th>
+                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel"
+                                  title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportExPerformance()">
+                                </i></th>
                               <th></th>
                               <th></th>
                               <th></th>
@@ -318,307 +321,289 @@
                   </div>
                 </div>
               </mat-tab>
-               <mat-tab  label="Customer Due Amonut">
+              <mat-tab label="Customer Due Amonut">
                 <div class="body">
-                    <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCustomerDuePayment()">
-                        <div class="row">
-                           <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Filter Types</mat-label>
-                                                    <mat-select name="FilterTypes" [(ngModel)]="data1.FilterTypes">
-                                                        <mat-option value="InvoiceWise">Invoice Wise</mat-option>
-                                                        <mat-option value="AllDue">All Balance</mat-option>
-                                                  
-                                                    </mat-select>
-                                                </mat-form-field>
-                                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 " *ngIf="this.data1.FilterTypes == 'InvoiceWise'">
-                                <mat-form-field class="example-full-width mb-0 paddingInp">
-                                    <mat-label>From</mat-label>
-                                    <input matInput name="FromDate" type="date"
-                                        [(ngModel)]="data1.FromDate" #DOBcontrol
-                                        />
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 " *ngIf="this.data1.FilterTypes == 'InvoiceWise'">
-                                <mat-form-field class="example-full-width mb-0 paddingInp ">
-                                    <mat-label>To</mat-label>
-                                    <input matInput type="date" name="ToDate" [(ngModel)]="data1.ToDate"
-                                         />
-                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
-                                <mat-form-field class="example-full-width">
-                                                    <mat-label>Customer</mat-label>
-                                                    <input type="text" placeholder="serach customer" aria-label="Text"
-                                                        matInput name="CustomerID" [formControl]="myControl"
-                                                        [matAutocomplete]="auto"
-                                                        (input)="customerSearch(myControl.value, 'Name','Customer')">
-                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                        <mat-option (click)="CustomerSelection('All','0')"
-                                                            value='All'>All</mat-option>
-                                                        <mat-option (click)="CustomerSelection('Value',option.ID)"
-                                                            *ngFor="let option of filteredOptions"
-                                                            [value]="option.Name">
-                                                            {{option.Name}} {{option.MobileNo1}}
-                                                        </mat-option>
-                                                    </mat-autocomplete>
-                                                </mat-form-field>
-                            </div>
-                            <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0" >
-                                <mat-form-field class="example-full-width mb-0"
-                                    *ngIf="user.UserGroup === 'CompanyAdmin'">
-                                    <mat-label>Shop Name</mat-label>
-                                    <mat-select name="ShopID" [(ngModel)]="data1.ShopID" multiple>
-                                        <mat-option [value]=0>All</mat-option>
-                                        <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList">
-                                            {{Fs.Name}}
-                                            <span [style.color]="'blue'"
-                                                *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                                <mat-form-field class="example-full-width mb-0"
-                                    *ngIf="user.UserGroup !== 'CompanyAdmin'">
-                                    <mat-label>Shop Name</mat-label>
-                                    <mat-select name="ShopID" [(ngModel)]="data1.ShopID">
-                                        <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList">
-                                            {{Fs.Name}}
-                                            <span [style.color]="'blue'"
-                                                *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
-                                        </mat-option>
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                            <!--  spec end -->
-                            <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0 ">
-                                <button class="me-3" type="submit" mat-raised-button color="primary">
-                                    Search
-                                </button>
-                                <button type="button" mat-raised-button color="warn"
-                                    >
-                                    Reset
-                                </button>
-                               
-                            </div>
-                        </div>
-                    </form>
-                    <!-- TransfermasterList list -->
-                    <div class="body p-2">
-                        <div id="print-content1" class="col-sm-12"
-                            style="overflow: auto; height: 450px;">
-                           <table *ngIf="data1.FilterTypes == 'InvoiceWise'" class="table table-striped table-hover table-sm table-bordered"
-                                style="border: 2px solid #fff !important;" id="SupplierDuaExcel">
-                                <thead>
-                                    <tr style="white-space: nowrap;">
-                                        <th>S.No</th>
-                                        <th>CustomerName</th>
-                                        <th>InvoiceNo</th>
-                                        <th>BillDate</th>
-                                        <th>DeliveryDate</th>
-                                        <th>Quantity</th>
-                                        <th>SubTotal</th>
-                                        <th>DiscountAmount</th>
-                                        <th>GSTAmount</th>
-                                        <th>TotalAmount</th>
-                                        <th>DueAmount</th>
-                                        <th>PaidAmount</th>
-                                        <th>PaymentStatus</th>
-                                        <th>ProductStatus</th>
-                                        <th>ShopName</th>
-                                    </tr>
-                                    <tr class="totolRow "
-                                        *ngIf="this.dataList1 != null && this.dataList1 != ''">
-                                        <td>
-                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
-                                                aria-hidden="true" type="button"
-                                                (click)="exportAsXLSX1()"> </i>
-                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2" (click)="print1()">
-                                                <i class="far fa-file-pdf "
-                                                    style="color: #1a1e90;font-size: 22px;cursor: pointer;">
-                                                </i>
-                                            </button>
-                                           
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>{{this.totalQtyD}}</td>
-                                        <td>{{this.totalSubTotalD}}</td>
-                                        <td>{{this.totalDiscountD}}</td>
-                                        <td>{{this.totalGstAmountD}}</td>
-                                        <td>{{this.totalAmountD}}</td>
-                                        <td>{{this.totalDueAmountD}}</td>
-                                        <td>{{this.totalPaidAmountD}}</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-center">
-                                    <tr *ngFor="let data of dataList1; let i = index" text="left">
-                                        <td>{{ i + 1 }}</td>
-                                        <td>{{data.CustomerName}}</td>
-                                        <td>{{data.InvoiceNo}}</td>
-                                        <td>{{dateFormat(data.BillDate)}}</td>
-                                        <td>{{dateFormat(data.DeliveryDate)}}</td>
-                                        <td>{{data.Quantity}}</td>
-                                        <td>{{data.SubTotal}}</td>
-                                        <td>{{data.DiscountAmount}} </td>
-                                        <td>{{data.GSTAmount}}</td>
-                                        <td>{{data.TotalAmount}}</td>
-                                        <td>{{data.DueAmount}} </td>
-                                        <td>{{data.TotalAmount - data.DueAmount}}</td>
-                                        <td>{{data.PaymentStatus}}</td>
-                                        <td>{{data.ProductStatus}}</td>
-                                        <td>{{data.ShopName}} 
-                                          <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
-                                                (<span style="color: blue;">{{ data.AreaName }}</span>)
-                                           </ng-container>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table *ngIf="data1.FilterTypes == 'AllDue'" class="table table-striped table-hover table-sm table-bordered"
-                                style="border: 2px solid #fff !important;" id="SupplierDuaExcel">
-                                <thead>
-                                    <tr style="white-space: nowrap;">
-                                        <th>S.No</th>
-                                        <th>CustomerName</th>
-                                        <th>TotalBillAmount</th>
-                                        <th>TotalPaidAmount</th>
-                                        <th>TotalBalanceAmount</th>
-                                    </tr>
-                                    <tr class="totolRow "
-                                        *ngIf="this.dataList1All != null && this.dataList1All != ''">
-                                        <td>
-                                            <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
-                                                aria-hidden="true" type="button"
-                                                (click)="exportAsXLSX1()"> </i>
-                                            <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2" (click)="print1()">
-                                                <i class="far fa-file-pdf "
-                                                    style="color: #1a1e90;font-size: 22px;cursor: pointer;">
-                                                </i>
-                                            </button>
-                                          
-                                        </td>
-                                        <td></td>
-                                        <td>{{this.totalDueAmountDAll}}</td>
-                                        <td>{{this.totalPaidAmountDAll}}</td>
-                                        <td>{{this.totalAmountDAll}}</td>
-                                       
-                                    </tr>
-                                </thead>
-                                <tbody class="text-center">
-                                    <tr *ngFor="let data of dataList1All; let i = index" text="left">
-                                        <td>{{ i + 1 }}</td>
-                                        <td>{{data.CustomerName}}</td>
-                                        <td>{{data.totalBillAmount}}</td>
-                                        <td>{{data.totalPaidAmount}} </td>
-                                        <td>{{data.totalBalanceAmount}}</td>
-                                    
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                  <form class="p-3 pb-0" #f1="ngForm" (ngSubmit)="getCustomerDuePayment()">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Filter Types</mat-label>
+                          <mat-select name="FilterTypes" [(ngModel)]="data1.FilterTypes">
+                            <mat-option value="InvoiceWise">Invoice Wise</mat-option>
+                            <mat-option value="AllDue">All Balance</mat-option>
+
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 "
+                        *ngIf="this.data1.FilterTypes == 'InvoiceWise'">
+                        <mat-form-field class="example-full-width mb-0 paddingInp">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="date" [(ngModel)]="data1.FromDate" #DOBcontrol />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-6 mb-0 "
+                        *ngIf="this.data1.FilterTypes == 'InvoiceWise'">
+                        <mat-form-field class="example-full-width mb-0 paddingInp ">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" name="ToDate" [(ngModel)]="data1.ToDate" />
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-4 col-12 mb-0 ">
+                        <mat-form-field class="example-full-width">
+                          <mat-label>Customer</mat-label>
+                          <input type="text" placeholder="serach customer" aria-label="Text" matInput name="CustomerID"
+                            [formControl]="myControl" [matAutocomplete]="auto"
+                            (input)="customerSearch(myControl.value, 'Name','Customer')">
+                          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                            <mat-option (click)="CustomerSelection('All','0')" value='All'>All</mat-option>
+                            <mat-option (click)="CustomerSelection('Value',option.ID)"
+                              *ngFor="let option of filteredOptions" [value]="option.Name">
+                              {{option.Name}} {{option.MobileNo1}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0">
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup === 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="data1.ShopID" multiple>
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList">
+                              {{Fs.Name}}
+                              <span [style.color]="'blue'" *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width mb-0" *ngIf="user.UserGroup !== 'CompanyAdmin'">
+                          <mat-label>Shop Name</mat-label>
+                          <mat-select name="ShopID" [(ngModel)]="data1.ShopID">
+                            <mat-option [value]="Fs.ID" *ngFor="let Fs of shopList">
+                              {{Fs.Name}}
+                              <span [style.color]="'blue'" *ngIf="Fs.AreaName !== 'null'">({{Fs.AreaName}})</span>
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <!--  spec end -->
+                      <div class="col-xl-2 col-lg-4 col-md-6 col-12 mb-0 ">
+                        <button class="me-3" type="submit" mat-raised-button color="primary">
+                          Search
+                        </button>
+                        <button type="button" mat-raised-button color="warn">
+                          Reset
+                        </button>
+
+                      </div>
                     </div>
+                  </form>
+                  <!-- TransfermasterList list -->
+                  <div class="body p-2">
+                    <div id="print-content1" class="col-sm-12" style="overflow: auto; height: 450px;">
+                      <table *ngIf="data1.FilterTypes == 'InvoiceWise'"
+                        class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="SupplierDuaExcel">
+                        <thead>
+                          <tr style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th>CustomerName</th>
+                            <th>InvoiceNo</th>
+                            <th>BillDate</th>
+                            <th>DeliveryDate</th>
+                            <th>Quantity</th>
+                            <th>SubTotal</th>
+                            <th>DiscountAmount</th>
+                            <th>GSTAmount</th>
+                            <th>TotalAmount</th>
+                            <th>DueAmount</th>
+                            <th>PaidAmount</th>
+                            <th>PaymentStatus</th>
+                            <th>ProductStatus</th>
+                            <th>ShopName</th>
+                          </tr>
+                          <tr class="totolRow " *ngIf="this.dataList1 != null && this.dataList1 != ''">
+                            <td>
+                              <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel"
+                                title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX1()"> </i>
+                              <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
+                                (click)="print1()">
+                                <i class="far fa-file-pdf " style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                </i>
+                              </button>
+
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>{{this.totalQtyD}}</td>
+                            <td>{{this.totalSubTotalD}}</td>
+                            <td>{{this.totalDiscountD}}</td>
+                            <td>{{this.totalGstAmountD}}</td>
+                            <td>{{this.totalAmountD}}</td>
+                            <td>{{this.totalDueAmountD}}</td>
+                            <td>{{this.totalPaidAmountD}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                        </thead>
+                        <tbody class="text-center">
+                          <tr *ngFor="let data of dataList1; let i = index" text="left">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{data.CustomerName}}</td>
+                            <td>{{data.InvoiceNo}}</td>
+                            <td>{{dateFormat(data.BillDate)}}</td>
+                            <td>{{dateFormat(data.DeliveryDate)}}</td>
+                            <td>{{data.Quantity}}</td>
+                            <td>{{data.SubTotal}}</td>
+                            <td>{{data.DiscountAmount}} </td>
+                            <td>{{data.GSTAmount}}</td>
+                            <td>{{data.TotalAmount}}</td>
+                            <td>{{data.DueAmount}} </td>
+                            <td>{{data.TotalAmount - data.DueAmount}}</td>
+                            <td>{{data.PaymentStatus}}</td>
+                            <td>{{data.ProductStatus}}</td>
+                            <td>{{data.ShopName}}
+                              <ng-container *ngIf="data.AreaName && data.AreaName !== 'null' && data.AreaName !== ''">
+                                (<span style="color: blue;">{{ data.AreaName }}</span>)
+                              </ng-container>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table *ngIf="data1.FilterTypes == 'AllDue'"
+                        class="table table-striped table-hover table-sm table-bordered"
+                        style="border: 2px solid #fff !important;" id="SupplierDuaExcel">
+                        <thead>
+                          <tr style="white-space: nowrap;">
+                            <th>S.No</th>
+                            <th>CustomerName</th>
+                            <th>TotalBillAmount</th>
+                            <th>TotalPaidAmount</th>
+                            <th>TotalBalanceAmount</th>
+                          </tr>
+                          <tr class="totolRow " *ngIf="this.dataList1All != null && this.dataList1All != ''">
+                            <td>
+                              <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel"
+                                title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportAsXLSX1()"> </i>
+                              <button *ngIf="user.ExcelPermission == 'false'" class="bg_none ms-4 me-2"
+                                (click)="print1()">
+                                <i class="far fa-file-pdf " style="color: #1a1e90;font-size: 22px;cursor: pointer;">
+                                </i>
+                              </button>
+
+                            </td>
+                            <td></td>
+                            <td>{{this.totalDueAmountDAll}}</td>
+                            <td>{{this.totalPaidAmountDAll}}</td>
+                            <td>{{this.totalAmountDAll}}</td>
+
+                          </tr>
+                        </thead>
+                        <tbody class="text-center">
+                          <tr *ngFor="let data of dataList1All; let i = index" text="left">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{data.CustomerName}}</td>
+                            <td>{{data.totalBillAmount}}</td>
+                            <td>{{data.totalPaidAmount}} </td>
+                            <td>{{data.totalBalanceAmount}}</td>
+
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
-            </mat-tab>
+              </mat-tab>
 
-             <mat-tab label="Sale Profit" >
-                                <div class="body">
-                                    <form class="p-3 pb-0" #fr="ngForm" (ngSubmit)="getRegisterSale()">
-                                        <div class="row">
+              <mat-tab label="Sale Profit">
+                <div class="body">
+                  <form class="p-3 pb-0" #fr="ngForm" (ngSubmit)="getRegisterSale()">
+                    <div class="row">
 
-                                            <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 ">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Filter Types</mat-label>
-                                                    <mat-select name="FilterTypes" [(ngModel)]="FilterTypeR"
-                                                        (selectionChange)="ChangeDate()" required>
-                                                        <mat-option value="YearMonthWise">YearMonthWise</mat-option>
-                                                        <mat-option value="YearWise">YearWise</mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
-                                            </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-12 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Filter Types</mat-label>
+                          <mat-select name="FilterTypes" [(ngModel)]="FilterTypeR" (selectionChange)="ChangeDate()"
+                            required>
+                            <mat-option value="YearMonthWise">YearMonthWise</mat-option>
+                            <mat-option value="YearWise">YearWise</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
 
-                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
-                                                *ngIf='FilterTypeR == "YearWise"'>
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>From</mat-label>
-                                                    <mat-select name="FromDate" [(ngModel)]="dataRegister.FromDate"
-                                                        required>
-                                                        <mat-option value="2022-01-01">2022</mat-option>
-                                                        <mat-option value="2023-01-01">2023</mat-option>
-                                                        <mat-option value="2024-01-01">2024</mat-option>
-                                                        <mat-option value="2025-01-01">2025</mat-option>
-                                                        <mat-option value="2026-01-01">2026</mat-option>
-                                                        <mat-option value="2027-01-01">2027</mat-option>
-                                                        <mat-option value="2028-01-01">2028</mat-option>
-                                                        <mat-option value="2029-01-01">2029</mat-option>
-                                                        <mat-option value="2030-01-01">2030</mat-option>
-                                                        <mat-option value="2031-01-01">2031</mat-option>
-                                                        <mat-option value="2032-01-01">2032</mat-option>
-                                                        <mat-option value="2033-01-01">2033</mat-option>
-                                                        <mat-option value="2034-01-01">2034</mat-option>
-                                                        <mat-option value="2035-01-01">2035</mat-option>
-                                                        <mat-option value="2036-01-01">2036</mat-option>
-                                                        <mat-option value="2037-01-01">2037</mat-option>
-                                                        <mat-option value="2038-01-01">2038</mat-option>
-                                                        <mat-option value="2039-01-01">2039</mat-option>
-                                                        <mat-option value="2040-01-01">2040</mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
-                                            </div>
-                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
-                                                *ngIf='FilterTypeR == "YearWise"'>
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>ToDate</mat-label>
-                                                    <mat-select name="ToDate" [(ngModel)]="dataRegister.ToDate"
-                                                        required>
-                                                        <mat-option value="2022-12-31">2022</mat-option>
-                                                        <mat-option value="2023-12-31">2023</mat-option>
-                                                        <mat-option value="2024-12-31">2024</mat-option>
-                                                        <mat-option value="2025-12-31">2025</mat-option>
-                                                        <mat-option value="2026-12-31">2026</mat-option>
-                                                        <mat-option value="2027-12-31">2027</mat-option>
-                                                        <mat-option value="2028-12-31">2028</mat-option>
-                                                        <mat-option value="2029-12-31">2029</mat-option>
-                                                        <mat-option value="2030-12-31">2030</mat-option>
-                                                        <mat-option value="2031-12-31">2031</mat-option>
-                                                        <mat-option value="2032-12-31">2032</mat-option>
-                                                        <mat-option value="2033-12-31">2033</mat-option>
-                                                        <mat-option value="2034-12-31">2034</mat-option>
-                                                        <mat-option value="2035-12-31">2035</mat-option>
-                                                        <mat-option value="2036-12-31">2036</mat-option>
-                                                        <mat-option value="2037-12-31">2037</mat-option>
-                                                        <mat-option value="2038-12-31">2038</mat-option>
-                                                        <mat-option value="2039-12-31">2039</mat-option>
-                                                        <mat-option value="2040-12-31">2040</mat-option>
-                                                    </mat-select>
-                                                </mat-form-field>
-                                            </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 " *ngIf='FilterTypeR == "YearWise"'>
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <mat-select name="FromDate" [(ngModel)]="dataRegister.FromDate" required>
+                            <mat-option value="2022-01-01">2022</mat-option>
+                            <mat-option value="2023-01-01">2023</mat-option>
+                            <mat-option value="2024-01-01">2024</mat-option>
+                            <mat-option value="2025-01-01">2025</mat-option>
+                            <mat-option value="2026-01-01">2026</mat-option>
+                            <mat-option value="2027-01-01">2027</mat-option>
+                            <mat-option value="2028-01-01">2028</mat-option>
+                            <mat-option value="2029-01-01">2029</mat-option>
+                            <mat-option value="2030-01-01">2030</mat-option>
+                            <mat-option value="2031-01-01">2031</mat-option>
+                            <mat-option value="2032-01-01">2032</mat-option>
+                            <mat-option value="2033-01-01">2033</mat-option>
+                            <mat-option value="2034-01-01">2034</mat-option>
+                            <mat-option value="2035-01-01">2035</mat-option>
+                            <mat-option value="2036-01-01">2036</mat-option>
+                            <mat-option value="2037-01-01">2037</mat-option>
+                            <mat-option value="2038-01-01">2038</mat-option>
+                            <mat-option value="2039-01-01">2039</mat-option>
+                            <mat-option value="2040-01-01">2040</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 " *ngIf='FilterTypeR == "YearWise"'>
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>ToDate</mat-label>
+                          <mat-select name="ToDate" [(ngModel)]="dataRegister.ToDate" required>
+                            <mat-option value="2022-12-31">2022</mat-option>
+                            <mat-option value="2023-12-31">2023</mat-option>
+                            <mat-option value="2024-12-31">2024</mat-option>
+                            <mat-option value="2025-12-31">2025</mat-option>
+                            <mat-option value="2026-12-31">2026</mat-option>
+                            <mat-option value="2027-12-31">2027</mat-option>
+                            <mat-option value="2028-12-31">2028</mat-option>
+                            <mat-option value="2029-12-31">2029</mat-option>
+                            <mat-option value="2030-12-31">2030</mat-option>
+                            <mat-option value="2031-12-31">2031</mat-option>
+                            <mat-option value="2032-12-31">2032</mat-option>
+                            <mat-option value="2033-12-31">2033</mat-option>
+                            <mat-option value="2034-12-31">2034</mat-option>
+                            <mat-option value="2035-12-31">2035</mat-option>
+                            <mat-option value="2036-12-31">2036</mat-option>
+                            <mat-option value="2037-12-31">2037</mat-option>
+                            <mat-option value="2038-12-31">2038</mat-option>
+                            <mat-option value="2039-12-31">2039</mat-option>
+                            <mat-option value="2040-12-31">2040</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
 
-                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
-                                                *ngIf='FilterTypeR == "YearMonthWise"'>
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>From</mat-label>
-                                                    <input matInput name="FromDate" type="month" required
-                                                        [(ngModel)]="dataRegister.FromDate" #Fromcontrol>
-                                                </mat-form-field>
-                                            </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 " *ngIf='FilterTypeR == "YearMonthWise"'>
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>From</mat-label>
+                          <input matInput name="FromDate" type="month" required [(ngModel)]="dataRegister.FromDate"
+                            #Fromcontrol>
+                        </mat-form-field>
+                      </div>
 
-                                            <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 "
-                                                *ngIf='FilterTypeR == "YearMonthWise"'>
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>To</mat-label>
-                                                    <input matInput name="ToDate" type="month" required
-                                                        [(ngModel)]="dataRegister.ToDate" #ToDatecontrol>
-                                                </mat-form-field>
-                                            </div>
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 " *ngIf='FilterTypeR == "YearMonthWise"'>
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>To</mat-label>
+                          <input matInput name="ToDate" type="month" required [(ngModel)]="dataRegister.ToDate"
+                            #ToDatecontrol>
+                        </mat-form-field>
+                      </div>
 
 
-                                            <!-- <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
+                      <!-- <div class="col-xl-2 col-lg-2 col-md-4 col-6 mb-0 ">
                                                 <mat-form-field class="example-full-width mb-0"
                                                     *ngIf="user.UserGroup === 'CompanyAdmin'">
                                                     <mat-label>Shop Name</mat-label>
@@ -646,99 +631,89 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div> -->
-                                            <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
-                                                <button type="submit" mat-raised-button color="primary"
-                                                    [disabled]="!fr.valid ">
-                                                    Search
-                                                </button>
-                                                <button class="me-3 ms-3" type="button" mat-raised-button color="warn">
-                                                    Reset
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <div class="body p-4">
-                                        <div class="row">
-                                            <div *ngIf="this.RegisterList.length != 0" class="col-12 ">
-                                                <div id="ProductExpiry-content" class="col-sm-12"
-                                                    style="overflow: auto; height: 650px;">
-                                                    <table
-                                                        class="table table-striped table-hover table-sm table-bordered"
-                                                        style="border: 2px solid #fff !important; zoom:150%" id="saleExpiryExcel">
-                                                        <thead>
-                                                            <tr class="text-center" style="white-space: normal;">
-                                                                <th>S.No</th>
-                                                                <th>Date </th>
-                                                                <th>TotalSale </th>
-                                                                <th>TotalPurchase <b style="color:rgb(128, 0, 0)"> (-)</b></th>
-                                                                <th>TotalExpense <b style="color:rgb(128, 0, 0)"> (-)</b></th>
-                                                                <th>Profit</th>
-                                                            </tr>
-                                                            <tr class="totolRow"
-                                                                *ngIf="this.RegisterList != null && this.RegisterList != ''">
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td>{{RegisterTotalSale}}</td>
-                                                                <td>{{RegisterTotalPurchase}}</td>
-                                                                <td>{{RegisterTotalExpense}}</td>
-                                                                <td>{{RegisterProfit}}</td>
-
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody class="text-center">
-                                                             <tr *ngFor="let data of RegisterList; let i = index"
-                                                                text="left">
-                                                                <td >{{1+i}}</td>
-                                                                <td  >{{ data.ReportMonth }} {{ data.ReportYear }}</td>
-                                                                <td >{{data.TotalSale}}</td>
-                                                                <td >{{data.TotalPurchase}}</td>
-                                                                <td >{{data.TotalExpense}}</td>
-                                                                <td >{{data.Profit}}</td>
-
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                             
-                                        </div>
-                                    </div>
-                                </div>
-                            </mat-tab>
-
-
-                             <mat-tab label="New Member Card Report" *ngIf="companyData.PrimeMembership == 'true'">
-                <div class="body">
-                  <form class="p-3 pb-0" #fc="ngForm">
-                  <!-- <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="searchDataMember()"> -->
+                      <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
+                        <button type="submit" mat-raised-button color="primary" [disabled]="!fr.valid ">
+                          Search
+                        </button>
+                        <button class="me-3 ms-3" type="button" mat-raised-button color="warn">
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="body p-4">
                     <div class="row">
-                      <div  class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                        <mat-form-field class="example-full-width mb-0">
-                             <mat-label>Type</mat-label>
-                                 <mat-select name="Type" [(ngModel)]="memberCard.Type" required>
-                                       <mat-option [value]="0">All</mat-option>
-                                       <mat-option value="Issue">Issue</mat-option>
-                                       <mat-option value="Active">Active</mat-option>
-                                       <mat-option value="Deactive">Deactive</mat-option>
-                                 </mat-select>
-                                 <mat-error>
-                                         Type is required
-                                   </mat-error>
-                               </mat-form-field>
-                             </div>
+                      <div *ngIf="this.RegisterList.length != 0" class="col-12 ">
+                        <div id="ProductExpiry-content" class="col-sm-12" style="overflow: auto; height: 650px;">
+                          <table class="table table-striped table-hover table-sm table-bordered"
+                            style="border: 2px solid #fff !important; zoom:150%" id="saleExpiryExcel">
+                            <thead>
+                              <tr class="text-center" style="white-space: normal;">
+                                <th>S.No</th>
+                                <th>Date </th>
+                                <th>TotalSale </th>
+                                <th>TotalPurchase <b style="color:rgb(128, 0, 0)"> (-)</b></th>
+                                <th>TotalExpense <b style="color:rgb(128, 0, 0)"> (-)</b></th>
+                                <th>Profit</th>
+                              </tr>
+                              <tr class="totolRow" *ngIf="this.RegisterList != null && this.RegisterList != ''">
+                                <td></td>
+                                <td></td>
+                                <td>{{RegisterTotalSale}}</td>
+                                <td>{{RegisterTotalPurchase}}</td>
+                                <td>{{RegisterTotalExpense}}</td>
+                                <td>{{RegisterProfit}}</td>
 
-                              <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label> MemberType </mat-label>
-                                                            <mat-select name="MemberType" [(ngModel)]="memberCard.MemberType"
-                                                                #MemberTypecontrol>
-                                                               <mat-option [value]="0">All</mat-option>
-                                                                <mat-option [value]="m.Name"
-                                                                    *ngFor="let m of memberTypeList ">
-                                                                    {{m.Name}} </mat-option>
-                                                            </mat-select>
-                                                        </mat-form-field>
-                                                    </div>
+                              </tr>
+                            </thead>
+                            <tbody class="text-center">
+                              <tr *ngFor="let data of RegisterList; let i = index" text="left">
+                                <td>{{1+i}}</td>
+                                <td>{{ data.ReportMonth }} {{ data.ReportYear }}</td>
+                                <td>{{data.TotalSale}}</td>
+                                <td>{{data.TotalPurchase}}</td>
+                                <td>{{data.TotalExpense}}</td>
+                                <td>{{data.Profit}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-tab>
+
+              <mat-tab label="New Member Card Report" *ngIf="companyData.PrimeMembership == 'true'">
+                <div class="body">
+
+                  <form class="p-3 pb-0" #fc="ngForm" (ngSubmit)="searchDataMemberCard()">
+                    <div class="row">
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label>Type</mat-label>
+                          <mat-select name="Type" [(ngModel)]="memberCard.Type" required>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option value="Issue">Issue</mat-option>
+                            <mat-option value="Active">Active</mat-option>
+                            <mat-option value="Deactive">Deactive</mat-option>
+                          </mat-select>
+                          <mat-error>
+                            Type is required
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+
+                      <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0">
+                        <mat-form-field class="example-full-width mb-0">
+                          <mat-label> MemberType </mat-label>
+                          <mat-select name="MemberType" [(ngModel)]="memberCard.MemberType" #MemberTypecontrol>
+                            <mat-option [value]="0">All</mat-option>
+                            <mat-option [value]="m.Name" *ngFor="let m of memberTypeList ">
+                              {{m.Name}} </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </div>
                       <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>From</mat-label>
@@ -770,30 +745,28 @@
                           </mat-select>
                         </mat-form-field>
                       </div>
-                       <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
+                      <div class="col-xl-2 col-lg-2 col-md-2 col-6 mb-0 ">
                         <mat-form-field class="example-full-width mb-0">
                           <mat-label>MemberCradNo</mat-label>
-                          <input matInput name="MemberCradNo" type="text" [(ngModel)]="memberCard.MemberCradNo" #MemberCradNocontrol />
+                          <input matInput name="MemberCradNo" type="text" [(ngModel)]="memberCard.MemberCradNo"
+                            #MemberCradNocontrol />
                         </mat-form-field>
                       </div>
                       <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
-                                                <mat-form-field class="example-full-width">
-                                                    <mat-label>Customer</mat-label>
-                                                    <input type="text" placeholder="serach customer" aria-label="Text"
-                                                        matInput name="CustomerID" [formControl]="myControl"
-                                                        [matAutocomplete]="auto"
-                                                        (input)="customerSearchs(myControl.value, 'Name','Customer')">
-                                                    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                        <mat-option (click)="CustomerSelections('All','0')"
-                                                            value='All'>All</mat-option>
-                                                        <mat-option (click)="CustomerSelections('Value',option.ID)"
-                                                            *ngFor="let option of filteredOptionC"
-                                                            [value]="option.Name">
-                                                            {{option.Name}} {{option.MobileNo1}}
-                                                        </mat-option>
-                                                    </mat-autocomplete>
-                                                </mat-form-field>
-                                            </div>
+                        <mat-form-field class="example-full-width">
+                          <mat-label>Customer</mat-label>
+                          <input type="text" placeholder="serach customer" aria-label="Text" matInput name="CustomerID"
+                            [formControl]="myControl" [matAutocomplete]="auto"
+                            (input)="customerSearchs(myControl.value, 'Name','Customer')">
+                          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                            <mat-option (click)="CustomerSelections('All','0')" value='All'>All</mat-option>
+                            <mat-option (click)="CustomerSelections('Value',option.ID)"
+                              *ngFor="let option of filteredOptionC" [value]="option.Name">
+                              {{option.Name}} {{option.MobileNo1}}
+                            </mat-option>
+                          </mat-autocomplete>
+                        </mat-form-field>
+                      </div>
                       <div class="col-xl-2 col-lg-2 col-md-3 col-6 mb-0 ">
                         <button [disabled]="!fc.valid" class="me-2" type="submit" mat-raised-button color="primary">
                           Search
@@ -801,7 +774,6 @@
                         <button type="button" mat-raised-button color="warn" (click)="FromReset()">
                           Reset
                         </button>
-
                       </div>
                     </div>
                   </form>
@@ -815,6 +787,7 @@
                             <tr>
                               <th>SNo. </th>
                               <th>Detail Button</th>
+                              <th>BillCount </th>
                               <th>CustomerName </th>
                               <th>CustomerMobileNo</th>
                               <th>IssueDate </th>
@@ -822,8 +795,9 @@
                               <th>BillAmount </th>
                             </tr>
                             <tr>
-                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel" title="ExportAsXLSX"
-                                aria-hidden="true" type="button" (click)="exportEx()"> </i></th>
+                              <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel"
+                                  title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportEx()"> </i></th>
+                              <th></th>
                               <th></th>
                               <th></th>
                               <th></th>
@@ -835,15 +809,16 @@
                           <tbody class="text-center">
                             <tr *ngFor="let data of memberCardList; let i = index">
                               <td>{{ i + 1 }} </td>
-                              <td> <button  class="detail_icons bg-btn" >
-                              <i class="fas fa-info-circle ms-1" data-mdb-toggle="modal"
-                                data-mdb-target="#exampleModal"> </i>
-                            </button> </td>
+                              <td> <button class="detail_icons bg-btn" (click)="openModalR(contentR,data)">
+                                  <i class="fas fa-info-circle ms-1" data-mdb-toggle="modal"
+                                    data-mdb-target="#exampleModal"> </i>
+                                </button> </td>
+                              <td>{{ data.BillCount }} </td>
                               <td>{{ data.CustomerName }} </td>
-                              <td>{{ data.MobileNo }} </td>
+                              <td>{{ data.Mobile }} </td>
                               <td>{{ dateFormat(data.IssueDate) }} </td>
                               <td>{{ dateFormat(data.ExpiryDate) }} </td>
-                              <td> </td>
+                              <td>{{data.BillAmount}} </td>
                             </tr>
                           </tbody>
                         </table>
@@ -860,3 +835,45 @@
     </div>
   </div>
 </section>
+
+
+<!-- model expiry-->
+<ng-template #contentR role="document" let-modal>
+    <div class="modal-header" style="height: 50px;">
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">MemberShip Card History</h3>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row" >
+            <div  class="col-sm-12"
+            style="overflow: auto; height: 450px;">
+                <table class="table table-striped table-hover table-sm table-bordered"
+                style="border: 2px solid #fff !important;" id="saleExpiryExcel">
+                <thead>
+                    <tr class="text-center" style="white-space: normal;">
+                       <th>SNo. </th>
+                              <th>CardNo.</th>
+                              <th>InvoiceNo </th>
+                              <th>CustomerName </th>
+                              <th>CustomerMobileNo</th>
+                              <th>BillAmount </th>
+                       
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr *ngFor="let data of memberCardDetailList; let i = index" text="left">
+                        <td>{{ i + 1 }} </td>
+                              <td>{{ data.MemberShipRefID }} </td>
+                              <td>{{ data.InvoiceNo }} </td>
+                              <td>{{ data.Name }} </td>
+                              <td>{{ data.Mobile }} </td>
+                              <td>{{data.BillAmount}} </td>
+                      
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+          
+        </div>
+    </div>
+</ng-template>

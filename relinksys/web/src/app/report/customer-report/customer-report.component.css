@@ -136,3 +136,23 @@ tr.mat-row, tr.mat-footer-row {
 tr.mat-row, tr.mat-footer-row {
 height: 0px !important;
 }
+
+.bg-btn{
+  background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.detail_icons i{
+  background: #38a042e8;
+  color: #fff;
+  padding: 4px !important;
+  border-radius: 24px !important;
+  font-size: 22px !important;
+  height: 30px !important;
+  width: 30px !important;
+  transition: .5s;
+  cursor: pointer;
+  box-shadow: 2px 2px 6px #9c9795fa;
+}

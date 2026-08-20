@@ -35,6 +35,20 @@ export class MembershipcardService {
       return this.httpClient.post<any>(this.url + '/report', {Parem:Parem}, httpOptions)
       .pipe(catchError(this.handleError));
     }
+    getMembershipcardDetailByRefID(body: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/getMembershipcardDetailByRefID', body, httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+
+    MembershipcardBynewReport(Parem: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/newReport', {Parem:Parem}, httpOptions)
+      .pipe(catchError(this.handleError));
+    }
+
+    detailedReport(body: any): Observable<any> {
+      return this.httpClient.post<any>(this.url + '/detailedReport', body, httpOptions)
+      .pipe(catchError(this.handleError));
+    }
 
   private handleError(errorResponse: HttpErrorResponse) {
     if (errorResponse.error instanceof ErrorEvent) {
