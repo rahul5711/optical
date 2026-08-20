@@ -1,3 +1,12 @@
+    
+    .mat-icon {
+    pointer-events: none;
+  }
+
+  i {
+    pointer-events: none;
+  }
+  
     .mobbtn {
       display: grid;
       grid-template-columns: 13% 10% 10%;

@@ -27,6 +27,11 @@
                                                     disabled />
                                             </mat-form-field>
                                         </div>
+
+                                        <div class="col-xl-1 col-lg-1 col-md-2 col-2 mX-auto ">
+                                                    <button type="button" mat-raised-button color="primary"
+                                                        (click)="NewVisit('Examination')">New Visit</button>
+                                                </div>
                                     </div>
 
                                     <div class="row">
@@ -661,7 +666,7 @@
 
                                     <div class="row mt-3 mb-3">
                                         <div class="col-12">
-                                            <button type="submit" class="me-3" mat-raised-button color="primary"
+                                            <button *ngIf="this.masterObject.ID == null" type="submit" class="me-3" mat-raised-button color="primary"
                                                 [disabled]="!f.valid">Save</button>
 
                                             <button *ngIf="this.masterObject.ID != null"

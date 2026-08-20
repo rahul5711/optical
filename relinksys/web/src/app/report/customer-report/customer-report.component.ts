@@ -111,7 +111,7 @@ searchTimer: any;
  filteredOptionC :any = []
  memberCardList :any = []
  memberCardDetailList :any = []
-
+ detailData:any 
   ngOnInit(): void {
 
     // this.exportCustomerPower();
@@ -916,6 +916,7 @@ searchTimer: any;
         if (res.success) {
           this.as.successToast(res.message)
           this.memberCardDetailList = res.data.Bills;
+          this.detailData = res.data;
 
         } else {
           this.as.errorToast(res.message)

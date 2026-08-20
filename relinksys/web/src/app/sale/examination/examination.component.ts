@@ -49,7 +49,7 @@ export class ExaminationComponent implements OnInit {
     this.id = this.route.snapshot.params['customerid'];
     this.env = environment
   }
-
+  currentPowerID: number | null = null;
   filteredPVAList: any = []
   inputError: boolean = false;
   pdfLink: any = '';
@@ -73,7 +73,7 @@ export class ExaminationComponent implements OnInit {
       },
 
       SubjectivePWR: {
-        REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
+       ID: 'null', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
       },
 
       VisionBalance: {
@@ -423,10 +423,11 @@ export class ExaminationComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+     this.getCustomerById()
       if (this.masterObject.ID != 0 || this.masterObject.ID != null) {
       this.PatientRecordList('Examination')
     }
-    this.getCustomerById()
+   
   }
 
   getCustomerById() {
@@ -435,18 +436,46 @@ export class ExaminationComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.customerDate = res.data[0];
-          this.spectacleLists = res.spectacle_rx?.length ? res.spectacle_rx.slice(0, 10) : [];
+          this.customerDate.Age = this.customerDate.Age || 0
+          
+             if (res.spectacle_rx?.length > 0) {
 
-          if (res.spectacle_rx?.length) {
-            this.masterObject.Exam.SubjectivePWR = res.spectacle_rx[0];
+          this.spectacle = {
+            ...this.spectacle,
+            ...res.spectacle_rx[0]
+          };
 
-            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
-            PLANOCheck.forEach((prop) => {
-              if (this.masterObject.Exam.SubjectivePWR[prop] === '+0.00' || this.masterObject.Exam.SubjectivePWR[prop] === "0") {
-                this.masterObject.Exam.SubjectivePWR[prop] = 'PLANO';
-              }
-            });
-          }
+          // ⭐ Existing Power ID
+          this.currentPowerID = Number(res.spectacle_rx[0].ID);
+
+          console.log('Current Power ID:', this.currentPowerID);
+
+        } else {
+
+          // Customer ki koi power visit nahi hai
+          this.currentPowerID = null;
+
+          this.spectacle = {
+            ...this.spectacle,
+            ID: null,
+            CustomerID: Number(this.id)
+          };
+        }
+
+        this.spectacleLists = res.spectacle_rx?.length
+          ? res.spectacle_rx.slice(0, 10)
+          : [];
+
+          // if (res.spectacle_rx?.length) {
+          //   this.masterObject.Exam.SubjectivePWR = res.spectacle_rx[0];
+
+          //   const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
+          //   PLANOCheck.forEach((prop) => {
+          //     if (this.masterObject.Exam.SubjectivePWR[prop] === '+0.00' || this.masterObject.Exam.SubjectivePWR[prop] === "0") {
+          //       this.masterObject.Exam.SubjectivePWR[prop] = 'PLANO';
+          //     }
+          //   });
+          // }
           this.as.successToast(res.message);
         }
         else {
@@ -479,13 +508,13 @@ export class ExaminationComponent implements OnInit {
   validateCyLInputRight(fieldName: string) {
     const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
 
-    let fieldValue = this.spectacle[fieldName];
+    let fieldValue = this.masterObject.SubjectivePWR[fieldName];
 
     if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
-    this.spectacle[fieldName] = fieldValue;
+    this.masterObject.SubjectivePWR[fieldName] = fieldValue;
     let formattedInput = fieldValue;
 
     // Format only if the value is not PLANO
@@ -510,21 +539,21 @@ export class ExaminationComponent implements OnInit {
     }
 
     // Update both fields (if you want to synchronize them)
-    this.spectacle[fieldName] = formattedInput;
+    this.masterObject.SubjectivePWR[fieldName] = formattedInput;
 
     if (fieldName === 'RENPCYL') {
-      this.spectacle.REDPCYL = formattedInput;
+      this.masterObject.SubjectivePWR.REDPCYL = formattedInput;
     }
 
     // Validate the formatted input
     if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
     } else {
-      this.spectacle[fieldName] = formattedInput;
+      this.masterObject.SubjectivePWR[fieldName] = formattedInput;
     }
 
     if (this.inputError) {
-      this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
+      this.masterObject.SubjectivePWR[fieldName] = '';  // Reset to '0.00' if invalid
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -539,14 +568,14 @@ export class ExaminationComponent implements OnInit {
   validateSphInputRight(fieldName: string) {
     const validValues = this.dataSPH.map((c: { Name: any; }) => c.Name);
 
-    let fieldValue = this.spectacle[fieldName];
+    let fieldValue = this.masterObject.SubjectivePWR[fieldName];
 
     // Handle special case for PLANO
     if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
-    this.spectacle[fieldName] = fieldValue;
+    this.masterObject.SubjectivePWR[fieldName] = fieldValue;
     let formattedInput = fieldValue;
 
     if (formattedInput !== 'PLANO' && formattedInput !== '') {
@@ -570,13 +599,13 @@ export class ExaminationComponent implements OnInit {
     }
 
     // Update both fields (if you want to synchronize them)
-    this.spectacle[fieldName] = formattedInput;
+    this.masterObject.SubjectivePWR[fieldName] = formattedInput;
 
     // Validate the formatted input
     if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
     } else {
-      this.spectacle[fieldName] = formattedInput;
+      this.masterObject.SubjectivePWR[fieldName] = formattedInput;
     }
 
 
@@ -596,13 +625,13 @@ export class ExaminationComponent implements OnInit {
   validateCyLInputLeft(fieldName: string) {
     const validValues = this.dataCYL.map((c: { Name: any; }) => c.Name);
 
-    let fieldValue = this.spectacle[fieldName];
+    let fieldValue = this.masterObject.SubjectivePWR[fieldName];
 
     if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
-    this.spectacle[fieldName] = fieldValue;
+    this.masterObject.SubjectivePWR[fieldName] = fieldValue;
     let formattedInput = fieldValue;
 
     // Format only if the value is not PLANO
@@ -627,21 +656,21 @@ export class ExaminationComponent implements OnInit {
     }
 
     // Update both fields (if you want to synchronize them)
-    this.spectacle[fieldName] = formattedInput;
+    this.masterObject.SubjectivePWR[fieldName] = formattedInput;
 
     if (fieldName === 'LENPCYL') {
-      this.spectacle.LEDPCYL = formattedInput;
+      this.masterObject.SubjectivePWR.LEDPCYL = formattedInput;
     }
 
     // Validate the formatted input
     if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
     } else {
-      this.spectacle[fieldName] = formattedInput;
+      this.masterObject.SubjectivePWR[fieldName] = formattedInput;
     }
 
     if (this.inputError) {
-      this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
+      this.masterObject.SubjectivePWR[fieldName] = '';  // Reset to '0.00' if invalid
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -656,14 +685,14 @@ export class ExaminationComponent implements OnInit {
   validateSphInputLeft(fieldName: string) {
     const validValues = this.dataSPH.map((c: { Name: any; }) => c.Name);
 
-    let fieldValue = this.spectacle[fieldName];
+    let fieldValue = this.masterObject.SubjectivePWR[fieldName];
 
     // Handle special case for PLANO
     if ((fieldValue == 0 || fieldValue == 0.00) && fieldValue !== "") {
       fieldValue = 'PLANO';
     }
 
-    this.spectacle[fieldName] = fieldValue;
+    this.masterObject.SubjectivePWR[fieldName] = fieldValue;
     let formattedInput = fieldValue;
 
     if (formattedInput !== 'PLANO' && formattedInput !== '') {
@@ -687,17 +716,17 @@ export class ExaminationComponent implements OnInit {
     }
 
     // Update both fields (if you want to synchronize them)
-    this.spectacle[fieldName] = formattedInput;
+    this.masterObject.SubjectivePWR[fieldName] = formattedInput;
 
     // Validate the formatted input
     if (formattedInput != "") {
       this.inputError = !validValues.includes(formattedInput);
     } else {
-      this.spectacle[fieldName] = formattedInput;
+      this.masterObject.SubjectivePWR[fieldName] = formattedInput;
     }
 
     if (this.inputError) {
-      this.spectacle[fieldName] = '';  // Reset to '0.00' if invalid
+      this.masterObject.SubjectivePWR[fieldName] = '';  // Reset to '0.00' if invalid
       Swal.fire({
         position: 'center',
         icon: 'warning',
@@ -848,25 +877,98 @@ export class ExaminationComponent implements OnInit {
     // } else if (Type === 'con') {
     //   subjectiveCON = this.trial.trialPWR
     // }
+    subjectivePWR = this.masterObject.Exam.SubjectivePWR
     this.calculation.calculate(mode, x, y, subjectivePWR, subjectiveCON)
   }
 
+syncPower(source: 'spectacle' | 'examination') {
 
+  const powerFields = [
+    'REDPSPH',
+    'REDPCYL',
+    'REDPAxis',
+    'REDPVA',
+
+    'LEDPSPH',
+    'LEDPCYL',
+    'LEDPAxis',
+    'LEDPVA',
+
+    'RENPSPH',
+    'RENPCYL',
+    'RENPAxis',
+    'RENPVA',
+
+    'LENPSPH',
+    'LENPCYL',
+    'LENPAxis',
+    'LENPVA',
+
+    'R_Addition',
+    'L_Addition'
+  ];
+
+  // Examination -> Customer
+  if (source === 'examination') {
+
+    if (!this.masterObject.Exam) {
+      this.masterObject.Exam = {};
+    }
+
+    if (!this.masterObject.Exam.SubjectivePWR) {
+      this.masterObject.Exam.SubjectivePWR = {};
+    }
+
+    powerFields.forEach(field => {
+
+      if (this.masterObject.Exam.SubjectivePWR[field] !== undefined) {
+
+        this.spectacle[field] =
+          this.masterObject.Exam.SubjectivePWR[field];
+
+      }
+
+    });
+  }
+
+
+  // Customer -> Examination
+  if (source === 'spectacle') {
+
+    if (!this.masterObject.Exam) {
+      this.masterObject.Exam = {};
+    }
+
+    if (!this.masterObject.Exam.SubjectivePWR) {
+      this.masterObject.Exam.SubjectivePWR = {};
+    }
+
+    powerFields.forEach(field => {
+
+      if (this.spectacle[field] !== undefined) {
+
+        this.masterObject.Exam.SubjectivePWR[field] =
+          this.spectacle[field];
+
+      }
+
+    });
+  }
+}
 
   onSubmit(Type: string) {
     this.sp.show();
-
     let selectedObject: any;
 
     if (Type === 'Examination') {
       selectedObject = this.masterObject
+        this.syncPower('examination');
     }
-
 
     selectedObject.ID = null;
     selectedObject.Type = Type;
     selectedObject.CustomerID = Number(this.id);
-    selectedObject.Examination = selectedObject.Exam
+    selectedObject.Examination = selectedObject.Exam;
 
     const subs: Subscription = this.cs.savePatientRecord(selectedObject).subscribe({
       next: (res: any) => {
@@ -879,6 +981,8 @@ export class ExaminationComponent implements OnInit {
             timer: 1200
           });
           this.PatientRecordList(Type)
+          this.spectacle.ID = null;
+         this.updateCustomer(false, true);
         } else {
           this.as.errorToast(res.message);
         }
@@ -892,22 +996,170 @@ export class ExaminationComponent implements OnInit {
     });
   }
 
+updateCustomer(showSpinner: boolean = true, isNewVisit: boolean = false) {
 
+  if (showSpinner) {
+    this.sp.show();
+  }
+
+  this.syncPower('examination');
+
+  this.customerDate.tablename = 'spectacle_rx';
+
+  this.spectacle.CustomerID = Number(this.id);
+
+  // ⭐ VERY IMPORTANT
+  if (isNewVisit) {
+    this.spectacle.ID = null;
+  } else {
+    this.spectacle.ID = this.currentPowerID;
+  }
+
+  this.customerDate.spectacle_rx = {
+    ...this.spectacle
+  };
+
+  console.log('POWER ID:', this.customerDate.spectacle_rx.ID);
+
+  this.cs.updateCustomer(this.customerDate).subscribe({
+
+    next: (res: any) => {
+
+      if (res.success) {
+
+        console.log('Power updated successfully');
+
+      } else {
+
+        this.as.errorToast(res.message);
+      }
+
+      if (showSpinner) {
+        this.sp.hide();
+      }
+    },
+
+    error: (err: any) => {
+
+      console.log(err);
+
+      if (showSpinner) {
+        this.sp.hide();
+      }
+    }
+
+  });
+}
+
+//   updateCustomer(showSpinner: boolean = true) {
+
+//   if (showSpinner) {
+//     this.sp.show();
+//   }
+
+//   // Customer spectacle -> Examination SubjectivePWR
+//   this.syncPower('spectacle');
+
+
+
+//     this.customerDate.tablename = 'spectacle_rx';
+
+//     this.spectacle.ExpiryDate =
+//       moment()
+//         .add(Number(this.spectacle.Reminder), 'M')
+//         .format('YYYY-MM-DD');
+
+//     this.spectacle.VisitDate =
+//       moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
+
+//     this.customerDate.spectacle_rx = this.spectacle;
+
+//     // PLANO conversion
+//     const PLANOCheck = [
+//       'REDPSPH',
+//       'REDPCYL',
+//       'RENPSPH',
+//       'RENPCYL',
+//       'LEDPSPH',
+//       'LEDPCYL',
+//       'LENPSPH',
+//       'LENPCYL'
+//     ];
+
+//     const DegreeCheck = [
+//       'REDPAxis',
+//       'RENPAxis',
+//       'LEDPAxis',
+//       'LENPAxis'
+//     ];
+
+//     for (const prop of PLANOCheck) {
+
+//       if (this.customerDate.spectacle_rx[prop] === 'PLANO') {
+//         this.customerDate.spectacle_rx[prop] = '+0.00';
+//       }
+//     }
+
+//     for (const prop of DegreeCheck) {
+
+//       if (
+//         this.customerDate.spectacle_rx[prop] !== '' &&
+//         !this.customerDate.spectacle_rx[prop].includes('°')
+//       ) {
+//         this.customerDate.spectacle_rx[prop] += '°';
+//       }
+
+//       if (this.customerDate.spectacle_rx[prop] === '°') {
+//         this.customerDate.spectacle_rx[prop] = '';
+//       }
+//     }
+  
+
+//   const subs: Subscription =
+//     this.cs.updateCustomer(this.customerDate).subscribe({
+
+//       next: (res: any) => {
+
+//         if (res.success) {
+//           this.PatientRecordList('Examination')
+//           // Customer update ke baad Examination ko bhi save/update
+//           // this.onUpdate('Examination');
+
+//         } else {
+
+//           this.as.errorToast(res.message);
+
+//           if (showSpinner) {
+//             this.sp.hide();
+//           }
+//         }
+//       },
+
+//       error: (err: any) => {
+
+//         console.log(err.msg);
+
+//         if (showSpinner) {
+//           this.sp.hide();
+//         }
+//       },
+
+//       complete: () => subs.unsubscribe()
+//     });
+// }
 
   PatientRecordList(Type: string) {
     this.sp.show();
-
     let selectedObject: any;
 
     if (Type === 'Examination') {
       selectedObject = this.masterObject
     }
 
-
     delete selectedObject.ID;
     delete selectedObject.CompanyID;
     selectedObject.Type = Type;
-      selectedObject.Examination = selectedObject.Exam
+    selectedObject.Examination = selectedObject.Exam
     selectedObject.CustomerID = Number(this.id);
     selectedObject.currentPage = 1;
     selectedObject.itemsPerPage = 100;
@@ -916,12 +1168,10 @@ export class ExaminationComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.selectedObjectList = res.data
-
           if (res?.data?.length > 0) {
             if (Type === 'Examination') {
               this.masterObject = res.data[0];
               this.masterObject.Exam = res.data[0].Examination
-;
             }
           } else {
             if (Type === 'Examination') {
@@ -985,6 +1235,7 @@ export class ExaminationComponent implements OnInit {
   
       if (Type === 'Examination') {
           selectedObject = this.masterObject
+           this.syncPower('examination');
       }
     
       selectedObject.Type = Type;
@@ -1002,6 +1253,7 @@ export class ExaminationComponent implements OnInit {
               timer: 1200
             });
             this.PatientRecordList(Type)
+           this.updateCustomer(false, false);
           } else {
             this.as.errorToast(res.message);
           }
@@ -1093,4 +1345,137 @@ export class ExaminationComponent implements OnInit {
     }
   }
 
+   NewVisit(Type: string) {
+
+  if (Type === 'Examination') {
+
+    // New Examination
+    this.masterObject = {
+      ID: null,
+      CustomerID: Number(this.id),
+      CompanyID: 0,
+
+      Exam: {
+        ExaminationDate: '',
+        visionproblem: false,
+        DistanceNear: false,
+        Headache: false,
+        EyeStrain: false,
+        Watering: false,
+        NightDrivingProblem: false,
+        ComputerUsage: false,
+        ExitingGlasses: false,
+
+        Unaided: {
+          REDPVA: '',
+          RENPVA: '',
+          LEDPVA: '',
+          LENPVA: '',
+          BEDPVA: '',
+          BENPVA: '',
+          BEGDPVA: '',
+          BEGNPVA: ''
+        },
+
+        Autorefractomer: {
+          REDPSPH: '',
+          REDPCYL: '',
+          REDPAxis: '',
+          LEDPSPH: '',
+          LEDPCYL: '',
+          LEDPAxis: ''
+        },
+
+        SubjectivePWR: {
+          REDPSPH: '',
+          REDPCYL: '',
+          REDPAxis: '',
+          REDPVA: '',
+
+          LEDPSPH: '',
+          LEDPCYL: '',
+          LEDPAxis: '',
+          LEDPVA: '',
+
+          RENPSPH: '',
+          RENPCYL: '',
+          RENPAxis: '',
+          RENPVA: '',
+
+          LENPSPH: '',
+          LENPCYL: '',
+          LENPAxis: '',
+          LENPVA: '',
+
+          R_Addition: '',
+          L_Addition: ''
+        },
+
+        VisionBalance: {
+          REDPVA: '',
+          RENPVA: '',
+          LEDPVA: '',
+          LENPVA: ''
+        },
+
+        PDMeasure: {
+          REDPD: '',
+          LEDPD: '',
+          RENPD: '',
+          LENPD: '',
+          BEPD: ''
+        },
+
+        OfficeUser: false,
+        BlueLightProtection: false,
+        AntiGlare: false,
+        LightweightLens: false,
+        NightDrivingLens: false,
+        Photochromic: false,
+        OutdoorUser: false,
+        PolarizedSunglasses: false,
+        UVProtection: false,
+        Glass: false,
+        ProgressiveLens: false,
+        ReadingGlasses: false,
+        HighContrast: false,
+
+        ADVICE: ''
+      }
+    };
+
+    // ⭐ VERY IMPORTANT
+    // New visit ke liye power ID null
+      this.currentPowerID = null;
+    this.spectacle = {
+      ...this.spectacle,
+      ID: null,
+      CustomerID: Number(this.id),
+
+      REDPSPH: '',
+      REDPCYL: '',
+      REDPAxis: '',
+      REDPVA: '',
+
+      LEDPSPH: '',
+      LEDPCYL: '',
+      LEDPAxis: '',
+      LEDPVA: '',
+
+      RENPSPH: '',
+      RENPCYL: '',
+      RENPAxis: '',
+      RENPVA: '',
+
+      LENPSPH: '',
+      LENPCYL: '',
+      LENPAxis: '',
+      LENPVA: '',
+
+      R_Addition: '',
+      L_Addition: ''
+    };
+  }
+}
+  
 }

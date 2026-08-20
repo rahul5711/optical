@@ -113,17 +113,12 @@ export class CashCollectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
-      if (element.ModuleName === 'CashCollectionReport') {
+      if (element.ModuleName === 'CashCollectionReport' ) {
         this.viewCashCollectionReport = element.View;
         this.editCashCollectionReport = element.Edit;
         this.addCashCollectionReport = element.Add;
         this.deleteCashCollectionReport = element.Delete;
-      } else {
-        this.viewCashCollectionReport = true;
-        this.editCashCollectionReport = true;
-        this.addCashCollectionReport = true;
-        this.deleteCashCollectionReport = true;
-      }
+      } 
     });
 
     if (this.user.UserGroup === 'Employee') {

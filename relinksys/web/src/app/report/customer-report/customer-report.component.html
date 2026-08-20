@@ -136,7 +136,7 @@
                   </div>
                 </div>
               </mat-tab> -->
-              <mat-tab label="Member Card Report" *ngIf="companyData.PrimeMembership == 'true'">
+              <!-- <mat-tab label="Member Card Report" *ngIf="companyData.PrimeMembership == 'true'">
                 <div class="body">
                   <form class="p-3 pb-0" #f="ngForm" (ngSubmit)="searchDataMember()">
                     <div class="row">
@@ -234,7 +234,7 @@
                     </div>
                   </div>
                 </div>
-              </mat-tab>
+              </mat-tab> -->
 
 
 
@@ -792,7 +792,7 @@
                               <th>CustomerMobileNo</th>
                               <th>IssueDate </th>
                               <th>ExpiryDate </th>
-                              <th>BillAmount </th>
+                              <!-- <th>BillAmount </th> -->
                             </tr>
                             <tr>
                               <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel"
@@ -803,7 +803,7 @@
                               <th></th>
                               <th></th>
                               <th></th>
-                              <th></th>
+                              <!-- <th></th> -->
                             </tr>
                           </thead>
                           <tbody class="text-center">
@@ -818,7 +818,7 @@
                               <td>{{ data.Mobile }} </td>
                               <td>{{ dateFormat(data.IssueDate) }} </td>
                               <td>{{ dateFormat(data.ExpiryDate) }} </td>
-                              <td>{{data.BillAmount}} </td>
+                              <!-- <td>{{data.BillAmount}} </td> -->
                             </tr>
                           </tbody>
                         </table>
@@ -840,7 +840,10 @@
 <!-- model expiry-->
 <ng-template #contentR role="document" let-modal>
     <div class="modal-header" style="height: 50px;">
-        <h3 class="modal-title header pt-2" id="exampleModalLabel">MemberShip Card History</h3>
+        <h3 class="modal-title header pt-2" id="exampleModalLabel">MemberCard Name Of {{this.detailData.CustomerName}} </h3>
+        <!-- <h3 class="modal-title header pt-2 mx-auto" id="exampleModalLabel">Moblie- {{this.detailData.Mobile}} </h3> -->
+        <h3 class="modal-title header pt-2 ms-auto" id="exampleModalLabel">TotalBillAmount- {{this.detailData.TotalBillAmount}} </h3>
+
         <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
@@ -852,6 +855,7 @@
                 <thead>
                     <tr class="text-center" style="white-space: normal;">
                        <th>SNo. </th>
+                              <th>Cust_ID</th>
                               <th>CardNo.</th>
                               <th>InvoiceNo </th>
                               <th>CustomerName </th>
@@ -863,6 +867,7 @@
                 <tbody class="text-center">
                     <tr *ngFor="let data of memberCardDetailList; let i = index" text="left">
                         <td>{{ i + 1 }} </td>
+                              <td>{{ data.Idd }} </td>
                               <td>{{ data.MemberShipRefID }} </td>
                               <td>{{ data.InvoiceNo }} </td>
                               <td>{{ data.Name }} </td>
