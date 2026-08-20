@@ -485,6 +485,7 @@ module.exports = {
             const [bills] = await connection.query(
                 `
             SELECT
+                customer.Idd,
                 billmaster.CustomerID,
                 billmaster.MemberShipRefID,
 
@@ -568,6 +569,12 @@ module.exports = {
              * 3. FINAL RESPONSE
              * =========================================================
              */
+
+
+            const TotalBillAmount = (bills || []).reduce((total, bill) => {
+                return total + (Number(bill.BillAmount) || 0);
+            }, 0);
+
             response.data = {
                 CustomerID: membership.CustomerID,
                 MemberShipRefID: membership.MemberShipRefID,
@@ -576,6 +583,7 @@ module.exports = {
                 IssueDate: membership.IssueDate,
                 ExpiryDate: membership.ExpiryDate,
                 MemberType: membership.MemberType,
+                TotalBillAmount: TotalBillAmount,
                 Bills: bills || []
             };
 
