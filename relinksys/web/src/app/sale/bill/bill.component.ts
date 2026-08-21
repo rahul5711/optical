@@ -35,6 +35,7 @@ import { ShopService } from 'src/app/service/shop.service';
 import { ReminderService } from 'src/app/service/reminder.service';
 import { PrintService } from 'src/app/service/print.service';
 import * as qz from 'qz-tray';
+import { MembershipcardService } from 'src/app/service/membershipcard.service';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';
 @Component({
@@ -111,6 +112,7 @@ export class BillComponent implements OnInit {
     private ss: ShopService,
     private rs: ReminderService,
     private printPdf: PrintService,
+    private mc: MembershipcardService,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.id2 = this.route.snapshot.params['billid'];
@@ -197,7 +199,7 @@ export class BillComponent implements OnInit {
   onSubmitFrom = false;
   totakManualcreditAmt :any = 0
   BillMaster: any = {
-    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0
+    ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "",  RegNo: '', MemberShipRefID :'',BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0
   }
 
   BillItem: any = {
@@ -5269,5 +5271,48 @@ checkPayOTP(content1: TemplateRef<any>){
   // Second modal open
   this.openModal1(content1);
 }
+
+
+ getMembershipcardDetailByRefID(){
  
+
+  const dtm = { 
+    MemberShipRefID : this.BillMaster.MemberShipRefID, 
+  };
+
+  const subs: Subscription = this.mc.getMembershipcardDetailByRefID(dtm).subscribe({
+    next: (res: any) => {
+      if (Array.isArray(res.data) && res.data.length === 0) {
+  Swal.fire({
+    icon: 'warning',
+    title: 'Not Found',
+    showConfirmButton: true
+  });
+
+  this.as.errorToast(res.message);
+
+} else {
+  Swal.fire({
+    icon: 'success',
+    html: `
+      <div style="text-align:left;">
+        <b>Name:</b> ${res.data[0].CustomerName}<br>
+        <b>Mobile:</b> ${res.data[0].Mobile}<br>
+        <b>Member Type:</b> ${res.data[0].MemberType}<br>
+        <b>Issue Date:</b> ${res.data[0].IssueDate}<br>
+        <b>Expiry Date:</b> ${res.data[0].ExpiryDate}
+      </div>
+    `,
+    showConfirmButton: true
+  });
+}
+      this.sp.hide();
+    },
+    error: (err: any) => {
+      console.error('WhatsApp Send Error:', err.message);
+      this.sp.hide();
+    },
+    complete: () => subs.unsubscribe(),
+  });
+  }
 }

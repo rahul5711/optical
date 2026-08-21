@@ -191,40 +191,17 @@
                                                 <div class="col-12">
                                                     <h4 class="OEx-h4">Auto Refractometer </h4>
                                                 </div>
-
-                                                <!-- <div class="col-3">
-                                                            <h4 class="OEx-h4">Retinoscopy <input type="checkbox"
-                                                                    id="Retinoscopy" name="Retinoscopy"
-                                                                    value="Retinoscopy"
-                                                                    (click)="checkChange('Retinoscopy')"
-                                                                    [(ngModel)]="masterObject.Comprehensive.Retinoscopy">
-                                                            </h4>
-                                                        </div>
-                                                        <div class="col-3">
-                                                            <h4 class="OEx-h4">Cycloplegia <input type="checkbox"
-                                                                    id="Cycloplegia" name="Cycloplegia"
-                                                                    value="Cycloplegia"
-                                                                    (click)="checkChange('Cycloplegia')"
-                                                                    [(ngModel)]="masterObject.Comprehensive.Cycloplegia">
-                                                            </h4>
-                                                        </div>
-                                                        <div class="col-3">
-                                                            <h4 class="OEx-h4">Post-Mydriatic <input type="checkbox"
-                                                                    id="Post-Mydriatic" name="PostMydriatic"
-                                                                    value="PostMydriatic"
-                                                                    (click)="checkChange('PostMydriatic')"
-                                                                    [(ngModel)]="masterObject.Comprehensive.PostMydriatic">
-                                                            </h4>
-                                                        </div> -->
                                             </div>
-                                            <table>
-                                                <tr class="mobbtn1" style="width:100%">
+ <div class="row">
+     <div class="col-7">
+                                            <table style="width:100%">
+                                                <tr class="mobbtn4" style="width:100%">
                                                     <th></th>
                                                     <th>SPH</th>
                                                     <th>CYL</th>
                                                     <th>Axis</th>
                                                 </tr>
-                                                <tr class="mobbtn1" style="width:100%">
+                                                <tr class="mobbtn4" style="width:100%">
                                                     <th>
                                                         RE
                                                     </th>
@@ -252,7 +229,7 @@
                                                     </td>
 
                                                 </tr>
-                                                <tr class="mobbtn1 pt-2" style="width:100%">
+                                                <tr class="mobbtn4 pt-2" style="width:100%">
                                                     <th>
                                                         LE
                                                     </th>
@@ -280,6 +257,25 @@
                                                     </td>
                                                 </tr>
                                             </table>
+                                           </div>
+                                           <div class="col-1">
+                                            <div class="row">
+                                <div class="col-12 mt-1 ">
+                                    <img class="fit-picture" width="150" height="130"
+                                        [src]="this.env.apiUrl + autoImage"
+                                        style="object-fit: contain; border: 1px solid;">
+                                </div>
+                                <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 " (click)="fileInput2.click()"
+                                    style="cursor: pointer;">
+                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                        <span style="font-size: 10px;letter-spacing: 2px;"> Upload</span>
+                                    </i>
+                                    <input #fileInput2 id="my-input" name='signature' type="file"
+                                        (change)="uploadImage($event, 'signature')" style="display:none;">
+                                </div>
+                                </div>
+                                </div>
+                            </div>
                                         </div>
 
                                     </div>
@@ -545,21 +541,41 @@
                                         <div class="col-12">
                                             <h4 class="OEx-h4">Basic Eye Check</h4>
                                         </div>
-                                        <div class="col-xl-1 col-lg-1  col-md-1 col-12">
+                                        <div class="col-xl-3 col-lg-1  col-md-1 col-12">
                                             <mat-checkbox [(ngModel)]="masterObject.Exam.EyePain" type="checkbox"
                                                 name="EyePain"> Eye Pain</mat-checkbox>
                                             <mat-checkbox [(ngModel)]="masterObject.Exam.Redness"
                                                 type="checkbox" name="Redness"> 
                                                 Redness</mat-checkbox>
+                                        <div class="d-flex" style="white-space: nowrap;">
+  Referral Required
+
+  <mat-checkbox
+    style="padding-left: 10px;"
+    [checked]="masterObject.Exam.ReferralRequired === true"
+    (change)="masterObject.Exam.ReferralRequired = $event.checked"
+    name="ReferralRequiredYes">
+    Yes
+  </mat-checkbox>
+
+  <mat-checkbox
+    style="padding-left: 10px;"
+    [checked]="masterObject.Exam.ReferralRequired === false"
+    (change)="masterObject.Exam.ReferralRequired = !$event.checked"
+    name="ReferralRequiredNo">
+    No
+  </mat-checkbox>
+</div>
+                                        </div>
+                                        <div class="col-xl-2 col-lg-2  col-md-2 col-12  mx-auto">
+                                          
                                             <mat-checkbox [(ngModel)]="masterObject.Exam.BasicWatering" type="checkbox"
                                                 name="BasicWatering"> Watering</mat-checkbox>
                                             <mat-checkbox [(ngModel)]="masterObject.Exam.Irritation"
                                                 type="checkbox" name="Irritation"> Irritation </mat-checkbox>
-                                            <mat-checkbox [(ngModel)]="masterObject.Exam.ReferralRequired"
-                                                type="checkbox" name="ReferralRequired"> Referral Required Yes/No
-                                                </mat-checkbox>
-                                            
 
+                                            
+                                           
                                         </div>
                                        
                                     </div>

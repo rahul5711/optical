@@ -9,6 +9,21 @@
                     <input placeholder="Bill Book No." name="RegNo" [(ngModel)]="BillMaster.RegNo"
                      #RegNoNocontrol style="height: 20px;width: 115px;">
             </div>
+            <div class="col-lg-1 col-md-2 col-4">
+                    <input placeholder="Member CardNO." name="MemberShipRefID" [(ngModel)]="BillMaster.MemberShipRefID"
+                     #MemberShipRefIDNocontrol style="height: 20px;width: 115px;" >
+
+                       
+            </div>
+            <div class="col-lg-1 col-md-2 col-4">
+                    
+
+                       <button style="padding: 3px 1px !important;" class="pritn_icon  bgRemove"
+                              (click)="getMembershipcardDetailByRefID()"> 
+                              <i class="fa-solid fa-magnifying-glass "  data-mdb-toggle="modal"
+                                data-mdb-target="#exampleModal"> </i>
+                            </button>
+            </div>
             
             <div class="col-lg-1 col-md-2 col-4 p-md-0 pe-1 ms-auto">
                 <mat-slide-toggle name="QuickEntry" color="primary" [(ngModel)]="disableAddButtons" class="example-margin"

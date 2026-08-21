@@ -58,7 +58,7 @@ export class ExaminationComponent implements OnInit {
   spectacleLists: any
   spectacleImage: any
   selectedObjectList: any = []
-
+  autoImage:any
   masterObject: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     Exam: {
@@ -69,18 +69,20 @@ export class ExaminationComponent implements OnInit {
       },
 
       Autorefractomer: {
-        REDPSPH: '', REDPCYL: '', REDPAxis: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',
+        REDPSPH: '', REDPCYL: '', REDPAxis: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '',RefractometerImg:'',
       },
 
       SubjectivePWR: {
        ID: 'null', CustomerID: '', REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
       },
 
-      VisionBalance: {
-        REDPVA: '', RENPVA: '', LEDPVA: '', LENPVA: '',
-      },
 
-     EyePain:false,  Redness:false,  BasicWatering:false,  Irritation:false,  ReferralRequired:false, 
+
+      PDMeasure: {
+                    REDPD: '', LEDPD: '', RENPD: '', LENPD: '', BEPD: ''
+                  },
+
+     EyePain:false,  Redness:false,  BasicWatering:false,  Irritation:false,  ReferralRequired:false,   
 
       OfficeUser: false, BlueLightProtection: false, AntiGlare: false, LightweightLens: false, NightDrivingLens: false, Photochromic: false, OutdoorUser: false, PolarizedSunglasses: false,
       UVProtection: false, Glass: false, ProgressiveLens: false, ReadingGlasses: false, HighContrast: false,
@@ -429,6 +431,24 @@ export class ExaminationComponent implements OnInit {
     }
    
   }
+
+   uploadImage(e: any, mode: any) {
+  
+      this.img = e.target.files[0];
+      // console.log(`Image size before compressed: ${this.img.size} bytes.`)
+      this.compressImage.compress(this.img).pipe(take(1)).subscribe((compressedImage: any) => {
+        // console.log(`Image size after compressed: ${compressedImage.size} bytes.`)
+        this.fu.uploadFileComapny(compressedImage).subscribe((data: any) => {
+          if (data.body !== undefined && mode === 'signature') {
+            this.autoImage =  data.body?.download;
+            this.masterObject.Exam.Autorefractomer.RefractometerImg = data.body?.download
+            this.as.successToast(data.body?.message)
+          } 
+          this.cdr.detectChanges();
+        });
+      })
+  
+    }
 
   getCustomerById() {
     this.sp.show();
@@ -1172,6 +1192,7 @@ updateCustomer(showSpinner: boolean = true, isNewVisit: boolean = false) {
             if (Type === 'Examination') {
               this.masterObject = res.data[0];
               this.masterObject.Exam = res.data[0].Examination
+                 this.autoImage = this.masterObject.Exam.Autorefractomer.RefractometerImg;
             }
           } else {
             if (Type === 'Examination') {
@@ -1190,10 +1211,6 @@ updateCustomer(showSpinner: boolean = true, isNewVisit: boolean = false) {
 
                   SubjectivePWR: {
                     REDPSPH: '', REDPCYL: '', REDPAxis: '', REDPVA: '', LEDPSPH: '', LEDPCYL: '', LEDPAxis: '', LEDPVA: '', RENPSPH: '', RENPCYL: '', RENPAxis: '', RENPVA: '', LENPSPH: '', LENPCYL: '', LENPAxis: '', LENPVA: '', R_Addition: '', L_Addition: '',
-                  },
-
-                  VisionBalance: {
-                    REDPVA: '', RENPVA: '', LEDPVA: '', LENPVA: '',
                   },
 
                   PDMeasure: {
