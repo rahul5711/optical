@@ -102,6 +102,7 @@ export class ShopListComponent implements OnInit {
     {BlukWhatsapp: false, TemplateName: 'Customer_Credit_Note', TemplateValue:'', MessageText: '',Url:''},
     {BlukWhatsapp: false, TemplateName: 'Customer_Comfort_Feedback', TemplateValue:'', MessageText: '',Url:''},
     {BlukWhatsapp: false, TemplateName: 'Customer_Service_Reminder', TemplateValue:'', MessageText: '',Url:''},
+    {BlukWhatsapp: false, TemplateName: 'opticalguru_service_info', TemplateValue:'', MessageText: '',Url:''},
   ];
 
   whatsappApi : any = {
@@ -635,7 +636,14 @@ getCategoryLists(){
     }
 
  updateWhatsappConfig(){
-  this.sp.show();
+  // this.sp.show();
+  //   this.whatsappSettingList.push({
+  //   BlukWhatsapp: false,
+  //   TemplateName: 'opticalguru_service_info',
+  //   TemplateValue: '',
+  //   MessageText: '',
+  //   Url: ''
+  // });
   let dtm = {
     isWhatsappPaidService:this.whatsappApi.isWhatsappPaidService,
     ApiKey:this.whatsappApi.ApiKey, 

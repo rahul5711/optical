@@ -290,8 +290,10 @@ export class BulkSmsComponent implements OnInit {
       MobileNo: this.filterList.map(
         (customer: any) => '91' + customer.Mobile.toString().trim()
       ),
+
       ShopName: `${this.loginShop.Name} (${this.loginShop.AreaName})`,
       ShopNumber: this.loginShop.MobileNo1,
+      MediaURL: 'https://www.instagram.com/reel/Dbcg7lxMWh8/?igsi=MWJlanViYWxjMzdsbA%3D%3D',
       TemplateValue: this.getWhatsAppField(
         JSON.parse(this.loginShop.WhatsappArray),
         this.data.TemplateName,
