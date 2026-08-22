@@ -3077,289 +3077,512 @@
 
                                     <!--Customer Extra model popup start -->
                                     <ng-template #customer role="document" let-modal>
-                                        <div class="modal-header"
-                                            style="height: 50px; border-bottom: #ff651e 3px solid;">
-                                            <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Extra
-                                                Fields
-                                                <span class="ms-md-5 me-md-5 ms-0 pe-5 pt-3 pt-md-0">Reward Balance <b
-                                                        style="color:#000;">{{this.rewardBalance}}</b> </span>
-                                                <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
-                                                        style="color:#000;">{{this.data.Category}}</b></span>
-                                                <button type="button" (click)="openModalN(contentN)" class="ms-5"
-                                                    mat-raised-button color="primary">Create Credit Note</button>
-                                            </h2>
-                                            <button type="button" title="Close Botton" class="btn-close"
-                                                aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row mt-3 mt-md-0">
-                                                <div class="col-md-7 col-12">
-                                                    <div class="row ">
-                                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>Mobile No2</mat-label>
-                                                                <input matInput type="number" name="MobileNo2"
-                                                                    [(ngModel)]="data.MobileNo2" #MobileNo2control />
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>PhoneNo</mat-label>
-                                                                <input matInput type="number" name="PhoneNo"
-                                                                    [(ngModel)]="data.PhoneNo" #PhoneNocontrol />
-                                                                <mat-error>
-                                                                    Phone Number required
-                                                                </mat-error>
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>Email</mat-label>
-                                                                <input matInput name="Email" [(ngModel)]="data.Email"
-                                                                    pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-                                                                    #Emailcontrol />
-                                                                <mat-error>
-                                                                    Invalid EmailID
-                                                                </mat-error>
-                                                            </mat-form-field>
-                                                        </div>
+                                    <div class="modal-header" style="height: 50px; border-bottom: #ff651e 3px solid;">
+                                        <h2 class="modal-title header pt-2" id="exampleModalLabel">Customer Extra Fields
+                                            <span class="ms-md-5 me-md-5 ms-0 pe-5 pt-3 pt-md-0">Reward Balance <b
+                                                    style="color:#000;">{{this.rewardBalance}}</b> </span>
+                                            <span class="ms-5 me-5 pt-3 pt-md-0">Cust_Category - <b
+                                                    style="color:#000;">{{this.data.Category}}</b></span>
 
-                                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>Anniversary</mat-label>
-                                                                <input matInput name="Anniversary" type="date"
-                                                                    [(ngModel)]="data.Anniversary">
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>Reference Type </mat-label>
-                                                                <mat-select name="ReferenceType"
-                                                                    [(ngModel)]="data.ReferenceType"
-                                                                    #ReferenceTypecontrol>
-                                                                    <mat-option>
-                                                                        <ngx-mat-select-search matInput
-                                                                            [(ngModel)]="searchValue"
-                                                                            (ngModelChange)="searchValue = onChange($event)"
-                                                                            [ngModelOptions]="{standalone: true}">
-                                                                        </ngx-mat-select-search>
-                                                                    </mat-option>
-                                                                    <mat-option [value]="r.Name"
-                                                                        *ngFor="let r of ReferenceList | nameFilterS: searchValue">
-                                                                        {{r.Name}}
-                                                                    </mat-option>
-                                                                </mat-select>
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>GST/VAT No</mat-label>
-                                                                <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
-                                                                    (ngModelChange)="data.GSTNo = onChange($event)"
-                                                                    #GSTNocontrol />
-                                                                <mat-error>
-                                                                    GST No is required
-                                                                </mat-error>
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label> Other / MemberShip</mat-label>
-                                                                <mat-select name="Other" [(ngModel)]="data.Other"
-                                                                    #Othercontrol>
-                                                                    <mat-option>
-                                                                        <ngx-mat-select-search matInput
-                                                                            [(ngModel)]="searchValue"
-                                                                            (ngModelChange)="searchValue = onChange($event)"
-                                                                            [ngModelOptions]="{standalone: true}">
-                                                                        </ngx-mat-select-search>
-                                                                    </mat-option>
-                                                                    <mat-option [value]="o.Name"
-                                                                        *ngFor="let o of otherLists | nameFilterS: searchValue">
-                                                                        {{o.Name}} </mat-option>
-                                                                </mat-select>
-                                                            </mat-form-field>
-                                                        </div>
-                                                        <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                            <mat-form-field class="example-full-width mb-0">
-                                                                <mat-label>SR/MRD No. </mat-label>
-                                                                <input matInput name="Sno" [(ngModel)]="data.Sno"
-                                                                    (input)="customerSearch(Snocontrol.value, 'Sno')"
-                                                                    #Snocontrol />
-                                                                <mat-error>
-                                                                    SR/MRD No. is required
-                                                                </mat-error>
-                                                            </mat-form-field>
-                                                        </div>
+                                            <button type="button" (click)="openModalN(contentN)" class="ms-5"
+                                                mat-raised-button color="primary">Create Credit Note</button>
+
+                                        </h2>
+                                        <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
+                                            (click)="modal.dismiss('Cross click')"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row mt-3 mt-md-0">
+                                            <div class="col-md-10 col-12">
+                                                <div class="row ">
+                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Mobile No2</mat-label>
+                                                            <input matInput type="number" name="MobileNo2"
+                                                                [(ngModel)]="data.MobileNo2" #MobileNo2control />
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>PhoneNo</mat-label>
+                                                            <input matInput type="number" name="PhoneNo"
+                                                                [(ngModel)]="data.PhoneNo" #PhoneNocontrol />
+                                                            <mat-error>
+                                                                Phone Number required
+                                                            </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Email</mat-label>
+                                                            <input matInput name="Email" [(ngModel)]="data.Email"
+                                                                pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                                                                #Emailcontrol />
+                                                            <mat-error>
+                                                                Invalid EmailID
+                                                            </mat-error>
+                                                        </mat-form-field>
                                                     </div>
 
-                                                    <div class="row" *ngIf="company.PrimeMembership == 'true'">
-                                                        <div id="membershipCard" class="col-6"
-                                                            style="background-image: linear-gradient(2deg, #ffc10731, #ffc10737),url(https://png.pngtree.com/thumb_back/fh260/background/20220428/pngtree-abstract-3d-elegant-golden-ribbon-elements-and-lighting-effect-sparking-glitter-image_1108708.jpg); border-radius: 4px; padding: 4px 15px;background-size: 100%; box-shadow: 0px 0px 3px 0px #7a672d;">
-                                                            <div class="row pt-2" style="border-radius: 4px;">
-                                                                <div class="col-12 ">
-                                                                    <h4 class="m-0"
-                                                                        style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
-                                                                        {{this.data.Title}} {{this.data.Name}}</h4>
+                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Anniversary</mat-label>
+                                                            <input matInput name="Anniversary" type="date"
+                                                                [(ngModel)]="data.Anniversary">
+                                                        </mat-form-field>
+                                                    </div>
+                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>GST/VAT No</mat-label>
+                                                            <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                                (ngModelChange)="data.GSTNo = onChange($event)"
+                                                                #GSTNocontrol />
+                                                            <mat-error>
+                                                                GST No is required
+                                                            </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>Reference Type </mat-label>
+                                                            <mat-select name="ReferenceType"
+                                                                [(ngModel)]="data.ReferenceType" #ReferenceTypecontrol>
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search matInput
+                                                                        [(ngModel)]="searchValue"
+                                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option [value]="r.Name"
+                                                                    *ngFor="let r of ReferenceList | nameFilterS: searchValue">
+                                                                    {{r.Name}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                   
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label> Other </mat-label>
+                                                            <mat-select name="Other" [(ngModel)]="data.Other"
+                                                                #Othercontrol>
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search matInput
+                                                                        [(ngModel)]="searchValue"
+                                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option [value]="o.Name"
+                                                                    *ngFor="let o of otherLists | nameFilterS: searchValue">
+                                                                    {{o.Name}} </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label> MemberType </mat-label>
+                                                            <mat-select name="MemberType" [(ngModel)]="memberCard.MemberType"
+                                                                #MemberTypecontrol>
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search matInput
+                                                                        [(ngModel)]="searchValue"
+                                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option [value]="m.Name"
+                                                                    *ngFor="let m of memberList | nameFilterS: searchValue">
+                                                                    {{m.Name}} </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </div>
 
-                                                                    <h4 class="m-0"
-                                                                        style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
-                                                                        {{this.data.MobileNo1}}</h4>
-                                                                </div>
+                                                    
+                                                </div>
+                                            </div>
 
+                                            <div class="col-md-2 col-12">
+                                                <div class="row ">
+                                                    <div class="col-md-12 col-12 ms-md-auto">
+                                                        <div *ngIf="company.PhotoClick == 'true'" class="row ">
+                                                            <div class="col-10 mt-md-0 ">
+                                                                <img class="fit-picture" width="170" height="130"
+                                                                    [src]="customerImage">
                                                             </div>
-                                                            <div class="row">
-                                                                <div class="col-12">
-                                                                    <h1 class="m-0 " style="font-weight: 800;
-                                                                    text-shadow: 2px 2px 2px #ffffff;
-                                                                    color: #7c6131;
-                                                                    letter-spacing: .8px;
-                                                                    font-size: 2rem;">Prime Membership</h1>
-                                                                </div>
+                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                                                (click)="fileInput.click()" style="cursor: pointer;">
+                                                                <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                                    <span style="font-size: 10px;letter-spacing: 2px;">
+                                                                        Image
+                                                                    </span>
+                                                                </i>
+                                                                <input #fileInput id="my-input" name='PhotoURL'
+                                                                    type="file" (change)="uploadImage($event, 'User')"
+                                                                    style="display:none;">
                                                             </div>
-                                                            <div class="row">
-                                                                <div class="col-12"
-                                                                    style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
-                                                                    <h4 style="font-weight: 800; margin:0">CARD NUMBER
-                                                                        ****
-                                                                        **** *{{this.data.Idd}}</h4>
-                                                                </div>
-                                                                <div class="col-12 pt-1 pb-1">
-                                                                    <span
-                                                                        style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.Name}}</span>
-                                                                </div>
-                                                                <div class="col-6">
-                                                                    <span
-                                                                        style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.MobileNo1}}</span>
-                                                                </div>
-                                                                <div class="col-6" style="text-align: right;">
-                                                                    <span *ngIf="ActiveDeactive == true"
-                                                                        style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:green;">Valid
-                                                                        {{this.ExpiryDateFormember}}</span>
-                                                                    <span *ngIf="ActiveDeactive == false"
-                                                                        style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
-                                                                        {{this.ExpiryDateFormember}}</span>
-                                                                </div>
-
-
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <form #fmc="ngForm">
-                                                                <div class="row">
-                                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
-                                                                        <mat-form-field class="example-full-width mb-0">
-                                                                            <mat-label>IssueDate</mat-label>
-                                                                            <input matInput name="IssueDate" type="date"
-                                                                                [(ngModel)]="memberCard.IssueDate"
-                                                                                required autocomplete="false">
-                                                                        </mat-form-field>
-                                                                    </div>
-                                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
-                                                                        <mat-form-field class="example-full-width mb-0">
-                                                                            <mat-label>ExpiryDate</mat-label>
-                                                                            <input matInput name="ExpiryDate"
-                                                                                type="date" required
-                                                                                [(ngModel)]="memberCard.ExpiryDate"
-                                                                                autocomplete="false">
-                                                                        </mat-form-field>
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <button (click)="membarshipSave()"
-                                                                            mat-raised-button type="submit"
-                                                                            [disabled]="!fmc.valid" color="primary">Save
-                                                                        </button>
-                                                                        <button class="ms-1" (click)="shareOnWhatsApp()"
-                                                                            mat-raised-button type="button"
-                                                                            color="primary"
-                                                                            [disabled]="this.membarshipList.length == 0"><i
-                                                                                class="fa-brands fa-whatsapp "
-                                                                                style="color:greenyellow"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                    <div class="col-6">
-                                                                        <!-- <mat-slide-toggle name="Preorder" color="primary" 
-                                                                class="example-margin"  [(ngModel)]="ActiveDeactive"  #Multiplecontrol style="color:#ff651e;">
-                                                                Active/Deactive</mat-slide-toggle> -->
-                                                                    </div>
-                                                                </div>
-                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
-                                                <div class="col-md-5 col-12">
-                                                    <div class="row ">
-                                                        <div class="col-md-7 col-12 p-0">
-                                                            <textarea name="Remark" rows="5"
-                                                                style=" height:100%; width:100%">
-                                                                {{this.data.Remarks}}
-                                                             </textarea>
-                                                        </div>
-                                                        <div class="col-md-5 col-12 ms-md-auto">
-                                                            <div *ngIf="company.PhotoClick == 'true'" class="row ">
-                                                                <div class="col-10 mt-md-0 ">
-                                                                    <img class="fit-picture" width="170" height="100"
-                                                                        [src]="customerImage">
+                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Gold'">
+                                                    <div class="membership-card-inner">
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div  style="background-image:url('../../../assets/images/pmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
                                                                 </div>
-                                                                <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
-                                                                    (click)="fileInput.click()"
-                                                                    style="cursor: pointer;">
-                                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                                        <span
-                                                                            style="font-size: 10px;letter-spacing: 2px;">
-                                                                            Image
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#FFD181">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Gold'}} -->
+                                                                    Gold
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
                                                                         </span>
-                                                                    </i>
-                                                                    <input #fileInput id="my-input" name='PhotoURL'
-                                                                        type="file"
-                                                                        (change)="uploadImage($event, 'User')"
-                                                                        style="display:none;">
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Gold'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/pcmbg.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardGold"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div *ngIf="company.PrimeMembership == 'true'"
-                                                            class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
-                                                        margin: 0px;">
-                                                            <div class="table-responsive">
-                                                                <table
-                                                                    class="table table-striped table-hover table-sm table-bordered"
-                                                                    style="border: 2px solid #fff !important;  ">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>Action</th>
-                                                                            <th>S.No</th>
-                                                                            <th>IssueDate</th>
-                                                                            <th>ExpiryDate</th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr class="text-center"
-                                                                            *ngFor="let data of membarshipList let i = index;"
-                                                                            style="white-space: nowrap;">
-                                                                            <td style="width: 5%;">
-                                                                                <button type="button" class="bg-btn"
-                                                                                    (click)="MembershipcardBydelete(data.ID)">
-                                                                                    <mat-icon
-                                                                                        class="delete_iconms ms-1">delete_forever</mat-icon>
-                                                                                </button>
-                                                                            </td>
-                                                                            <td>{{membarshipList.length - i }}</td>
-                                                                            <td>{{dateFormat(data.IssueDate)}}</td>
-                                                                            <td>{{dateFormat(data.ExpiryDate)}}</td>
 
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Silver'">
+                                                    <div class="membership-card-inner">
+
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/spmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#eaeaea">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Silver'}} -->
+                                                                    Silver
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
                                                             </div>
                                                         </div>
-                                                    </div>
 
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Silver'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/sbpmc.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardSilver"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
                                                 </div>
+
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Platinum'">
+                                                    <div class="membership-card-inner">
+
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/ppmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#dfd1c6">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Platinum'}} -->
+                                                                    Platinum
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Platinum'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/pbpmc.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardPlatinum"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                 <div class="col-md-5 col-12 mt-3">
+                                                <form #fmc="ngForm">
+                                                            <div class="row">
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>IssueDate</mat-label>
+                                                                        <input matInput name="IssueDate" type="date"
+                                                                            [(ngModel)]="memberCard.IssueDate" required
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ExpiryDate</mat-label>
+                                                                        <input matInput name="ExpiryDate" type="date"
+                                                                            required [(ngModel)]="memberCard.ExpiryDate"
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <button (click)="membarshipSave()" mat-raised-button
+                                                                        type="submit" [disabled]="!fmc.valid"
+                                                                        color="primary">Save
+                                                                    </button>
+                                                                    <button class="ms-2" (click)="shareOnWhatsApp()"
+                                                                        mat-raised-button type="button" color="primary"
+                                                                        [disabled]="this.membarshipList.length == 0"><i
+                                                                            class="fa-brands fa-whatsapp "
+                                                                            style="color:greenyellow"></i>
+                                                                    </button>
+                                                                </div>
+                                                               
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                   <div *ngIf="company.PrimeMembership == 'true'" class="col-md-7 col-12 mt-3" style="height: 150px;overflow: auto; padding: 0;
+                                                    margin: 0px;">
+                                                        <div class="table-responsive">
+                                                            <table
+                                                                class="table table-striped table-hover table-sm table-bordered "
+                                                                style="border: 1px solid #cfcfcf !important;  ">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Action</th>
+                                                                        <th>S.No</th>
+                                                                        <th>MemberType</th>
+                                                                        <th>IssueDate</th>
+                                                                        <th>ExpiryDate</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="text-center"
+                                                                        *ngFor="let data of membarshipList let i = index;"
+                                                                        style="white-space: nowrap;">
+                                                                        <td style="width: 5%;">
+                                                                            <button type="button" class="bg-btn"
+                                                                                (click)="MembershipcardBydelete(data.ID)">
+                                                                                <mat-icon
+                                                                                    class="delete_iconms ms-1">delete_forever</mat-icon>
+                                                                            </button>
+                                                                        </td>
+                                                                        <td>{{membarshipList.length - i }}</td>
+                                                                        <td>{{data.MemberType || '-'}}</td>
+                                                                        <td>{{dateFormat(data.IssueDate)}}</td>
+                                                                        <td>{{dateFormat(data.ExpiryDate)}}</td>
+
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
 
                                             </div>
                                         </div>
-                                    </ng-template>
+                                    </div>
+                                </ng-template>
                                     <ng-template #contentN role="document" let-modal>
                                         <div class="modal-header"
                                             style="height: 50px; border-bottom: #ff651e 3px solid;">
@@ -3669,13 +3892,14 @@
 
                                             <button type="button" (click)="openModalN(contentN)" class="ms-5"
                                                 mat-raised-button color="primary">Create Credit Note</button>
+
                                         </h2>
                                         <button type="button" title="Close Botton" class="btn-close" aria-hidden="true"
                                             (click)="modal.dismiss('Cross click')"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row mt-3 mt-md-0">
-                                            <div class="col-md-7 col-12">
+                                            <div class="col-md-10 col-12">
                                                 <div class="row ">
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
@@ -3694,7 +3918,7 @@
                                                             </mat-error>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
+                                                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Email</mat-label>
                                                             <input matInput name="Email" [(ngModel)]="data.Email"
@@ -3713,7 +3937,18 @@
                                                                 [(ngModel)]="data.Anniversary">
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                        <mat-form-field class="example-full-width mb-0">
+                                                            <mat-label>GST/VAT No</mat-label>
+                                                            <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
+                                                                (ngModelChange)="data.GSTNo = onChange($event)"
+                                                                #GSTNocontrol />
+                                                            <mat-error>
+                                                                GST No is required
+                                                            </mat-error>
+                                                        </mat-form-field>
+                                                    </div>
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
                                                             <mat-label>Reference Type </mat-label>
                                                             <mat-select name="ReferenceType"
@@ -3732,20 +3967,10 @@
                                                             </mat-select>
                                                         </mat-form-field>
                                                     </div>
-                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
+                                                   
+                                                    <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>GST/VAT No</mat-label>
-                                                            <input matInput name="GSTNo" [(ngModel)]="data.GSTNo"
-                                                                (ngModelChange)="data.GSTNo = onChange($event)"
-                                                                #GSTNocontrol />
-                                                            <mat-error>
-                                                                GST No is required
-                                                            </mat-error>
-                                                        </mat-form-field>
-                                                    </div>
-                                                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
-                                                        <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label> Other / MemberShip</mat-label>
+                                                            <mat-label> Other </mat-label>
                                                             <mat-select name="Other" [(ngModel)]="data.Other"
                                                                 #Othercontrol>
                                                                 <mat-option>
@@ -3763,68 +3988,333 @@
                                                     </div>
                                                     <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-0">
                                                         <mat-form-field class="example-full-width mb-0">
-                                                            <mat-label>SR/MRD No. </mat-label>
-                                                            <input matInput name="Sno" [(ngModel)]="data.Sno"
-                                                                (input)="customerSearch(Snocontrol.value, 'Sno')"
-                                                                #Snocontrol />
-                                                            <mat-error>
-                                                                SR/MRD No. is required
-                                                            </mat-error>
+                                                            <mat-label> MemberType </mat-label>
+                                                            <mat-select name="MemberType" [(ngModel)]="memberCard.MemberType"
+                                                                #MemberTypecontrol>
+                                                                <mat-option>
+                                                                    <ngx-mat-select-search matInput
+                                                                        [(ngModel)]="searchValue"
+                                                                        (ngModelChange)="searchValue = onChange($event)"
+                                                                        [ngModelOptions]="{standalone: true}">
+                                                                    </ngx-mat-select-search>
+                                                                </mat-option>
+                                                                <mat-option [value]="m.Name"
+                                                                    *ngFor="let m of memberList | nameFilterS: searchValue">
+                                                                    {{m.Name}} </mat-option>
+                                                            </mat-select>
                                                         </mat-form-field>
                                                     </div>
+
+                                                    
                                                 </div>
-                                                <div class="row" *ngIf="company.PrimeMembership == 'true'">
-                                                    <div id="membershipCard" class="col-6"
-                                                        style="background-image: linear-gradient(2deg, #ffc10731, #ffc10737),url(https://png.pngtree.com/thumb_back/fh260/background/20220428/pngtree-abstract-3d-elegant-golden-ribbon-elements-and-lighting-effect-sparking-glitter-image_1108708.jpg); border-radius: 4px; padding: 4px 15px;background-size: 100%; box-shadow: 0px 0px 3px 0px #7a672d;">
-                                                        <div class="row pt-2" style="border-radius: 4px;">
-                                                            <div class="col-12 ">
-                                                                <h4 class="m-0"
-                                                                    style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
-                                                                    {{this.data.Title}} {{this.data.Name}}</h4>
+                                            </div>
 
-                                                                <h4 class="m-0"
-                                                                    style="font-weight: 800; color: #000000;text-shadow: 2px 2px 4px #bfbfbf; ">
-                                                                    {{this.data.MobileNo1}}</h4>
+                                            <div class="col-md-2 col-12">
+                                                <div class="row ">
+                                                    <div class="col-md-12 col-12 ms-md-auto">
+                                                        <div *ngIf="company.PhotoClick == 'true'" class="row ">
+                                                            <div class="col-10 mt-md-0 ">
+                                                                <img class="fit-picture" width="170" height="130"
+                                                                    [src]="customerImage">
                                                             </div>
-
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <h1 class="m-0 " style="font-weight: 800;
-                                                                text-shadow: 2px 2px 2px #ffffff;
-                                                                color: #7c6131;
-                                                                letter-spacing: .8px;
-                                                                font-size: 2rem;">Prime Membership</h1>
+                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
+                                                                (click)="fileInput.click()" style="cursor: pointer;">
+                                                                <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                                                                    <span style="font-size: 10px;letter-spacing: 2px;">
+                                                                        Image
+                                                                    </span>
+                                                                </i>
+                                                                <input #fileInput id="my-input" name='PhotoURL'
+                                                                    type="file" (change)="uploadImage($event, 'User')"
+                                                                    style="display:none;">
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-12"
-                                                                style="color: #7c6131; text-shadow: 2px 2px 3px #fff;">
-                                                                <h4 style="font-weight: 800; margin:0">CARD NUMBER ****
-                                                                    **** *{{this.data.Idd}}</h4>
-                                                            </div>
-                                                            <div class="col-12 pt-1 pb-1">
-                                                                <span
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.Name}}</span>
-                                                            </div>
-                                                            <div class="col-6">
-                                                                <span
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff;">{{this.shop.MobileNo1}}</span>
-                                                            </div>
-                                                            <div class="col-6" style="text-align: right;">
-                                                                <span *ngIf="ActiveDeactive == true"
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:green;">Valid
-                                                                    {{this.ExpiryDateFormember}}</span>
-                                                                <span *ngIf="ActiveDeactive == false"
-                                                                    style="font-weight: 800; text-shadow: 2px 2px 4px #ffffff; font-size:10px; line-height: 9px; color:red;">Expiry
-                                                                    {{this.ExpiryDateFormember}}</span>
-                                                            </div>
-
-
                                                         </div>
                                                     </div>
-                                                    <div class="col-6">
-                                                        <form #fmc="ngForm">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Gold'">
+                                                    <div class="membership-card-inner">
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div  style="background-image:url('../../../assets/images/pmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#FFD181">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Gold'}} -->
+                                                                    Gold
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Gold'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/pcmbg.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardGold"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Silver'">
+                                                    <div class="membership-card-inner">
+
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/spmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#eaeaea">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Silver'}} -->
+                                                                    Silver
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Silver'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/sbpmc.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardSilver"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="membership-card col-4"
+                                                    [class.disabled]="memberCard.MemberType != 'Platinum'">
+                                                    <div class="membership-card-inner">
+
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/ppmc.png'); background-size: 100% 100%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title">
+                                                                    <b style="color:#dfd1c6">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                <div class="card-number-title">
+                                                                    <!-- {{this.data.Other || 'Platinum'}} -->
+                                                                    Platinum
+                                                                </div>
+
+                                                                <div class="card-number">
+                                                                    **** **** *{{this.data.Idd}}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section">
+
+                                                                    <div class="shop-mobile">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired">
+                                                                            EXPIRED {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back -->
+                                                        <div class="membership-card-back"
+                                                            [class.disabled]="memberCard.MemberType != 'Platinum'">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/pbpmc.png'); background-size: 100% 100%;">
+                                                                <div class="back-content">
+                                                                    <p style="font-size:14px;text-align: center;">
+                                                                        TERMS & CONDITIONS
+                                                                    </p>
+                                                                    <ul
+                                                                        style="padding-left: 20px; margin: 0; height:120px">
+                                                                        <li *ngFor="let v of NoteMemberCardPlatinum"
+                                                                            style="font-size: 12px; margin: 0px;padding:0px ">
+                                                                            {{ v.Content }}
+                                                                        </li>
+                                                                    </ul>
+
+
+                                                                    <p style="font-size:14px">
+                                                                        This membership card is non-transferable. <br>
+                                                                        Contact: {{shop.MobileNo1}}
+                                                                    </p>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                 <div class="col-md-5 col-12 mt-3">
+                                                <form #fmc="ngForm">
                                                             <div class="row">
                                                                 <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
                                                                     <mat-form-field class="example-full-width mb-0">
@@ -3842,67 +4332,33 @@
                                                                             autocomplete="false">
                                                                     </mat-form-field>
                                                                 </div>
-                                                                <div class="col-6">
+                                                                <div class="col-12">
                                                                     <button (click)="membarshipSave()" mat-raised-button
                                                                         type="submit" [disabled]="!fmc.valid"
                                                                         color="primary">Save
                                                                     </button>
-                                                                    <button class="ms-1" (click)="shareOnWhatsApp()"
+                                                                    <button class="ms-2" (click)="shareOnWhatsApp()"
                                                                         mat-raised-button type="button" color="primary"
                                                                         [disabled]="this.membarshipList.length == 0"><i
                                                                             class="fa-brands fa-whatsapp "
                                                                             style="color:greenyellow"></i>
                                                                     </button>
                                                                 </div>
-                                                                <div class="col-6">
-                                                                    <!-- <mat-slide-toggle name="Preorder" color="primary" 
-                                                            class="example-margin"  [(ngModel)]="ActiveDeactive"  #Multiplecontrol style="color:#ff651e;">
-                                                            Active/Deactive</mat-slide-toggle> -->
-                                                                </div>
+                                                               
                                                             </div>
                                                         </form>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-5 col-12">
-                                                <div class="row ">
-                                                    <div class="col-md-7 col-12 p-0">
-                                                        <textarea name="Remark" rows="5"
-                                                            style="height: 100%; width:100%">
-                                                            {{this.data.Remarks}}
-                                                         </textarea>
-                                                    </div>
-                                                    <div class="col-md-5 col-12 ms-md-auto">
-                                                        <div *ngIf="company.PhotoClick == 'true'" class="row ">
-                                                            <div class="col-10 mt-md-0 ">
-                                                                <img class="fit-picture" width="170" height="100"
-                                                                    [src]="customerImage">
-                                                            </div>
-                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
-                                                                (click)="fileInput.click()" style="cursor: pointer;">
-                                                                <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                                    <span style="font-size: 10px;letter-spacing: 2px;">
-                                                                        Image
-                                                                    </span>
-                                                                </i>
-                                                                <input #fileInput id="my-input" name='PhotoURL'
-                                                                    type="file" (change)="uploadImage($event, 'User')"
-                                                                    style="display:none;">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div *ngIf="company.PrimeMembership == 'true'"
-                                                        class="col-12 pt-1 mt-2" style="height: 150px;overflow: auto; border: 1px solid; padding: 0;
+                                                   <div *ngIf="company.PrimeMembership == 'true'" class="col-md-7 col-12 mt-3" style="height: 150px;overflow: auto; padding: 0;
                                                     margin: 0px;">
                                                         <div class="table-responsive">
                                                             <table
-                                                                class="table table-striped table-hover table-sm table-bordered"
-                                                                style="border: 2px solid #fff !important;  ">
+                                                                class="table table-striped table-hover table-sm table-bordered "
+                                                                style="border: 1px solid #cfcfcf !important;  ">
                                                                 <thead>
                                                                     <tr>
                                                                         <th>Action</th>
                                                                         <th>S.No</th>
+                                                                        <th>MemberType</th>
                                                                         <th>IssueDate</th>
                                                                         <th>ExpiryDate</th>
                                                                     </tr>
@@ -3919,6 +4375,7 @@
                                                                             </button>
                                                                         </td>
                                                                         <td>{{membarshipList.length - i }}</td>
+                                                                        <td>{{data.MemberType || '-'}}</td>
                                                                         <td>{{dateFormat(data.IssueDate)}}</td>
                                                                         <td>{{dateFormat(data.ExpiryDate)}}</td>
 
@@ -3927,12 +4384,9 @@
                                                             </table>
                                                         </div>
                                                     </div>
-                                                </div>
 
                                             </div>
-
                                         </div>
-
                                     </div>
                                 </ng-template>
                                 <ng-template #contentN role="document" let-modal>
