@@ -1138,6 +1138,1187 @@ module.exports = {
             }
         }
     },
+    newCustomerPayment: async (req, res, next) => {
+        let connection;
+
+        try {
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const LoggedOnUser = req.user?.ID || 0;
+            const CompanyID = req.user?.CompanyID || 0;
+
+            const shopid = await shopID(req.headers) || 0;
+
+            const db = req.db;
+
+            if (!db || db.success === false) {
+                return res.status(200).json(
+                    db || {
+                        success: false,
+                        message: "Database connection failed"
+                    }
+                );
+            }
+
+            connection = await db.getConnection();
+
+            let {
+                CustomerID,
+                ApplyReturn,
+                CreditType,
+                PaidAmount,
+                PaymentMode,
+                PaymentReferenceNo,
+                CardNo,
+                Comments,
+                pendingPaymentList,
+                CustomerCredit,
+                ShopID,
+                PaymentDate,
+                PayableAmount,
+                BillMasterID,
+                ApplyReward,
+                RewardCustomerRefID,
+                Otp
+            } = req.body;
+
+            /*
+            |--------------------------------------------------------------------------
+            | BASIC VALIDATION
+            |--------------------------------------------------------------------------
+            */
+
+            if (!CustomerID) {
+                return res.send({
+                    success: false,
+                    message: "Invalid CustomerID Data"
+                });
+            }
+
+            if (ApplyReturn === null || ApplyReturn === undefined) {
+                return res.send({
+                    success: false,
+                    message: "Invalid ApplyReturn Data"
+                });
+            }
+
+            if (!CreditType) {
+                return res.send({
+                    success: false,
+                    message: "Invalid CreditType Data"
+                });
+            }
+
+            if (
+                PaidAmount === null ||
+                PaidAmount === undefined ||
+                Number.isNaN(Number(PaidAmount))
+            ) {
+                return res.send({
+                    success: false,
+                    message: "Invalid PaidAmount Data"
+                });
+            }
+
+            PaidAmount = Number(PaidAmount);
+
+            if (PaidAmount < 0) {
+                return res.send({
+                    success: false,
+                    message: "Invalid PaidAmount Data"
+                });
+            }
+
+            if (
+                !PaymentMode ||
+                PaymentMode === null ||
+                PaymentMode === undefined ||
+                PaymentMode === "null"
+            ) {
+                return res.send({
+                    success: false,
+                    message: "Invalid PaymentMode Data"
+                });
+            }
+
+            if (
+                PaymentReferenceNo === null ||
+                PaymentReferenceNo === undefined
+            ) {
+                return res.send({
+                    success: false,
+                    message: "Invalid PaymentReferenceNo Data"
+                });
+            }
+
+            if (CardNo === null || CardNo === undefined) {
+                return res.send({
+                    success: false,
+                    message: "Invalid CardNo Data"
+                });
+            }
+
+            if (Comments === null || Comments === undefined) {
+                return res.send({
+                    success: false,
+                    message: "Invalid Comments Data"
+                });
+            }
+
+            if (CustomerCredit === null || CustomerCredit === undefined) {
+                return res.send({
+                    success: false,
+                    message: "Invalid CustomerCredit Data"
+                });
+            }
+
+            if (
+                !Array.isArray(pendingPaymentList) ||
+                pendingPaymentList.length === 0
+            ) {
+                return res.send({
+                    success: false,
+                    message: "Invalid pendingPaymentList Data"
+                });
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | NORMALIZE VALUES
+            |--------------------------------------------------------------------------
+            */
+
+            const normalizedPaymentMode = String(PaymentMode).trim();
+
+            const paymentModeUpper = normalizedPaymentMode.toUpperCase();
+
+            ApplyReturn = Boolean(ApplyReturn);
+            ApplyReward = Boolean(ApplyReward);
+
+            /*
+            |--------------------------------------------------------------------------
+            | PAYMENT MODE VALIDATION
+            |--------------------------------------------------------------------------
+            */
+
+            if (paymentModeUpper === "INSURANCE") {
+                return res.send({
+                    success: false,
+                    message: "Invalid PaymentMode Data"
+                });
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | CUSTOMER REWARD VALIDATION
+            |--------------------------------------------------------------------------
+            */
+
+            if (ApplyReward === false) {
+
+                if (normalizedPaymentMode === "Customer Reward") {
+                    return res.send({
+                        success: false,
+                        message: "Invalid PaymentMode Data"
+                    });
+                }
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | CUSTOMER CREDIT VALIDATION
+            |--------------------------------------------------------------------------
+            */
+
+            if (ApplyReturn === false) {
+
+                if (normalizedPaymentMode === "Customer Credit") {
+                    return res.send({
+                        success: false,
+                        message: "Invalid PaymentMode Data"
+                    });
+                }
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | REWARD OTP VALIDATION
+            |--------------------------------------------------------------------------
+            */
+
+            if (ApplyReward === true) {
+
+                if (
+                    RewardCustomerRefID === null ||
+                    RewardCustomerRefID === undefined ||
+                    RewardCustomerRefID === 0
+                ) {
+                    return res.send({
+                        success: false,
+                        message: "Invalid RewardCustomerRefID Data"
+                    });
+                }
+
+                if (normalizedPaymentMode !== "Customer Reward") {
+                    return res.send({
+                        success: false,
+                        message: "Invalid PaymentMode Data"
+                    });
+                }
+
+                const [fetchCustomer] = await connection.query(
+                    `
+                SELECT ID, Otp
+                FROM customer
+                WHERE CompanyID = ?
+                  AND ID = ?
+                LIMIT 1
+                `,
+                    [
+                        CompanyID,
+                        RewardCustomerRefID
+                    ]
+                );
+
+                if (!fetchCustomer.length) {
+                    return res.send({
+                        success: false,
+                        message: "Invalid RewardCustomerRefID Data"
+                    });
+                }
+
+                if (
+                    fetchCustomer[0].Otp === null ||
+                    String(fetchCustomer[0].Otp) !== String(Otp)
+                ) {
+                    return res.send({
+                        success: false,
+                        message: "Invalid Otp Data"
+                    });
+                }
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | DETERMINE PAYMENT TYPE
+            |--------------------------------------------------------------------------
+            */
+
+            let paymentType = "Customer";
+
+            if (ApplyReturn === true) {
+                paymentType = "Customer Credit";
+            }
+
+            if (ApplyReward === true) {
+                paymentType = "Customer Reward";
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | PAYMENT DATE
+            |--------------------------------------------------------------------------
+            */
+
+            const currentTime =
+                req.headers.currenttime ||
+                PaymentDate ||
+                new Date();
+
+            /*
+            |--------------------------------------------------------------------------
+            | DETERMINE BILL IDS
+            |--------------------------------------------------------------------------
+            |
+            | pendingPaymentList should contain:
+            |
+            | [
+            |   { ID: 101, InvoiceNo: "..." },
+            |   { ID: 102, InvoiceNo: "..." }
+            | ]
+            |
+            | We DO NOT trust DueAmount from request.
+            |
+            */
+
+            let billIds = [];
+
+            if (Array.isArray(pendingPaymentList)) {
+
+                billIds = pendingPaymentList
+                    .map(item => Number(item?.ID))
+                    .filter(id => Number.isInteger(id) && id > 0);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | IF BillMasterID IS PROVIDED
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                BillMasterID !== null &&
+                BillMasterID !== undefined &&
+                BillMasterID !== "" &&
+                Number(BillMasterID) > 0
+            ) {
+                BillMasterID = Number(BillMasterID);
+
+                billIds = [
+                    BillMasterID,
+                    ...billIds.filter(id => id !== BillMasterID)
+                ];
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | REMOVE DUPLICATE BILL IDS
+            |--------------------------------------------------------------------------
+            */
+
+            billIds = [...new Set(billIds)];
+
+            if (!billIds.length) {
+                return res.send({
+                    success: false,
+                    message: "Invalid BillMasterID Data"
+                });
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | START TRANSACTION
+            |--------------------------------------------------------------------------
+            */
+
+            await connection.beginTransaction();
+
+            try {
+
+                /*
+                |--------------------------------------------------------------------------
+                | FETCH BILLS WITH ROW LOCK
+                |--------------------------------------------------------------------------
+                |
+                | IMPORTANT:
+                |
+                | FOR UPDATE prevents two payment requests from modifying
+                | the same bill simultaneously.
+                |
+                */
+
+                const placeholders = billIds
+                    .map(() => "?")
+                    .join(",");
+
+                const [billRows] = await connection.query(
+                    `
+                SELECT
+                    ID,
+                    CompanyID,
+                    CustomerID,
+                    ShopID,
+                    InvoiceNo,
+                    OrderNo,
+                    DueAmount,
+                    PaymentStatus,
+                    Status,
+                    BillType,
+                    BillingFlow,
+                    IsConvertInvoice
+                FROM billmaster
+                WHERE CompanyID = ?
+                  AND CustomerID = ?
+                  AND ShopID = ?
+                  AND Status = 1
+                  AND ID IN (${placeholders})
+                ORDER BY FIELD(ID, ${placeholders})
+                FOR UPDATE
+                `,
+                    [
+                        CompanyID,
+                        CustomerID,
+                        shopid,
+                        ...billIds,
+                        ...billIds
+                    ]
+                );
+
+                /*
+                |--------------------------------------------------------------------------
+                | VALIDATE BILL COUNT
+                |--------------------------------------------------------------------------
+                */
+
+                if (billRows.length !== billIds.length) {
+
+                    await connection.rollback();
+
+                    return res.send({
+                        success: false,
+                        message: "One or more bills were not found or are invalid."
+                    });
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | CHECK CURRENT TOTAL DUE
+                |--------------------------------------------------------------------------
+                */
+
+                let totalDueAmount = 0;
+
+                for (const bill of billRows) {
+
+                    const due = Number(bill.DueAmount || 0);
+
+                    if (due > 0) {
+                        totalDueAmount += due;
+                    }
+                }
+
+                totalDueAmount = Number(totalDueAmount.toFixed(2));
+
+                /*
+                |--------------------------------------------------------------------------
+                | ZERO PAYMENT
+                |--------------------------------------------------------------------------
+                */
+
+                if (PaidAmount === 0) {
+
+                    await connection.commit();
+
+                    response.message = "data update sucessfully";
+
+                    const finalBillId = BillMasterID || billIds[0];
+
+                    const [fetchInvoice] = await connection.query(
+                        `
+                    SELECT *
+                    FROM billmaster
+                    WHERE CompanyID = ?
+                      AND ID = ?
+                    LIMIT 1
+                    `,
+                        [
+                            CompanyID,
+                            finalBillId
+                        ]
+                    );
+
+                    response.data = {
+                        getBillById: await getBillById(
+                            finalBillId,
+                            CompanyID,
+                            db
+                        ),
+
+                        billByCustomer: await billByCustomer(
+                            CustomerID,
+                            finalBillId,
+                            CompanyID,
+                            shopid,
+                            db
+                        ),
+
+                        paymentHistoryByMasterID:
+                            await paymentHistoryByMasterID(
+                                CustomerID,
+                                finalBillId,
+                                CompanyID,
+                                shopid,
+                                db
+                            ),
+
+                        getRewardBalance:
+                            fetchInvoice.length
+                                ? await getRewardBalance(
+                                    CustomerID,
+                                    `${fetchInvoice[0].BillingFlow === 1
+                                        ? fetchInvoice[0].InvoiceNo
+                                        : fetchInvoice[0].OrderNo}`,
+                                    CompanyID,
+                                    shopid,
+                                    db
+                                )
+                                : null
+                    };
+
+                    return res.send(response);
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | OVERPAYMENT CHECK
+                |--------------------------------------------------------------------------
+                */
+
+                if (PaidAmount > totalDueAmount) {
+
+                    await connection.rollback();
+
+                    return res.send({
+                        success: false,
+                        message: `Your Due Amount is ${totalDueAmount.toFixed(2)}`
+                    });
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | CREATE PAYMENT MASTER
+                |--------------------------------------------------------------------------
+                */
+
+                const [paymentMasterResult] = await connection.query(
+                    `
+                INSERT INTO paymentmaster
+                (
+                    CustomerID,
+                    CompanyID,
+                    ShopID,
+                    CreditType,
+                    PaymentDate,
+                    PaymentMode,
+                    CardNo,
+                    PaymentReferenceNo,
+                    PayableAmount,
+                    PaidAmount,
+                    Comments,
+                    PaymentType,
+                    Status,
+                    CreatedBy,
+                    CreatedOn
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `,
+                    [
+                        CustomerID,
+                        CompanyID,
+                        shopid,
+                        CreditType,
+                        currentTime,
+                        normalizedPaymentMode,
+                        CardNo,
+                        PaymentReferenceNo,
+                        Number(PayableAmount || 0),
+                        PaidAmount,
+                        Comments,
+                        "Customer",
+                        1,
+                        LoggedOnUser,
+                        currentTime
+                    ]
+                );
+
+                const pMasterID = paymentMasterResult.insertId;
+
+                /*
+                |--------------------------------------------------------------------------
+                | PROCESS PAYMENT AGAINST BILLS
+                |--------------------------------------------------------------------------
+                */
+
+                let remainingAmount = Number(PaidAmount);
+
+                const processedBills = [];
+
+                for (const bill of billRows) {
+
+                    if (remainingAmount <= 0) {
+                        break;
+                    }
+
+                    const currentDueAmount = Number(
+                        bill.DueAmount || 0
+                    );
+
+                    if (currentDueAmount <= 0) {
+                        continue;
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CALCULATE PAYMENT FOR THIS BILL
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const billPaymentAmount =
+                        remainingAmount >= currentDueAmount
+                            ? currentDueAmount
+                            : remainingAmount;
+
+                    const newDueAmount = Number(
+                        (
+                            currentDueAmount -
+                            billPaymentAmount
+                        ).toFixed(2)
+                    );
+
+                    const billPaymentStatus =
+                        newDueAmount <= 0
+                            ? "Paid"
+                            : "Unpaid";
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | INSERT PAYMENT DETAIL
+                    |--------------------------------------------------------------------------
+                    */
+
+                    const [paymentDetailResult] =
+                        await connection.query(
+                            `
+                        INSERT INTO paymentdetail
+                        (
+                            PaymentMasterID,
+                            CompanyID,
+                            CustomerID,
+                            BillMasterID,
+                            BillID,
+                            Amount,
+                            DueAmount,
+                            PaymentType,
+                            Credit,
+                            Status,
+                            CreatedBy,
+                            CreatedOn
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        `,
+                            [
+                                pMasterID,
+                                CompanyID,
+                                CustomerID,
+                                bill.ID,
+                                bill.InvoiceNo,
+                                billPaymentAmount,
+                                newDueAmount,
+                                paymentType,
+                                CreditType,
+                                1,
+                                LoggedOnUser,
+                                currentTime
+                            ]
+                        );
+
+                    const paymentDetailID =
+                        paymentDetailResult.insertId;
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | UPDATE BILLMASTER
+                    |--------------------------------------------------------------------------
+                    |
+                    | IMPORTANT:
+                    |
+                    | We already locked this row using FOR UPDATE.
+                    |
+                    */
+
+                    const [billUpdateResult] =
+                        await connection.query(
+                            `
+                        UPDATE billmaster
+                        SET
+                            PaymentStatus = ?,
+                            DueAmount = ?,
+                            UpdatedBy = ?,
+                            UpdatedOn = ?,
+                            LastUpdate = ?
+                        WHERE ID = ?
+                          AND CompanyID = ?
+                          AND CustomerID = ?
+                          AND ShopID = ?
+                        `,
+                            [
+                                billPaymentStatus,
+                                newDueAmount,
+                                LoggedOnUser,
+                                currentTime,
+                                currentTime,
+                                bill.ID,
+                                CompanyID,
+                                CustomerID,
+                                shopid
+                            ]
+                        );
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | VERIFY BILL UPDATE
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (billUpdateResult.affectedRows !== 1) {
+
+                        throw new Error(
+                            `BillMaster update failed for Bill ID ${bill.ID}`
+                        );
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | INVOICE GENERATION
+                    |--------------------------------------------------------------------------
+                    */
+
+                    let invoiceNo = bill.InvoiceNo;
+
+                    if (
+                        billPaymentStatus === "Paid" &&
+                        Number(bill.IsConvertInvoice) === 0 &&
+                        Number(bill.BillingFlow) === 2
+                    ) {
+
+                        let inv = "";
+
+                        const [fetchInvoiceMaster] =
+                            await connection.query(
+                                `
+                            SELECT *
+                            FROM billmaster
+                            WHERE ID = ?
+                              AND CompanyID = ?
+                              AND IsConvertInvoice = 0
+                              AND BillingFlow = 2
+                            LIMIT 1
+                            `,
+                                [
+                                    bill.ID,
+                                    CompanyID
+                                ]
+                            );
+
+                        if (
+                            fetchInvoiceMaster.length &&
+                            Number(fetchInvoiceMaster[0].BillType) === 1
+                        ) {
+
+                            const [fetchInvoiceDetail] =
+                                await connection.query(
+                                    `
+                                SELECT *
+                                FROM billdetail
+                                WHERE BillID = ?
+                                  AND CompanyID = ?
+                                LIMIT 1
+                                `,
+                                    [
+                                        bill.ID,
+                                        CompanyID
+                                    ]
+                                );
+
+                            if (!fetchInvoiceDetail.length) {
+                                throw new Error(
+                                    `Bill detail not found for Bill ID ${bill.ID}`
+                                );
+                            }
+
+                            inv = await generateInvoiceNo(
+                                CompanyID,
+                                shopid,
+                                [
+                                    {
+                                        WholeSale:
+                                            fetchInvoiceDetail[0].WholeSale
+                                    }
+                                ],
+                                {
+                                    ID: null
+                                },
+                                connection
+                            );
+                        }
+
+                        if (
+                            fetchInvoiceMaster.length &&
+                            Number(fetchInvoiceMaster[0].BillType) === 0
+                        ) {
+
+                            inv = await generateInvoiceNoForService(
+                                CompanyID,
+                                shopid,
+                                [],
+                                {
+                                    ID: null
+                                },
+                                connection
+                            );
+                        }
+
+                        if (
+                            fetchInvoiceMaster.length &&
+                            inv
+                        ) {
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | UPDATE BILLMASTER INVOICE
+                            |--------------------------------------------------------------------------
+                            */
+
+                            await connection.query(
+                                `
+                            UPDATE billmaster
+                            SET
+                                InvoiceNo = ?,
+                                IsConvertInvoice = 1,
+                                BillDate = ?
+                            WHERE ID = ?
+                              AND CompanyID = ?
+                              AND IsConvertInvoice = 0
+                              AND BillingFlow = 2
+                            `,
+                                [
+                                    inv,
+                                    currentTime,
+                                    bill.ID,
+                                    CompanyID
+                                ]
+                            );
+
+                            /*
+                            |--------------------------------------------------------------------------
+                            | UPDATE ONLY CURRENT PAYMENT DETAIL
+                            |--------------------------------------------------------------------------
+                            */
+
+                            await connection.query(
+                                `
+                            UPDATE paymentdetail
+                            SET BillID = ?
+                            WHERE ID = ?
+                              AND CompanyID = ?
+                            `,
+                                [
+                                    inv,
+                                    paymentDetailID,
+                                    CompanyID
+                                ]
+                            );
+
+                            invoiceNo = inv;
+                        }
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CASH PAYMENT
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (paymentModeUpper === "CASH") {
+
+                        await connection.query(
+                            `
+                        INSERT INTO pettycash
+                        (
+                            CompanyID,
+                            ShopID,
+                            EmployeeID,
+                            RefID,
+                            CashType,
+                            CreditType,
+                            Amount,
+                            Comments,
+                            Status,
+                            CreatedBy,
+                            CreatedOn,
+                            InvoiceNo,
+                            ActionType
+                        )
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        `,
+                            [
+                                CompanyID,
+                                shopid,
+                                CustomerID,
+                                pMasterID,
+                                "CashCounter",
+                                "Deposit",
+                                billPaymentAmount,
+                                Comments,
+                                1,
+                                LoggedOnUser,
+                                currentTime,
+                                invoiceNo,
+                                "Customer"
+                            ]
+                        );
+
+                        await update_pettycash_report(
+                            CompanyID,
+                            shopid,
+                            "Sale",
+                            billPaymentAmount,
+                            "CashCounter",
+                            currentTime,
+                            connection
+                        );
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CUSTOMER REWARD PAYMENT
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (ApplyReward === true) {
+
+                        await reward_master(
+                            CompanyID,
+                            shopid,
+                            RewardCustomerRefID,
+                            invoiceNo,
+                            billPaymentAmount,
+                            "debit",
+                            LoggedOnUser,
+                            connection
+                        );
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | GENERATE NORMAL CUSTOMER REWARD
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if (billPaymentStatus === "Paid") {
+
+                        const [fetchBillMaster] =
+                            await connection.query(
+                                `
+                            SELECT
+                                COALESCE(
+                                    SUM(paymentdetail.Amount),
+                                    0
+                                ) AS Amount
+                            FROM paymentdetail
+                            WHERE CompanyID = ?
+                              AND BillID = ?
+                              AND PaymentType = 'Customer'
+                              AND Credit = 'Credit'
+                            `,
+                                [
+                                    CompanyID,
+                                    invoiceNo
+                                ]
+                            );
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | DELETE EXISTING CREDIT REWARD
+                        |--------------------------------------------------------------------------
+                        */
+
+                        await connection.query(
+                            `
+                        DELETE FROM rewardmaster
+                        WHERE CompanyID = ?
+                          AND InvoiceNo = ?
+                          AND CreditType = 'credit'
+                        `,
+                            [
+                                CompanyID,
+                                invoiceNo
+                            ]
+                        );
+
+                        /*
+                        |--------------------------------------------------------------------------
+                        | CREATE CREDIT REWARD
+                        |--------------------------------------------------------------------------
+                        */
+
+                        const rewardAmount =
+                            Number(fetchBillMaster[0]?.Amount || 0);
+
+                        if (rewardAmount > 0) {
+
+                            await reward_master(
+                                CompanyID,
+                                shopid,
+                                CustomerID,
+                                invoiceNo,
+                                rewardAmount,
+                                "credit",
+                                LoggedOnUser,
+                                connection
+                            );
+                        }
+                    }
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | TRACK PROCESSED BILL
+                    |--------------------------------------------------------------------------
+                    */
+
+                    processedBills.push({
+                        ID: bill.ID,
+                        InvoiceNo: invoiceNo,
+                        PaidAmount: billPaymentAmount,
+                        DueAmount: newDueAmount,
+                        PaymentStatus: billPaymentStatus
+                    });
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | DECREASE REMAINING PAYMENT
+                    |--------------------------------------------------------------------------
+                    */
+
+                    remainingAmount = Number(
+                        (
+                            remainingAmount -
+                            billPaymentAmount
+                        ).toFixed(2)
+                    );
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | VERIFY COMPLETE PAYMENT WAS ALLOCATED
+                |--------------------------------------------------------------------------
+                */
+
+                if (remainingAmount > 0) {
+
+                    throw new Error(
+                        `Payment allocation failed. Remaining amount: ${remainingAmount}`
+                    );
+                }
+
+                /*
+                |--------------------------------------------------------------------------
+                | COMMIT TRANSACTION
+                |--------------------------------------------------------------------------
+                */
+
+                await connection.commit();
+
+                /*
+                |--------------------------------------------------------------------------
+                | RESPONSE
+                |--------------------------------------------------------------------------
+                */
+
+                response.message = "data update sucessfully";
+
+                const finalBillMasterID =
+                    BillMasterID || billIds[0];
+
+                const [fetchInvoice] =
+                    await connection.query(
+                        `
+                    SELECT *
+                    FROM billmaster
+                    WHERE CompanyID = ?
+                      AND ID = ?
+                    LIMIT 1
+                    `,
+                        [
+                            CompanyID,
+                            finalBillMasterID
+                        ]
+                    );
+
+                response.data = {
+
+                    getBillById:
+                        await getBillById(
+                            finalBillMasterID,
+                            CompanyID,
+                            db
+                        ),
+
+                    billByCustomer:
+                        await billByCustomer(
+                            CustomerID,
+                            finalBillMasterID,
+                            CompanyID,
+                            shopid,
+                            db
+                        ),
+
+                    paymentHistoryByMasterID:
+                        await paymentHistoryByMasterID(
+                            CustomerID,
+                            finalBillMasterID,
+                            CompanyID,
+                            shopid,
+                            db
+                        ),
+
+                    getRewardBalance:
+                        fetchInvoice.length
+                            ? await getRewardBalance(
+                                CustomerID,
+                                `${fetchInvoice[0].BillingFlow === 1
+                                    ? fetchInvoice[0].InvoiceNo
+                                    : fetchInvoice[0].OrderNo
+                                }`,
+                                CompanyID,
+                                shopid,
+                                db
+                            )
+                            : null,
+
+                    paymentMasterID: pMasterID,
+
+                    processedBills
+                };
+
+                return res.send(response);
+
+            } catch (transactionError) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | ROLLBACK
+                |--------------------------------------------------------------------------
+                */
+
+                try {
+                    await connection.rollback();
+                } catch (rollbackError) {
+                    console.error(
+                        "Rollback Error:",
+                        rollbackError
+                    );
+                }
+
+                throw transactionError;
+            }
+
+        } catch (err) {
+
+            console.error(
+                "customerPayment Error:",
+                err
+            );
+
+            next(err);
+
+        } finally {
+
+            /*
+            |--------------------------------------------------------------------------
+            | RELEASE CONNECTION
+            |--------------------------------------------------------------------------
+            */
+
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
     customerPayment: async (req, res, next) => {
         let connection;
         try {

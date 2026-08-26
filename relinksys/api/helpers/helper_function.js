@@ -729,7 +729,7 @@ module.exports = {
     gstAmount = (SubTotal * GSTPercentage) / 100
     return gstAmount
   },
-  generateInvoiceNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNoOOO: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -811,6 +811,362 @@ module.exports = {
       if (connection) {
         connection.release(); // Always release the connection
         connection.destroy();
+      }
+    }
+  },
+  generateInvoiceNo: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (existingConnection) {
+
+        // Use parent's transaction connection
+        connection = existingConnection;
+
+      } else {
+
+        // Existing behavior for old callers
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE FORMAT
+      |--------------------------------------------------------------------------
+      */
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      const changeFormate = today.isSameOrAfter(checkDate);
+
+      /*
+      |--------------------------------------------------------------------------
+      | DEFAULT INVOICE TYPE
+      |--------------------------------------------------------------------------
+      */
+
+      let rw = "W";
+
+      if (
+        billDetailData &&
+        billDetailData.length !== 0 &&
+        !billDetailData[0].WholeSale
+      ) {
+        rw = "R";
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | TEMP INVOICE ID
+      |--------------------------------------------------------------------------
+      */
+
+      let newInvoiceID = new Date();
+
+      if (
+        billMaseterData.ID === null ||
+        billMaseterData.ID === undefined
+      ) {
+
+        newInvoiceID = new Date()
+          .toISOString()
+          .replace(
+            /[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi,
+            ""
+          )
+          .substring(2, 6);
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CHECK SHOP BILLING CONFIGURATION
+      |--------------------------------------------------------------------------
+      */
+
+      const [billShopWise] = await connection.query(
+        `
+            SELECT
+                ID,
+                BillShopWise
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      let billShopWiseBoolean = false;
+
+      if (billShopWise.length) {
+
+        billShopWiseBoolean =
+          billShopWise[0].BillShopWise === true ||
+          billShopWise[0].BillShopWise === "true" ||
+          billShopWise[0].BillShopWise === 1;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      const invoiceShopID =
+        billShopWiseBoolean
+          ? ShopID
+          : 0;
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Lock the invoice counter row.
+      |
+      | Because this helper may be called inside an existing
+      | payment transaction, FOR UPDATE will remain locked
+      | until the parent transaction commits.
+      |
+      */
+
+      const [lastInvoiceID] = await connection.query(
+        `
+            SELECT
+                Retail,
+                WholeSale
+            FROM invoice
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            FOR UPDATE
+            `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      if (!lastInvoiceID.length) {
+
+        throw new Error(
+          `Invoice counter not found for CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CURRENT COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      const currentRetail =
+        Number(lastInvoiceID[0].Retail || 0);
+
+      const currentWholeSale =
+        Number(lastInvoiceID[0].WholeSale || 0);
+
+      /*
+      |--------------------------------------------------------------------------
+      | NEXT COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      const nextRetail =
+        rw === "R"
+          ? currentRetail + 1
+          : currentRetail;
+
+      const nextWholeSale =
+        rw === "W"
+          ? currentWholeSale + 1
+          : currentWholeSale;
+
+      /*
+      |--------------------------------------------------------------------------
+      | UPDATE COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      await connection.query(
+        `
+            UPDATE invoice
+            SET
+                Retail = ?,
+                WholeSale = ?,
+                UpdatedOn = NOW()
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            `,
+        [
+          nextRetail,
+          nextWholeSale,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | SHOP DETAILS
+      |--------------------------------------------------------------------------
+      */
+
+      const [shopDetails] = await connection.query(
+        `
+            SELECT
+                ID,
+                Sno,
+                ShopSequence
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      if (!shopDetails.length) {
+
+        throw new Error(
+          `Shop details not found for ShopID=${ShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | SELECT GENERATED NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      const generatedNumber =
+        rw === "R"
+          ? nextRetail
+          : nextWholeSale;
+
+      /*
+      |--------------------------------------------------------------------------
+      | GENERATE FINAL INVOICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      if (changeFormate === false) {
+
+        newInvoiceID =
+          newInvoiceID +
+          "-" +
+          rw +
+          shopDetails[0].ShopSequence +
+          "-" +
+          shopDetails[0].Sno +
+          "-" +
+          generatedNumber;
+
+      } else {
+
+        newInvoiceID =
+          generatedNumber +
+          "-" +
+          newInvoiceID +
+          "-" +
+          shopDetails[0].Sno +
+          rw;
+      }
+
+      console.log(
+        "Generated Invoice No:",
+        newInvoiceID
+      );
+
+      return newInvoiceID;
+
+    } catch (error) {
+
+      console.error(
+        "generateInvoiceNo Error:",
+        error
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Parent customerPayment() owns the transaction.
+      |
+      | Therefore we DO NOT rollback here.
+      |
+      */
+
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY OUR OWN CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (
+        connection &&
+        shouldReleaseConnection
+      ) {
+        connection.release();
       }
     }
   },
@@ -979,7 +1335,7 @@ module.exports = {
       }
     }
   },
-  generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNoForServiceOOO: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -1056,6 +1412,326 @@ module.exports = {
       if (connection) {
         connection.release(); // Always release the connection
         connection.destroy();
+      }
+    }
+  },
+  generateInvoiceNoForService: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (existingConnection) {
+
+        // Use parent's transaction connection
+        connection = existingConnection;
+
+      } else {
+
+        // Backward-compatible behavior
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE FORMAT
+      |--------------------------------------------------------------------------
+      */
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      const changeFormate =
+        today.isSameOrAfter(checkDate);
+
+      /*
+      |--------------------------------------------------------------------------
+      | SERVICE INVOICE
+      |--------------------------------------------------------------------------
+      */
+
+      const rw = "S";
+
+      /*
+      |--------------------------------------------------------------------------
+      | TEMP INVOICE ID
+      |--------------------------------------------------------------------------
+      */
+
+      let newInvoiceID = new Date();
+
+      if (
+        billMaseterData.ID === null ||
+        billMaseterData.ID === undefined
+      ) {
+
+        newInvoiceID = new Date()
+          .toISOString()
+          .replace(
+            /[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi,
+            ""
+          )
+          .substring(2, 6);
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CHECK SHOP BILLING CONFIGURATION
+      |--------------------------------------------------------------------------
+      */
+
+      const [billShopWise] = await connection.query(
+        `
+            SELECT
+                ID,
+                BillShopWise
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      let billShopWiseBoolean = false;
+
+      if (billShopWise.length) {
+
+        billShopWiseBoolean =
+          billShopWise[0].BillShopWise === true ||
+          billShopWise[0].BillShopWise === "true" ||
+          billShopWise[0].BillShopWise === 1;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE COUNTER SHOP
+      |--------------------------------------------------------------------------
+      */
+
+      const invoiceShopID =
+        billShopWiseBoolean
+          ? ShopID
+          : 0;
+
+      /*
+      |--------------------------------------------------------------------------
+      | LOCK INVOICE COUNTER
+      |--------------------------------------------------------------------------
+      |
+      | This prevents two concurrent requests from
+      | generating the same Service invoice number.
+      |
+      */
+
+      const [lastInvoiceID] = await connection.query(
+        `
+            SELECT
+                Service
+            FROM invoice
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            FOR UPDATE
+            `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      if (!lastInvoiceID.length) {
+
+        throw new Error(
+          `Invoice counter not found for CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CURRENT SERVICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      const currentService =
+        Number(lastInvoiceID[0].Service || 0);
+
+      /*
+      |--------------------------------------------------------------------------
+      | NEXT SERVICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      const nextService =
+        currentService + 1;
+
+      /*
+      |--------------------------------------------------------------------------
+      | UPDATE COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      await connection.query(
+        `
+            UPDATE invoice
+            SET
+                Service = ?,
+                UpdatedOn = NOW()
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            `,
+        [
+          nextService,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | SHOP DETAILS
+      |--------------------------------------------------------------------------
+      */
+
+      const [shopDetails] = await connection.query(
+        `
+            SELECT
+                ID,
+                Sno,
+                ShopSequence
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      if (!shopDetails.length) {
+
+        throw new Error(
+          `Shop details not found for ShopID=${ShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | GENERATE FINAL INVOICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      if (changeFormate === false) {
+
+        newInvoiceID =
+          newInvoiceID +
+          "-" +
+          rw +
+          shopDetails[0].ShopSequence +
+          "-" +
+          shopDetails[0].Sno +
+          "-" +
+          nextService;
+
+      } else {
+
+        newInvoiceID =
+          nextService +
+          "-" +
+          newInvoiceID +
+          "-" +
+          shopDetails[0].Sno +
+          rw;
+      }
+
+      console.log(
+        "Generated Service Invoice No:",
+        newInvoiceID
+      );
+
+      return newInvoiceID;
+
+    } catch (error) {
+
+      console.error(
+        "generateInvoiceNoForService Error:",
+        error
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Parent transaction owns rollback.
+      |
+      */
+
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY OUR OWN CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (
+        connection &&
+        shouldReleaseConnection
+      ) {
+        connection.release();
       }
     }
   },
@@ -2223,7 +2899,7 @@ module.exports = {
       }
     }
   },
-  update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
+  update_pettycash_reportOOO: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -2429,6 +3105,571 @@ module.exports = {
     }
 
   },
+  update_pettycash_report: async (
+    CompanyID,
+    ShopID,
+    Type,
+    Amount,
+    RegisterType,
+    CurrentDate,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (existingConnection) {
+
+        // Use transaction connection from parent
+        connection = existingConnection;
+
+      } else {
+
+        // Existing behavior for old callers
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | DATE
+      |--------------------------------------------------------------------------
+      */
+
+      const date = moment(CurrentDate).format("YYYY-MM-DD");
+
+      /*
+      |--------------------------------------------------------------------------
+      | BASE DATA
+      |--------------------------------------------------------------------------
+      */
+
+      let datum = {
+        date: date,
+        OpeningBalance: 0,
+        CompanyID: CompanyID,
+        ShopID: ShopID,
+        RegisterType: RegisterType,
+        Sale: 0,
+        Expense: 0,
+        Doctor: 0,
+        Employee: 0,
+        Payroll: 0,
+        Fitter: 0,
+        Supplier: 0,
+        Deposit: 0,
+        Withdrawal: 0,
+        ClosingBalance: 0
+      };
+
+      console.table({
+        CompanyID,
+        ShopID,
+        Type,
+        Amount,
+        RegisterType,
+        CurrentDate
+      });
+
+      /*
+      |--------------------------------------------------------------------------
+      | CHECK REPORT EXISTENCE
+      |--------------------------------------------------------------------------
+      */
+
+      const [fetch] = await connection.query(
+        `
+            SELECT *
+            FROM pettycashreport
+            WHERE CompanyID = ?
+              AND ShopID = ?
+              AND RegisterType = ?
+            `,
+        [
+          CompanyID,
+          ShopID,
+          RegisterType
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | CREATE PREVIOUS DAY REPORT IF REQUIRED
+      |--------------------------------------------------------------------------
+      */
+
+      if (!fetch.length) {
+
+        if (
+          RegisterType === "PettyCash" ||
+          RegisterType === "CashCounter"
+        ) {
+
+          const [DepositBalance] = await connection.query(
+            `
+                    SELECT COALESCE(SUM(Amount), 0) AS Amount
+                    FROM pettycash
+                    WHERE Status = 1
+                      AND CompanyID = ?
+                      AND ShopID = ?
+                      AND CashType = ?
+                      AND CreditType = 'Deposit'
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              RegisterType
+            ]
+          );
+
+          const [WithdrawalBalance] = await connection.query(
+            `
+                    SELECT COALESCE(SUM(Amount), 0) AS Amount
+                    FROM pettycash
+                    WHERE Status = 1
+                      AND CompanyID = ?
+                      AND ShopID = ?
+                      AND CashType = ?
+                      AND CreditType = 'Withdrawal'
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              RegisterType
+            ]
+          );
+
+          let Balance =
+            Number(DepositBalance[0]?.Amount || 0) -
+            Number(WithdrawalBalance[0]?.Amount || 0);
+
+          /*
+          |--------------------------------------------------------------------------
+          | IMPORTANT
+          |--------------------------------------------------------------------------
+          |
+          | Sale/Deposit increases CashCounter/PettyCash report
+          | Expense/Withdrawal decreases it.
+          |
+          */
+
+          if (
+            Type === "Sale" ||
+            Type === "Deposit"
+          ) {
+            Balance = Balance + Number(Amount);
+          } else {
+            Balance = Balance - Number(Amount);
+          }
+
+          const back_date = moment(date)
+            .subtract(1, "days")
+            .format("YYYY-MM-DD");
+
+          await connection.query(
+            `
+                    INSERT INTO pettycashreport
+                    (
+                        CompanyID,
+                        ShopID,
+                        RegisterType,
+                        Date,
+                        OpeningBalance,
+                        Sale,
+                        Expense,
+                        Doctor,
+                        Employee,
+                        Payroll,
+                        Fitter,
+                        Supplier,
+                        Withdrawal,
+                        Deposit,
+                        ClosingBalance
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              RegisterType,
+              back_date,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              Balance
+            ]
+          );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET TODAY REPORT
+      |--------------------------------------------------------------------------
+      */
+
+      const [fetchPettyCash] = await connection.query(
+        `
+            SELECT *
+            FROM pettycashreport
+            WHERE Date = ?
+              AND CompanyID = ?
+              AND ShopID = ?
+              AND RegisterType = ?
+            LIMIT 1
+            `,
+        [
+          date,
+          CompanyID,
+          ShopID,
+          RegisterType
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET OPENING BALANCE
+      |--------------------------------------------------------------------------
+      */
+
+      if (!fetchPettyCash.length) {
+
+        const [fetchPettyCashBackDate] = await connection.query(
+          `
+                SELECT *
+                FROM pettycashreport
+                WHERE CompanyID = ?
+                  AND ShopID = ?
+                  AND RegisterType = ?
+                ORDER BY ID DESC
+                LIMIT 1
+                `,
+          [
+            CompanyID,
+            ShopID,
+            RegisterType
+          ]
+        );
+
+        if (fetchPettyCashBackDate.length) {
+
+          datum.OpeningBalance =
+            Number(
+              fetchPettyCashBackDate[0].ClosingBalance || 0
+            );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | UPDATE EXISTING REPORT
+      |--------------------------------------------------------------------------
+      */
+
+      if (fetchPettyCash.length) {
+
+        const existing = fetchPettyCash[0];
+
+        datum.OpeningBalance =
+          Number(existing.ClosingBalance || 0);
+
+        datum.Sale =
+          Number(existing.Sale || 0);
+
+        datum.Expense =
+          Number(existing.Expense || 0);
+
+        datum.Doctor =
+          Number(existing.Doctor || 0);
+
+        datum.Employee =
+          Number(existing.Employee || 0);
+
+        datum.Payroll =
+          Number(existing.Payroll || 0);
+
+        datum.Fitter =
+          Number(existing.Fitter || 0);
+
+        datum.Supplier =
+          Number(existing.Supplier || 0);
+
+        datum.Deposit =
+          Number(existing.Deposit || 0);
+
+        datum.Withdrawal =
+          Number(existing.Withdrawal || 0);
+
+        const amount = Number(Amount || 0);
+
+        /*
+        |--------------------------------------------------------------------------
+        | APPLY TRANSACTION
+        |--------------------------------------------------------------------------
+        */
+
+        if (Type === "Sale") {
+
+          datum.ClosingBalance += amount;
+          datum.Sale += amount;
+
+        } else if (Type === "Deposit") {
+
+          datum.ClosingBalance += amount;
+          datum.Deposit += amount;
+
+        } else if (Type === "Expense") {
+
+          datum.ClosingBalance -= amount;
+          datum.Expense += amount;
+
+        } else if (Type === "Doctor") {
+
+          datum.ClosingBalance -= amount;
+          datum.Doctor += amount;
+
+        } else if (Type === "Employee") {
+
+          datum.ClosingBalance -= amount;
+          datum.Employee += amount;
+
+        } else if (Type === "Payroll") {
+
+          datum.ClosingBalance -= amount;
+          datum.Payroll += amount;
+
+        } else if (Type === "Fitter") {
+
+          datum.ClosingBalance -= amount;
+          datum.Fitter += amount;
+
+        } else if (Type === "Supplier") {
+
+          datum.ClosingBalance -= amount;
+          datum.Supplier += amount;
+
+        } else if (Type === "Withdrawal") {
+
+          datum.ClosingBalance -= amount;
+          datum.Withdrawal += amount;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE
+        |--------------------------------------------------------------------------
+        */
+
+        await connection.query(
+          `
+                UPDATE pettycashreport
+                SET
+                    Sale = ?,
+                    Expense = ?,
+                    Doctor = ?,
+                    Employee = ?,
+                    Payroll = ?,
+                    Fitter = ?,
+                    Supplier = ?,
+                    Withdrawal = ?,
+                    Deposit = ?,
+                    ClosingBalance = ?
+                WHERE ID = ?
+                `,
+          [
+            datum.Sale,
+            datum.Expense,
+            datum.Doctor,
+            datum.Employee,
+            datum.Payroll,
+            datum.Fitter,
+            datum.Supplier,
+            datum.Withdrawal,
+            datum.Deposit,
+            datum.ClosingBalance,
+            existing.ID
+          ]
+        );
+
+        console.table(datum);
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INSERT TODAY REPORT
+      |--------------------------------------------------------------------------
+      */
+
+      if (!fetchPettyCash.length) {
+
+        const amount = Number(Amount || 0);
+
+        datum.ClosingBalance =
+          Number(datum.OpeningBalance || 0);
+
+        if (Type === "Sale") {
+
+          datum.ClosingBalance += amount;
+          datum.Sale = amount;
+
+        } else if (Type === "Deposit") {
+
+          datum.ClosingBalance += amount;
+          datum.Deposit = amount;
+
+        } else if (Type === "Expense") {
+
+          datum.ClosingBalance -= amount;
+          datum.Expense = amount;
+
+        } else if (Type === "Doctor") {
+
+          datum.ClosingBalance -= amount;
+          datum.Doctor = amount;
+
+        } else if (Type === "Employee") {
+
+          datum.ClosingBalance -= amount;
+          datum.Employee = amount;
+
+        } else if (Type === "Payroll") {
+
+          datum.ClosingBalance -= amount;
+          datum.Payroll = amount;
+
+        } else if (Type === "Fitter") {
+
+          datum.ClosingBalance -= amount;
+          datum.Fitter = amount;
+
+        } else if (Type === "Supplier") {
+
+          datum.ClosingBalance -= amount;
+          datum.Supplier = amount;
+
+        } else if (Type === "Withdrawal") {
+
+          datum.ClosingBalance -= amount;
+          datum.Withdrawal = amount;
+        }
+
+        await connection.query(
+          `
+                INSERT INTO pettycashreport
+                (
+                    CompanyID,
+                    ShopID,
+                    RegisterType,
+                    Date,
+                    OpeningBalance,
+                    Sale,
+                    Expense,
+                    Doctor,
+                    Employee,
+                    Payroll,
+                    Fitter,
+                    Supplier,
+                    Withdrawal,
+                    Deposit,
+                    ClosingBalance
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `,
+          [
+            datum.CompanyID,
+            datum.ShopID,
+            datum.RegisterType,
+            date,
+            datum.OpeningBalance,
+            datum.Sale,
+            datum.Expense,
+            datum.Doctor,
+            datum.Employee,
+            datum.Payroll,
+            datum.Fitter,
+            datum.Supplier,
+            datum.Withdrawal,
+            datum.Deposit,
+            datum.ClosingBalance
+          ]
+        );
+      }
+
+      return {
+        success: true,
+        message: "Petty cash report updated successfully"
+      };
+
+    } catch (error) {
+
+      console.error(
+        "update_pettycash_report Error:",
+        error
+      );
+
+      // Let parent transaction handle rollback
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY CONNECTION CREATED HERE
+      |--------------------------------------------------------------------------
+      */
+
+      if (
+        connection &&
+        shouldReleaseConnection
+      ) {
+        connection.release();
+      }
+    }
+  },
   update_pettycash_counter_report: async (CompanyID, ShopID, Type, Amount, CurrentDate) => {
     let connection;
     try {
@@ -2576,7 +3817,7 @@ module.exports = {
       }
     }
   },
-  reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
+  reward_masterOOO: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -2652,6 +3893,338 @@ module.exports = {
       if (connection) {
         connection.release(); // Always release the connection
         connection.destroy();
+      }
+    }
+  },
+  reward_master: async (
+    CompanyID,
+    ShopID,
+    CustomerID,
+    InvoiceNo,
+    PaidAmount,
+    CreditType,
+    LoggedOnUser,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION HANDLING
+      |--------------------------------------------------------------------------
+      |
+      | If existingConnection is provided:
+      |     Use it.
+      |
+      | If not provided:
+      |     Create a new connection.
+      |
+      */
+
+      if (existingConnection) {
+
+        connection = existingConnection;
+
+      } else {
+
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      if (!CustomerID) {
+        return {
+          success: false,
+          message: "Invalid CustomerID Data"
+        };
+      }
+
+      if (!InvoiceNo) {
+        return {
+          success: false,
+          message: "Invalid InvoiceNo Data"
+        };
+      }
+
+      if (
+        PaidAmount === null ||
+        PaidAmount === undefined ||
+        Number.isNaN(Number(PaidAmount))
+      ) {
+        return {
+          success: false,
+          message: "Invalid PaidAmount Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | FETCH COMPANY SETTINGS
+      |--------------------------------------------------------------------------
+      */
+
+      const [fetchCompany] = await connection.query(
+        `
+            SELECT
+                ID,
+                RewardExpiryDate,
+                RewardPercentage,
+                AppliedReward
+            FROM companysetting
+            WHERE Status = 1
+              AND CompanyID = ?
+            LIMIT 1
+            `,
+        [CompanyID]
+      );
+
+      if (!fetchCompany.length) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      const companySetting = fetchCompany[0];
+
+      /*
+      |--------------------------------------------------------------------------
+      | CREDIT
+      |--------------------------------------------------------------------------
+      */
+
+      if (CreditType === "credit") {
+
+        const rewardPercentage = Number(
+          companySetting.RewardPercentage || 0
+        );
+
+        const rewardAmount = Number(
+          calculateAmount(
+            Number(PaidAmount),
+            rewardPercentage
+          ) || 0
+        );
+
+        if (rewardAmount > 0) {
+
+          await connection.query(
+            `
+                    INSERT INTO rewardmaster
+                    (
+                        CompanyID,
+                        ShopID,
+                        CustomerID,
+                        InvoiceNo,
+                        PaidAmount,
+                        RewardPercentage,
+                        Amount,
+                        CreditType,
+                        Status,
+                        CreatedBy,
+                        CreatedOn
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              CustomerID,
+              InvoiceNo,
+              Number(PaidAmount),
+              rewardPercentage,
+              rewardAmount,
+              "credit",
+              1,
+              LoggedOnUser
+            ]
+          );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | DEBIT
+      |--------------------------------------------------------------------------
+      */
+
+      if (CreditType === "debit") {
+
+        const rewardPercentage = Number(
+          companySetting.AppliedReward || 0
+        );
+
+        const rewardAmount = Number(PaidAmount || 0);
+
+        if (rewardAmount > 0) {
+
+          await connection.query(
+            `
+                    INSERT INTO rewardmaster
+                    (
+                        CompanyID,
+                        ShopID,
+                        CustomerID,
+                        InvoiceNo,
+                        PaidAmount,
+                        RewardPercentage,
+                        Amount,
+                        CreditType,
+                        Status,
+                        CreatedBy,
+                        CreatedOn
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              CustomerID,
+              InvoiceNo,
+              Number(PaidAmount),
+              rewardPercentage,
+              rewardAmount,
+              "debit",
+              1,
+              LoggedOnUser
+            ]
+          );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CUSTOMER RETURN DEBIT
+      |--------------------------------------------------------------------------
+      */
+
+      if (CreditType === "customer_return_debit") {
+
+        const rewardPercentage = Number(
+          companySetting.RewardPercentage || 0
+        );
+
+        const rewardAmount = Number(
+          calculateAmount(
+            Number(PaidAmount),
+            rewardPercentage
+          ) || 0
+        );
+
+        if (rewardAmount > 0) {
+
+          await connection.query(
+            `
+                    INSERT INTO rewardmaster
+                    (
+                        CompanyID,
+                        ShopID,
+                        CustomerID,
+                        InvoiceNo,
+                        PaidAmount,
+                        RewardPercentage,
+                        Amount,
+                        CreditType,
+                        Status,
+                        CreatedBy,
+                        CreatedOn
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              CustomerID,
+              InvoiceNo,
+              Number(PaidAmount),
+              rewardPercentage,
+              rewardAmount,
+              "debit",
+              1,
+              LoggedOnUser
+            ]
+          );
+        }
+      }
+
+      return {
+        success: true,
+        message: "data update"
+      };
+
+    } catch (error) {
+
+      console.error(
+        "reward_master Error:",
+        error
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Do NOT rollback here.
+      |
+      | Parent function owns transaction.
+      |
+      */
+
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY OUR OWN CONNECTION
+      |--------------------------------------------------------------------------
+      |
+      | If connection was passed by caller:
+      |     DO NOT release it.
+      |
+      | If we created it:
+      |     Release it.
+      |
+      */
+
+      if (
+        connection &&
+        shouldReleaseConnection
+      ) {
+        connection.release();
       }
     }
   },
