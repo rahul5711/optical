@@ -1700,7 +1700,7 @@
 
                         <button *ngIf="this.id2 == 0" type="button" class=" me-md-3 me-0" mat-raised-button
                             color="primary" (click)="onSubmit(content1)"
-                            [disabled]="onSubmitFrom || (!billItemList.length && !serviceLists.length)">Sav<span
+                            [disabled]="(this.id == 0 && this.BillMaster.Quantity == 0) || applyPayment.PaidAmount > BillMaster.DueAmount ">Sav<span
                                 class="first-letter">e</span></button>
 
                         <button *ngIf="this.id2 != 0" type="button" class=" me-md-3 me-0" mat-raised-button

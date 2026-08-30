@@ -604,7 +604,11 @@ selectedValues: any = {
       this.otherLists = list
     });
     this.bill.memberDataList$.subscribe((list:any) => {
-      this.memberList = list
+      // this.memberList = list
+      this.memberList = list.map((item: any) => ({
+        ...item,
+      Name: item.Name?.toUpperCase()
+      }));
     });
 
     // this.doctorList()

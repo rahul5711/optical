@@ -1623,7 +1623,7 @@ module.exports = {
                 //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
                 // }
 
-                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1' && ele.ProductTypeName !== 'CONTACT LENS' && ele.ProductTypeName !== 'WATCH') {
+                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1' && ele.ProductTypeName !== 'CONTACT LENS' && ele.ProductTypeName !== 'READING FRAME'  && ele.ProductTypeName !== 'READING' && ele.ProductTypeName !== 'WATCH') {
                     [ProductTypess, ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 3) || [];
                 } else if (ele.ProductTypeName == 'CONTACT LENS') {
                     [ProductTypess, ProductBrandName, ProductModelName, Sph, Cyl] = ele.ProductName?.split("/")?.slice(0, 5) || [];
@@ -1730,7 +1730,8 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
                 let formatName = " ";
                 printdata.currencyFormat = companySetting[0].CompanyCurrency
-                printdata.CompanyBarcode = companySetting[0].BarCode
+                // printdata.CompanyBarcode = companySetting[0].BarCode
+                printdata.CompanyBarcode = 10
 
 
                 if (printdata.CompanyBarcode == 10) {
@@ -1849,21 +1850,29 @@ module.exports = {
                                 };
                             }
                             else if (printdata.CompanyBarcode == 10) {
-                                options = {
-                                    "height": "23cm",
-                                    "width": "10cm",
+                              const options = {
+ format: "A4",
+                            orientation: "portrait",
 
-                                    header: {
-                                        height: ".5cm",
-                                        contents: ''
-                                    },
-                                    footer: {
-                                        height: ".5cm",
-                                        contents: ''
-                                    },
-                                    timeout: 600000,
+    border: {
+        top: "15mm",
+        right: "0mm",
+        bottom: "1mm",
+        left: "0mm"
+    },
 
-                                };
+    header: {
+        height: "0mm",
+        contents: ""
+    },
+
+    footer: {
+        height: "0mm",
+        contents: ""
+    },
+
+    timeout: 600000
+};
                             }
 
                             pdf.create(data, options).toFile(fileName, function (err, data) {

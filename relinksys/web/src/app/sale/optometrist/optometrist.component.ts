@@ -23,8 +23,6 @@ export class OptometristComponent implements OnInit {
 
   @ViewChild('canvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
-
-
   env: { production: boolean; apiUrl: string; appUrl: string; };
   user = JSON.parse(localStorage.getItem('user') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
