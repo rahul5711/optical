@@ -46,8 +46,8 @@ router.post('/getCommissionByID', verifyAccessTokenAdmin, dbConnection, Controll
 router.post('/getCommissionDetailList', verifyAccessTokenAdmin, dbConnection, Controller.getCommissionDetailList)
 
 // customer payment
-// router.post('/customerPayment', verifyAccessTokenAdmin, dbConnection, Controller.customerPayment)
-router.post('/customerPayment', verifyAccessTokenAdmin, dbConnection, Controller.newCustomerPayment)
+router.post('/customerPayment', verifyAccessTokenAdmin, dbConnection, Controller.customerPayment)
+// router.post('/customerPayment', verifyAccessTokenAdmin, dbConnection, Controller.newCustomerPayment)
 router.post('/customerPaymentDebit', verifyAccessTokenAdmin, dbConnection, Controller.customerPaymentDebit)
 
 // vendor payment
