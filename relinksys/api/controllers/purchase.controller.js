@@ -1730,9 +1730,7 @@ module.exports = {
                 printdata.LogoURL = clientConfig.appURL + printdata.shopdetails[0].LogoURL;
                 let formatName = " ";
                 printdata.currencyFormat = companySetting[0].CompanyCurrency
-                // printdata.CompanyBarcode = companySetting[0].BarCode
-                printdata.CompanyBarcode = 10
-
+                printdata.CompanyBarcode = companySetting[0].BarCode
 
                 if (printdata.CompanyBarcode == 10) {
                     formatName = "a4Barcode.ejs";
