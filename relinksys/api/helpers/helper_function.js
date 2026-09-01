@@ -729,7 +729,7 @@ module.exports = {
     gstAmount = (SubTotal * GSTPercentage) / 100
     return gstAmount
   },
-  generateInvoiceNoOOO: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -814,7 +814,7 @@ module.exports = {
       }
     }
   },
-  generateInvoiceNo: async (
+  generateInvoiceNoOOO: async (
     CompanyID,
     ShopID,
     billDetailData,
@@ -1335,7 +1335,7 @@ module.exports = {
       }
     }
   },
-  generateInvoiceNoForServiceOOO: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -1415,7 +1415,7 @@ module.exports = {
       }
     }
   },
-  generateInvoiceNoForService: async (
+  generateInvoiceNoForServiceOOO: async (
     CompanyID,
     ShopID,
     billDetailData,
@@ -2899,7 +2899,7 @@ module.exports = {
       }
     }
   },
-  update_pettycash_reportOOO: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
+  update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -3105,7 +3105,7 @@ module.exports = {
     }
 
   },
-  update_pettycash_report: async (
+  update_pettycash_reportOOO: async (
     CompanyID,
     ShopID,
     Type,
@@ -3817,7 +3817,7 @@ module.exports = {
       }
     }
   },
-  reward_masterOOO: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
+  reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
     let connection;
     try {
       // const db = await dbConfig.dbByCompanyID(CompanyID);
@@ -3896,7 +3896,7 @@ module.exports = {
       }
     }
   },
-  reward_master: async (
+  reward_masterOOO: async (
     CompanyID,
     ShopID,
     CustomerID,
