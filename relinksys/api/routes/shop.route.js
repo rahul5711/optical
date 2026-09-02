@@ -51,11 +51,11 @@ router.post('/updateUserShop', verifyAccessTokenAdmin, dbConnection, Controller.
 
 router.post('/searchByFeild', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeild)
 
-router.post('/start-session', Controller2.startSession);
-router.get('/get-qr', Controller2.getQR);
-router.get('/status', Controller2.status);
-router.post('/send-message', Controller2.sendMessage);
-router.post('/send-pdf', Controller2.sendPDF);
+// router.post('/start-session', Controller2.startSession);
+// router.get('/get-qr', Controller2.getQR);
+// router.get('/status', Controller2.status);
+// router.post('/send-message', Controller2.sendMessage);
+// router.post('/send-pdf', Controller2.sendPDF);
 
 
 // update whatsapp config
