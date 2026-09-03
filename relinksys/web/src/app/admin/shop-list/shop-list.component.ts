@@ -636,7 +636,7 @@ getCategoryLists(){
     }
 
  updateWhatsappConfig(){
-  // this.sp.show();
+  this.sp.show();
   //   this.whatsappSettingList.push({
   //   BlukWhatsapp: false,
   //   TemplateName: 'opticalguru_service_info',
@@ -654,8 +654,13 @@ getCategoryLists(){
   const subs: Subscription = this.ss.updateWhatsappConfig(dtm).subscribe({
     next: (res: any) => {
       if (res.success) {
-        console.log(res);
-        
+           Swal.fire({
+            position: 'center',
+            icon: 'success',
+            title: 'Data Save/Update! Please Logout/Login Software.',
+            showConfirmButton: true,
+          })
+
       } else {
         this.as.errorToast(res.message)
       }
