@@ -729,7 +729,598 @@ module.exports = {
     gstAmount = (SubTotal * GSTPercentage) / 100
     return gstAmount
   },
-  generateInvoiceNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNo: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData
+  ) => {
+
+    let connection;
+    let transactionStarted = false;
+
+    try {
+
+      // =========================================================
+      // 1. DATE FORMAT
+      // =========================================================
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      let changeFormate = false;
+
+      if (today.isSameOrAfter(checkDate)) {
+
+        console.log(
+          "[Invoice] Today is on/after 01-Apr-2026"
+        );
+
+        changeFormate = true;
+
+      } else {
+
+        console.log(
+          "[Invoice] Today is before 01-Apr-2026"
+        );
+      }
+
+
+      // =========================================================
+      // 2. DATABASE CONNECTION
+      // =========================================================
+
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+
+        throw new Error(
+          db?.message ||
+          "Unable to connect to database"
+        );
+      }
+
+      connection = await db.getConnection();
+
+
+      // =========================================================
+      // 3. DETERMINE RETAIL / WHOLESALE
+      //
+      // WholeSale = true  -> W
+      // WholeSale = false -> R
+      // =========================================================
+
+      let rw = "W";
+
+      if (
+        Array.isArray(billDetailData) &&
+        billDetailData.length > 0 &&
+        !billDetailData[0].WholeSale
+      ) {
+
+        rw = "R";
+      }
+
+      console.log(
+        "[Invoice] Invoice Type:",
+        rw
+      );
+
+
+      // =========================================================
+      // 4. GENERATE INVOICE DATE ID
+      //
+      // Example:
+      //
+      // September 2026
+      // 2609
+      //
+      // Keep existing logic for existing invoice ID.
+      // =========================================================
+
+      let newInvoiceID = new Date();
+
+      if (
+        billMaseterData &&
+        (
+          billMaseterData.ID === null ||
+          billMaseterData.ID === undefined
+        )
+      ) {
+
+        newInvoiceID = new Date()
+          .toISOString()
+          .replace(/\D/g, "")
+          .substring(2, 6);
+      }
+
+      console.log(
+        "[Invoice] Base Invoice ID:",
+        newInvoiceID
+      );
+
+
+      // =========================================================
+      // 5. START TRANSACTION
+      // =========================================================
+
+      await connection.beginTransaction();
+
+      transactionStarted = true;
+
+      console.log(
+        "[Invoice] Transaction started"
+      );
+
+
+      // =========================================================
+      // 6. GET SHOP DETAILS
+      // =========================================================
+
+      const [shopDetails] = await connection.query(
+        `
+                SELECT
+                    ID,
+                    Sno,
+                    ShopSequence,
+                    BillShopWise
+                FROM shop
+                WHERE CompanyID = ?
+                  AND ID = ?
+                  AND Status = 1
+                LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 7. VALIDATE SHOP
+      // =========================================================
+
+      if (
+        !shopDetails ||
+        shopDetails.length === 0
+      ) {
+
+        throw new Error(
+          `Active shop not found. CompanyID=${CompanyID}, ShopID=${ShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 8. DETERMINE BillShopWise
+      // =========================================================
+
+      let billShopWiseBoolean = false;
+
+      if (
+        shopDetails[0].BillShopWise === true ||
+        shopDetails[0].BillShopWise === "true" ||
+        shopDetails[0].BillShopWise === 1 ||
+        shopDetails[0].BillShopWise === "1"
+      ) {
+
+        billShopWiseBoolean = true;
+      }
+
+      console.log(
+        "[Invoice] BillShopWise:",
+        billShopWiseBoolean
+      );
+
+
+      // =========================================================
+      // 9. DETERMINE INVOICE COUNTER SHOP ID
+      //
+      // BillShopWise = true
+      //     Counter is ShopID specific
+      //
+      // BillShopWise = false
+      //     Counter is Company level
+      //     ShopID = 0
+      // =========================================================
+
+      let invoiceShopID = 0;
+
+      if (billShopWiseBoolean) {
+
+        invoiceShopID = ShopID;
+      }
+
+      console.log(
+        "[Invoice] Counter ShopID:",
+        invoiceShopID
+      );
+
+
+      // =========================================================
+      // 10. GET + LOCK INVOICE COUNTER
+      //
+      // VERY IMPORTANT:
+      //
+      // FOR UPDATE locks this counter row until COMMIT/ROLLBACK.
+      //
+      // Example:
+      //
+      // Request A:
+      //     Counter = 100
+      //     LOCK
+      //
+      // Request B:
+      //     WAIT
+      //
+      // Request A:
+      //     Counter = 101
+      //     COMMIT
+      //
+      // Request B:
+      //     Reads 101
+      //     Counter = 102
+      //
+      // This prevents duplicate invoice numbers.
+      // =========================================================
+
+      const [lastInvoiceID] = await connection.query(
+        `
+                SELECT
+                    Retail,
+                    WholeSale
+                FROM invoice
+                WHERE CompanyID = ?
+                  AND ShopID = ?
+                FOR UPDATE
+            `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 11. VALIDATE COUNTER ROW
+      // =========================================================
+
+      if (
+        !lastInvoiceID ||
+        lastInvoiceID.length === 0
+      ) {
+
+        throw new Error(
+          `Invoice counter not found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 12. IMPORTANT
+      //
+      // FOR UPDATE should normally return exactly ONE counter row.
+      //
+      // If multiple rows exist for the same CompanyID + ShopID,
+      // the counter design is incorrect and can cause problems.
+      // =========================================================
+
+      if (lastInvoiceID.length > 1) {
+
+        throw new Error(
+          `Multiple invoice counter rows found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 13. CURRENT COUNTERS
+      // =========================================================
+
+      const currentRetail = Number(
+        lastInvoiceID[0].Retail || 0
+      );
+
+      const currentWholeSale = Number(
+        lastInvoiceID[0].WholeSale || 0
+      );
+
+      console.log(
+        "[Invoice] Current Retail Counter:",
+        currentRetail
+      );
+
+      console.log(
+        "[Invoice] Current Wholesale Counter:",
+        currentWholeSale
+      );
+
+
+      // =========================================================
+      // 14. CALCULATE NEXT COUNTERS
+      // =========================================================
+
+      let nextRetail = currentRetail;
+      let nextWholeSale = currentWholeSale;
+
+      if (rw === "R") {
+
+        nextRetail = currentRetail + 1;
+
+      } else {
+
+        nextWholeSale = currentWholeSale + 1;
+      }
+
+
+      // =========================================================
+      // 15. SELECT FINAL INVOICE NUMBER
+      // =========================================================
+
+      const invoiceNumber =
+        rw === "R"
+          ? nextRetail
+          : nextWholeSale;
+
+
+      console.log(
+        "[Invoice] Next Invoice Counter:",
+        invoiceNumber
+      );
+
+
+      // =========================================================
+      // 16. UPDATE INVOICE COUNTER
+      // =========================================================
+
+      const [updateResult] = await connection.query(
+        `
+                UPDATE invoice
+                SET
+                    Retail = ?,
+                    WholeSale = ?,
+                    UpdatedOn = NOW()
+                WHERE CompanyID = ?
+                  AND ShopID = ?
+            `,
+        [
+          nextRetail,
+          nextWholeSale,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 17. VERIFY UPDATE
+      // =========================================================
+
+      if (
+        !updateResult ||
+        updateResult.affectedRows !== 1
+      ) {
+
+        throw new Error(
+          `Invoice counter update failed. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 18. GENERATE FINAL INVOICE NUMBER
+      //
+      // OLD FORMAT:
+      //
+      // 2604-R01-05-101
+      //
+      // NEW FORMAT:
+      //
+      // 101-2604-05R
+      //
+      // Existing format is preserved.
+      // =========================================================
+
+      if (changeFormate === false) {
+
+        newInvoiceID =
+          newInvoiceID +
+          "-" +
+          rw +
+          shopDetails[0].ShopSequence +
+          "-" +
+          shopDetails[0].Sno +
+          "-" +
+          invoiceNumber;
+
+      } else {
+
+        newInvoiceID =
+          invoiceNumber +
+          "-" +
+          newInvoiceID +
+          "-" +
+          shopDetails[0].Sno +
+          rw;
+      }
+
+
+      // =========================================================
+      // 19. FINAL LOG
+      // =========================================================
+
+      console.log(
+        "======================================================"
+      );
+
+      console.log(
+        "[Invoice] FINAL INVOICE NUMBER:",
+        newInvoiceID
+      );
+
+      console.log(
+        "[Invoice] CompanyID:",
+        CompanyID
+      );
+
+      console.log(
+        "[Invoice] ShopID:",
+        ShopID
+      );
+
+      console.log(
+        "[Invoice] Counter ShopID:",
+        invoiceShopID
+      );
+
+      console.log(
+        "[Invoice] Invoice Type:",
+        rw
+      );
+
+      console.log(
+        "[Invoice] Invoice Counter:",
+        invoiceNumber
+      );
+
+      console.log(
+        "[Invoice] Previous Retail Counter:",
+        currentRetail
+      );
+
+      console.log(
+        "[Invoice] New Retail Counter:",
+        nextRetail
+      );
+
+      console.log(
+        "[Invoice] Previous Wholesale Counter:",
+        currentWholeSale
+      );
+
+      console.log(
+        "[Invoice] New Wholesale Counter:",
+        nextWholeSale
+      );
+
+      console.log(
+        "======================================================"
+      );
+
+
+      // =========================================================
+      // 20. COMMIT TRANSACTION
+      // =========================================================
+
+      await connection.commit();
+
+      transactionStarted = false;
+
+      console.log(
+        "[Invoice] Transaction committed successfully"
+      );
+
+
+      // =========================================================
+      // 21. RETURN
+      // =========================================================
+
+      return newInvoiceID;
+
+
+    } catch (error) {
+
+      // =========================================================
+      // 22. ERROR LOG
+      // =========================================================
+
+      console.error(
+        "======================================================"
+      );
+
+      console.error(
+        "[Invoice] generateInvoiceNo ERROR"
+      );
+
+      console.error(
+        "======================================================"
+      );
+
+      console.error(
+        "[Invoice] Message:",
+        error.message
+      );
+
+      console.error(
+        "[Invoice] Stack:",
+        error.stack
+      );
+
+
+      // =========================================================
+      // 23. ROLLBACK
+      // =========================================================
+
+      if (
+        connection &&
+        transactionStarted
+      ) {
+
+        try {
+
+          await connection.rollback();
+
+          transactionStarted = false;
+
+          console.log(
+            "[Invoice] Transaction rolled back"
+          );
+
+        } catch (rollbackError) {
+
+          console.error(
+            "[Invoice] Rollback failed:",
+            rollbackError.message
+          );
+        }
+      }
+
+
+      // =========================================================
+      // 24. THROW ERROR
+      // =========================================================
+
+      throw error;
+
+
+    } finally {
+
+      // =========================================================
+      // 25. RELEASE CONNECTION
+      // =========================================================
+
+      if (connection) {
+
+        try {
+
+          connection.release();
+
+          console.log(
+            "[Invoice] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[Invoice] Connection release failed:",
+            releaseError.message
+          );
+        }
+      }
+    }
+  },
+  generateInvoiceNoOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -1170,7 +1761,630 @@ module.exports = {
       }
     }
   },
-  generateInvoiceNoEcom: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNo: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData
+  ) => {
+
+    let connection;
+    let transactionStarted = false;
+
+    try {
+
+      // =========================================================
+      // 1. DATE FORMAT
+      // =========================================================
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      let changeFormate = false;
+
+      if (today.isSameOrAfter(checkDate)) {
+
+        console.log(
+          "[Invoice] Today is on/after 01-Apr-2026"
+        );
+
+        changeFormate = true;
+
+      } else {
+
+        console.log(
+          "[Invoice] Today is before 01-Apr-2026"
+        );
+      }
+
+
+      // =========================================================
+      // 2. DATABASE CONNECTION
+      // =========================================================
+
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+
+        throw new Error(
+          db?.message ||
+          "Unable to connect to database"
+        );
+      }
+
+      connection = await db.getConnection();
+
+
+      // =========================================================
+      // 3. DETERMINE RETAIL / WHOLESALE
+      //
+      // WholeSale = true  -> W
+      // WholeSale = false -> R
+      // =========================================================
+
+      let rw = "W";
+
+      if (
+        Array.isArray(billDetailData) &&
+        billDetailData.length > 0 &&
+        !billDetailData[0].WholeSale
+      ) {
+
+        rw = "R";
+      }
+
+      console.log(
+        "[Invoice] Invoice Type:",
+        rw
+      );
+
+
+      // =========================================================
+      // 4. GENERATE INVOICE DATE ID
+      //
+      // Example:
+      //
+      // September 2026
+      // 2609
+      //
+      // Existing invoice ID is preserved when billMaseterData.ID
+      // already exists.
+      // =========================================================
+
+      let newInvoiceID = new Date();
+
+      if (
+        billMaseterData &&
+        (
+          billMaseterData.ID === null ||
+          billMaseterData.ID === undefined
+        )
+      ) {
+
+        newInvoiceID = new Date()
+          .toISOString()
+          .replace(/\D/g, "")
+          .substring(2, 6);
+      }
+
+      console.log(
+        "[Invoice] Base Invoice ID:",
+        newInvoiceID
+      );
+
+
+      // =========================================================
+      // 5. START TRANSACTION
+      // =========================================================
+
+      await connection.beginTransaction();
+
+      transactionStarted = true;
+
+      console.log(
+        "[Invoice] Transaction started"
+      );
+
+
+      // =========================================================
+      // 6. GET SHOP DETAILS
+      // =========================================================
+
+      const [shopDetails] = await connection.query(
+        `
+        SELECT
+          ID,
+          Sno,
+          ShopSequence,
+          BillShopWise
+        FROM shop
+        WHERE CompanyID = ?
+          AND ID = ?
+          AND Status = 1
+        LIMIT 1
+      `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 7. VALIDATE SHOP
+      // =========================================================
+
+      if (
+        !shopDetails ||
+        shopDetails.length === 0
+      ) {
+
+        throw new Error(
+          `Active shop not found. CompanyID=${CompanyID}, ShopID=${ShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 8. DETERMINE BillShopWise
+      // =========================================================
+
+      let billShopWiseBoolean = false;
+
+      const billShopWiseValue =
+        shopDetails[0].BillShopWise;
+
+      if (
+        billShopWiseValue === true ||
+        billShopWiseValue === "true" ||
+        billShopWiseValue === 1 ||
+        billShopWiseValue === "1"
+      ) {
+
+        billShopWiseBoolean = true;
+      }
+
+      console.log(
+        "[Invoice] BillShopWise:",
+        billShopWiseBoolean
+      );
+
+
+      // =========================================================
+      // 9. DETERMINE INVOICE COUNTER SHOP ID
+      //
+      // BillShopWise = true
+      //
+      //     Counter:
+      //     CompanyID + ShopID
+      //
+      //
+      // BillShopWise = false
+      //
+      //     Counter:
+      //     CompanyID + ShopID = 0
+      //
+      // =========================================================
+
+      let invoiceShopID = 0;
+
+      if (billShopWiseBoolean) {
+
+        invoiceShopID = ShopID;
+      }
+
+      console.log(
+        "[Invoice] Counter ShopID:",
+        invoiceShopID
+      );
+
+
+      // =========================================================
+      // 10. GET + LOCK INVOICE COUNTER
+      //
+      // FOR UPDATE is VERY IMPORTANT.
+      //
+      // It locks the counter row until COMMIT or ROLLBACK.
+      //
+      // Example:
+      //
+      // Request A:
+      //     Counter = 100
+      //     LOCK
+      //
+      // Request B:
+      //     WAIT
+      //
+      // Request A:
+      //     Counter = 101
+      //     COMMIT
+      //
+      // Request B:
+      //     Reads 101
+      //     Counter = 102
+      //
+      // This prevents duplicate invoice numbers caused by
+      // concurrent requests.
+      //
+      // =========================================================
+
+      const [lastInvoiceID] = await connection.query(
+        `
+        SELECT
+          Retail,
+          WholeSale
+        FROM invoice
+        WHERE CompanyID = ?
+          AND ShopID = ?
+        FOR UPDATE
+      `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 11. VALIDATE COUNTER ROW
+      // =========================================================
+
+      if (
+        !lastInvoiceID ||
+        lastInvoiceID.length === 0
+      ) {
+
+        throw new Error(
+          `Invoice counter not found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 12. ONLY ONE COUNTER ROW SHOULD EXIST
+      // =========================================================
+
+      if (lastInvoiceID.length !== 1) {
+
+        throw new Error(
+          `Multiple invoice counter rows found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 13. CURRENT COUNTERS
+      // =========================================================
+
+      const currentRetail = Number(
+        lastInvoiceID[0].Retail || 0
+      );
+
+      const currentWholeSale = Number(
+        lastInvoiceID[0].WholeSale || 0
+      );
+
+
+      // =========================================================
+      // 14. VALIDATE COUNTERS
+      // =========================================================
+
+      if (
+        !Number.isFinite(currentRetail) ||
+        !Number.isFinite(currentWholeSale)
+      ) {
+
+        throw new Error(
+          `Invalid invoice counter. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      console.log(
+        "[Invoice] Current Retail Counter:",
+        currentRetail
+      );
+
+      console.log(
+        "[Invoice] Current Wholesale Counter:",
+        currentWholeSale
+      );
+
+
+      // =========================================================
+      // 15. CALCULATE NEXT COUNTERS
+      // =========================================================
+
+      let nextRetail = currentRetail;
+      let nextWholeSale = currentWholeSale;
+
+      if (rw === "R") {
+
+        nextRetail = currentRetail + 1;
+
+      } else {
+
+        nextWholeSale = currentWholeSale + 1;
+      }
+
+
+      // =========================================================
+      // 16. SELECT FINAL INVOICE NUMBER
+      // =========================================================
+
+      const invoiceNumber =
+        rw === "R"
+          ? nextRetail
+          : nextWholeSale;
+
+
+      console.log(
+        "[Invoice] Next Invoice Counter:",
+        invoiceNumber
+      );
+
+
+      // =========================================================
+      // 17. UPDATE INVOICE COUNTER
+      // =========================================================
+
+      const [updateResult] = await connection.query(
+        `
+        UPDATE invoice
+        SET
+          Retail = ?,
+          WholeSale = ?,
+          UpdatedOn = NOW()
+        WHERE CompanyID = ?
+          AND ShopID = ?
+      `,
+        [
+          nextRetail,
+          nextWholeSale,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 18. VERIFY UPDATE
+      // =========================================================
+
+      if (
+        !updateResult ||
+        updateResult.affectedRows !== 1
+      ) {
+
+        throw new Error(
+          `Invoice counter update failed. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 19. GENERATE FINAL INVOICE NUMBER
+      //
+      // BEFORE 01-Apr-2026:
+      //
+      // 2604-R01-05-101
+      //
+      //
+      // AFTER 01-Apr-2026:
+      //
+      // 101-2604-05R
+      //
+      // =========================================================
+
+      if (changeFormate === false) {
+
+        newInvoiceID =
+          newInvoiceID +
+          "-" +
+          rw +
+          shopDetails[0].ShopSequence +
+          "-" +
+          shopDetails[0].Sno +
+          "-" +
+          invoiceNumber;
+
+      } else {
+
+        newInvoiceID =
+          invoiceNumber +
+          "-" +
+          newInvoiceID +
+          "-" +
+          shopDetails[0].Sno +
+          rw;
+      }
+
+
+      // =========================================================
+      // 20. FINAL LOG
+      // =========================================================
+
+      console.log(
+        "======================================================"
+      );
+
+      console.log(
+        "[Invoice] FINAL INVOICE NUMBER:",
+        newInvoiceID
+      );
+
+      console.log(
+        "[Invoice] CompanyID:",
+        CompanyID
+      );
+
+      console.log(
+        "[Invoice] ShopID:",
+        ShopID
+      );
+
+      console.log(
+        "[Invoice] Counter ShopID:",
+        invoiceShopID
+      );
+
+      console.log(
+        "[Invoice] Invoice Type:",
+        rw
+      );
+
+      console.log(
+        "[Invoice] Invoice Counter:",
+        invoiceNumber
+      );
+
+      console.log(
+        "[Invoice] Previous Retail Counter:",
+        currentRetail
+      );
+
+      console.log(
+        "[Invoice] New Retail Counter:",
+        nextRetail
+      );
+
+      console.log(
+        "[Invoice] Previous Wholesale Counter:",
+        currentWholeSale
+      );
+
+      console.log(
+        "[Invoice] New Wholesale Counter:",
+        nextWholeSale
+      );
+
+      console.log(
+        "======================================================"
+      );
+
+
+      // =========================================================
+      // 21. COMMIT TRANSACTION
+      // =========================================================
+
+      await connection.commit();
+
+      transactionStarted = false;
+
+      console.log(
+        "[Invoice] Transaction committed successfully"
+      );
+
+
+      // =========================================================
+      // 22. RETURN
+      // =========================================================
+
+      return newInvoiceID;
+
+
+    } catch (error) {
+
+      // =========================================================
+      // 23. ERROR LOG
+      // =========================================================
+
+      console.error(
+        "======================================================"
+      );
+
+      console.error(
+        "[Invoice] generateInvoiceNo ERROR"
+      );
+
+      console.error(
+        "======================================================"
+      );
+
+      console.error(
+        "[Invoice] Message:",
+        error.message
+      );
+
+      console.error(
+        "[Invoice] Stack:",
+        error.stack
+      );
+
+
+      // =========================================================
+      // 24. ROLLBACK
+      // =========================================================
+
+      if (
+        connection &&
+        transactionStarted
+      ) {
+
+        try {
+
+          await connection.rollback();
+
+          transactionStarted = false;
+
+          console.log(
+            "[Invoice] Transaction rolled back"
+          );
+
+        } catch (rollbackError) {
+
+          console.error(
+            "[Invoice] Rollback failed:",
+            rollbackError.message
+          );
+        }
+      }
+
+
+      // =========================================================
+      // 25. THROW ERROR
+      // =========================================================
+
+      throw error;
+
+
+    } finally {
+
+      // =========================================================
+      // 26. RELEASE CONNECTION
+      // =========================================================
+      //
+      // Do NOT call:
+      //
+      // connection.destroy()
+      //
+      // after release().
+      //
+      // For pooled connections, release() is sufficient.
+      //
+      // =========================================================
+
+      if (connection) {
+
+        try {
+
+          connection.release();
+
+          console.log(
+            "[Invoice] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[Invoice] Connection release failed:",
+            releaseError.message
+          );
+        }
+      }
+    }
+  },
+  generateInvoiceNoEcomOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -1256,7 +2470,398 @@ module.exports = {
       }
     }
   },
-  generateOrderNo: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateOrderNo: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData
+  ) => {
+    let connection;
+    let transactionStarted = false;
+
+    try {
+      // =========================================================
+      // 1. DATE FORMAT
+      // =========================================================
+
+      let today = moment();
+      let checkDate = moment("2026-04-01");
+      let changeFormate = false;
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
+      // =========================================================
+      // 2. DATABASE CONNECTION
+      // =========================================================
+
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+        throw new Error(
+          db?.message || "Unable to connect to database"
+        );
+      }
+
+      connection = await db.getConnection();
+
+      // =========================================================
+      // 3. GENERATE DATE PREFIX
+      // =========================================================
+
+      let newInvoiceID = new Date()
+        .toISOString()
+        .replace(/\D/g, "")
+        .substring(2, 6);
+
+      // =========================================================
+      // 4. START TRANSACTION
+      // =========================================================
+
+      await connection.beginTransaction();
+      transactionStarted = true;
+
+      console.log(
+        `[Order] Transaction started | CompanyID=${CompanyID} | ShopID=${ShopID}`
+      );
+
+      // =========================================================
+      // 5. GET SHOP BILL-WISE CONFIGURATION
+      // =========================================================
+
+      const [billShopWise] = await connection.query(
+        `
+        SELECT
+          ID,
+          BillShopWise
+        FROM shop
+        WHERE CompanyID = ?
+          AND ID = ?
+          AND Status = 1
+        LIMIT 1
+      `,
+        [CompanyID, ShopID]
+      );
+
+      if (!billShopWise || billShopWise.length === 0) {
+        throw new Error(
+          `Shop not found. CompanyID=${CompanyID}, ShopID=${ShopID}`
+        );
+      }
+
+      // =========================================================
+      // 6. CHECK SHOP-WISE ORDER
+      // =========================================================
+
+      let billShopWiseBoolean = false;
+
+      if (
+        billShopWise[0].BillShopWise === true ||
+        billShopWise[0].BillShopWise === "true" ||
+        billShopWise[0].BillShopWise === 1 ||
+        billShopWise[0].BillShopWise === "1"
+      ) {
+        billShopWiseBoolean = true;
+      }
+
+      // =========================================================
+      // 7. DETERMINE COUNTER SHOP ID
+      // =========================================================
+
+      const invoiceShopID = billShopWiseBoolean
+        ? ShopID
+        : 0;
+
+      console.log(
+        `[Order] Counter ShopID=${invoiceShopID} | ShopWise=${billShopWiseBoolean}`
+      );
+
+      // =========================================================
+      // 8. LOCK ORDER COUNTER
+      // =========================================================
+      //
+      // IMPORTANT:
+      // FOR UPDATE locks this invoice row until COMMIT/ROLLBACK.
+      //
+      // Request 1:
+      //   33 -> locked -> 34
+      //
+      // Request 2:
+      //   waits until Request 1 commits/rolls back
+      //
+      // This prevents two concurrent requests from getting
+      // the same order number.
+      //
+      // =========================================================
+
+      const [lastInvoiceID] = await connection.query(
+        `
+        SELECT
+          \`Order\`
+        FROM invoice
+        WHERE CompanyID = ?
+          AND ShopID = ?
+        LIMIT 1
+        FOR UPDATE
+      `,
+        [CompanyID, invoiceShopID]
+      );
+
+      // =========================================================
+      // 9. VALIDATE COUNTER
+      // =========================================================
+
+      if (
+        !lastInvoiceID ||
+        lastInvoiceID.length === 0
+      ) {
+        throw new Error(
+          `Order counter not found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      // =========================================================
+      // 10. CURRENT ORDER NUMBER
+      // =========================================================
+
+      const currentOrder = Number(
+        lastInvoiceID[0].Order || 0
+      );
+
+      // =========================================================
+      // 11. NEXT ORDER NUMBER
+      // =========================================================
+
+      const nextOrder = currentOrder + 1;
+
+      console.log(
+        `[Order Counter] Current=${currentOrder} | Next=${nextOrder}`
+      );
+
+      // =========================================================
+      // 12. UPDATE ORDER COUNTER
+      // =========================================================
+
+      const [update] = await connection.query(
+        `
+        UPDATE invoice
+        SET
+          \`Order\` = ?,
+          UpdatedOn = NOW()
+        WHERE CompanyID = ?
+          AND ShopID = ?
+      `,
+        [
+          nextOrder,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      // =========================================================
+      // 13. VERIFY UPDATE
+      // =========================================================
+
+      if (
+        !update ||
+        update.affectedRows !== 1
+      ) {
+        throw new Error(
+          `Order counter update failed. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      console.log(
+        `[Order Counter] Updated successfully | ${currentOrder} -> ${nextOrder}`
+      );
+
+      // =========================================================
+      // 14. GET SHOP DETAILS
+      // =========================================================
+
+      const [shopDetails] = await connection.query(
+        `
+        SELECT
+          ID,
+          Sno,
+          ShopSequence
+        FROM shop
+        WHERE CompanyID = ?
+          AND ID = ?
+          AND Status = 1
+        LIMIT 1
+      `,
+        [CompanyID, ShopID]
+      );
+
+      if (
+        !shopDetails ||
+        shopDetails.length === 0
+      ) {
+        throw new Error(
+          `Shop details not found. CompanyID=${CompanyID}, ShopID=${ShopID}`
+        );
+      }
+
+      // =========================================================
+      // 15. SHOP PREFIX
+      // =========================================================
+
+      let shopPre = "";
+
+      if (billShopWiseBoolean) {
+        shopPre = `-${shopDetails[0].Sno}`;
+      }
+
+      // =========================================================
+      // 16. FINAL ORDER NUMBER
+      // =========================================================
+
+      if (changeFormate === false) {
+        newInvoiceID =
+          `${nextOrder}-${newInvoiceID}${shopPre}-O`;
+      } else {
+        newInvoiceID =
+          `${nextOrder}-${newInvoiceID}${shopPre}O`;
+      }
+
+      // =========================================================
+      // 17. LOG GENERATED NUMBER
+      // =========================================================
+
+      console.log(
+        "======================================================"
+      );
+
+      console.log(
+        "[Order] Generated Order Number:",
+        newInvoiceID
+      );
+
+      console.log(
+        "[Order] Counter:",
+        nextOrder
+      );
+
+      console.log(
+        "[Order] CompanyID:",
+        CompanyID
+      );
+
+      console.log(
+        "[Order] ShopID:",
+        ShopID
+      );
+
+      console.log(
+        "[Order] Counter ShopID:",
+        invoiceShopID
+      );
+
+      console.log(
+        "======================================================"
+      );
+
+      // =========================================================
+      // 18. COMMIT
+      // =========================================================
+
+      await connection.commit();
+      transactionStarted = false;
+
+      console.log(
+        `[Order] Transaction committed | Order=${newInvoiceID}`
+      );
+
+      // =========================================================
+      // 19. RETURN
+      // =========================================================
+
+      return newInvoiceID;
+
+    } catch (error) {
+
+      // =========================================================
+      // 20. ERROR
+      // =========================================================
+
+      console.error(
+        "======================================================"
+      );
+
+      console.error(
+        "[Order] generateOrderNo ERROR"
+      );
+
+      console.error(
+        "Message:",
+        error.message
+      );
+
+      console.error(
+        "Stack:",
+        error.stack
+      );
+
+      console.error(
+        "======================================================"
+      );
+
+      // =========================================================
+      // 21. ROLLBACK
+      // =========================================================
+
+      if (
+        connection &&
+        transactionStarted
+      ) {
+        try {
+          await connection.rollback();
+
+          console.log(
+            "[Order] Transaction rolled back"
+          );
+        } catch (rollbackError) {
+          console.error(
+            "[Order] Rollback failed:",
+            rollbackError.message
+          );
+        }
+      }
+
+      // =========================================================
+      // 22. THROW ERROR
+      // =========================================================
+
+      throw error;
+
+    } finally {
+
+      // =========================================================
+      // 23. RELEASE CONNECTION
+      // =========================================================
+
+      if (connection) {
+        try {
+          connection.release();
+
+          console.log(
+            "[Order] Connection released"
+          );
+        } catch (releaseError) {
+          console.error(
+            "[Order] Connection release failed:",
+            releaseError.message
+          );
+        }
+      }
+    }
+  },
+  generateOrderNoOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -1335,7 +2940,561 @@ module.exports = {
       }
     }
   },
-  generateInvoiceNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateInvoiceNoForService: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData
+  ) => {
+    let connection;
+    let transactionStarted = false;
+
+    try {
+
+      // =========================================================
+      // 1. DATE FORMAT
+      // =========================================================
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      let changeFormate = false;
+
+      if (today.isSameOrAfter(checkDate)) {
+
+        console.log(
+          "[Service Invoice] Today is on/after 01-Apr-2026"
+        );
+
+        changeFormate = true;
+
+      } else {
+
+        console.log(
+          "[Service Invoice] Today is before 01-Apr-2026"
+        );
+      }
+
+
+      // =========================================================
+      // 2. DATABASE CONNECTION
+      // =========================================================
+
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+
+        throw new Error(
+          db?.message ||
+          "Unable to connect to database"
+        );
+      }
+
+      connection = await db.getConnection();
+
+
+      // =========================================================
+      // 3. SERVICE TYPE
+      // =========================================================
+
+      const rw = "S";
+
+      let billShopWiseBoolean = false;
+
+
+      // =========================================================
+      // 4. GENERATE DATE PREFIX
+      //
+      // Example:
+      //
+      // September 2026 = 2609
+      // =========================================================
+
+      let newInvoiceID = new Date();
+
+      if (
+        billMaseterData &&
+        (
+          billMaseterData.ID === null ||
+          billMaseterData.ID === undefined
+        )
+      ) {
+
+        newInvoiceID = new Date()
+          .toISOString()
+          .replace(/\D/g, "")
+          .substring(2, 6);
+      }
+
+      console.log(
+        "[Service Invoice] Base Invoice ID:",
+        newInvoiceID
+      );
+
+
+      // =========================================================
+      // 5. START TRANSACTION
+      // =========================================================
+
+      await connection.beginTransaction();
+
+      transactionStarted = true;
+
+      console.log(
+        "[Service Invoice] Transaction started"
+      );
+
+
+      // =========================================================
+      // 6. GET SHOP DETAILS / BillShopWise
+      // =========================================================
+
+      const [billShopWise] = await connection.query(
+        `
+        SELECT
+          ID,
+          BillShopWise
+        FROM shop
+        WHERE CompanyID = ?
+          AND ID = ?
+          AND Status = 1
+        LIMIT 1
+      `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 7. VALIDATE SHOP
+      // =========================================================
+
+      if (
+        !billShopWise ||
+        billShopWise.length === 0
+      ) {
+
+        throw new Error(
+          `Active shop not found. CompanyID=${CompanyID}, ShopID=${ShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 8. CHECK SHOP-WISE BILLING
+      // =========================================================
+
+      if (
+        billShopWise[0].BillShopWise === true ||
+        billShopWise[0].BillShopWise === "true" ||
+        billShopWise[0].BillShopWise === 1 ||
+        billShopWise[0].BillShopWise === "1"
+      ) {
+
+        billShopWiseBoolean = true;
+      }
+
+      console.log(
+        "[Service Invoice] BillShopWise:",
+        billShopWiseBoolean
+      );
+
+
+      // =========================================================
+      // 9. DETERMINE COUNTER SHOP ID
+      // =========================================================
+
+      const invoiceShopID =
+        billShopWiseBoolean
+          ? ShopID
+          : 0;
+
+      console.log(
+        "[Service Invoice] Counter ShopID:",
+        invoiceShopID
+      );
+
+
+      // =========================================================
+      // 10. GET + LOCK SERVICE COUNTER
+      //
+      // IMPORTANT:
+      //
+      // FOR UPDATE locks the counter row until COMMIT/ROLLBACK.
+      //
+      // Request A:
+      //     Reads 100
+      //     Locks row
+      //
+      // Request B:
+      //     Waits
+      //
+      // Request A:
+      //     100 -> 101
+      //     COMMIT
+      //
+      // Request B:
+      //     Reads 101
+      //     101 -> 102
+      //
+      // This prevents duplicate service invoice numbers.
+      // =========================================================
+
+      const [lastInvoiceID] = await connection.query(
+        `
+        SELECT
+          Service
+        FROM invoice
+        WHERE CompanyID = ?
+          AND ShopID = ?
+        FOR UPDATE
+      `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 11. VALIDATE SERVICE COUNTER
+      // =========================================================
+
+      if (
+        !lastInvoiceID ||
+        lastInvoiceID.length === 0
+      ) {
+
+        throw new Error(
+          `Service invoice counter not found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 12. MAKE SURE ONLY ONE COUNTER ROW EXISTS
+      //
+      // This is important because otherwise:
+      //
+      // LIMIT 1
+      //
+      // could hide duplicate counter rows.
+      // =========================================================
+
+      if (lastInvoiceID.length > 1) {
+
+        throw new Error(
+          `Multiple service invoice counter rows found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 13. GET CURRENT SERVICE NUMBER
+      // =========================================================
+
+      const currentService = Number(
+        lastInvoiceID[0].Service || 0
+      );
+
+      console.log(
+        "[Service Invoice] Current Service Counter:",
+        currentService
+      );
+
+
+      // =========================================================
+      // 14. INCREMENT SERVICE NUMBER
+      // =========================================================
+
+      const nextService =
+        currentService + 1;
+
+      console.log(
+        "[Service Invoice] Next Service Counter:",
+        nextService
+      );
+
+
+      // =========================================================
+      // 15. UPDATE SERVICE COUNTER
+      // =========================================================
+
+      const [updateResult] = await connection.query(
+        `
+        UPDATE invoice
+        SET
+          Service = ?,
+          UpdatedOn = NOW()
+        WHERE CompanyID = ?
+          AND ShopID = ?
+      `,
+        [
+          nextService,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 16. VERIFY UPDATE
+      // =========================================================
+
+      if (
+        !updateResult ||
+        updateResult.affectedRows !== 1
+      ) {
+
+        throw new Error(
+          `Service invoice counter update failed. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 17. GET SHOP DETAILS
+      //
+      // Need:
+      //
+      // Sno
+      // ShopSequence
+      // =========================================================
+
+      const [shopDetails] = await connection.query(
+        `
+        SELECT
+          ID,
+          Sno,
+          ShopSequence
+        FROM shop
+        WHERE CompanyID = ?
+          AND ID = ?
+          AND Status = 1
+        LIMIT 1
+      `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+
+      // =========================================================
+      // 18. VALIDATE SHOP DETAILS
+      // =========================================================
+
+      if (
+        !shopDetails ||
+        shopDetails.length === 0
+      ) {
+
+        throw new Error(
+          `Active shop not found. CompanyID=${CompanyID}, ShopID=${ShopID}`
+        );
+      }
+
+
+      // =========================================================
+      // 19. GENERATE FINAL SERVICE INVOICE NUMBER
+      //
+      // OLD FORMAT:
+      //
+      // 2604-S01-05-101
+      //
+      // NEW FORMAT:
+      //
+      // 101-2604-05S
+      //
+      // Existing format preserved.
+      // =========================================================
+
+      if (changeFormate === false) {
+
+        newInvoiceID =
+          newInvoiceID +
+          "-" +
+          rw +
+          shopDetails[0].ShopSequence +
+          "-" +
+          shopDetails[0].Sno +
+          "-" +
+          nextService;
+
+      } else {
+
+        newInvoiceID =
+          nextService +
+          "-" +
+          newInvoiceID +
+          "-" +
+          shopDetails[0].Sno +
+          rw;
+      }
+
+
+      // =========================================================
+      // 20. FINAL LOG
+      // =========================================================
+
+      console.log(
+        "======================================================"
+      );
+
+      console.log(
+        "[Service Invoice] FINAL INVOICE NUMBER:",
+        newInvoiceID
+      );
+
+      console.log(
+        "[Service Invoice] CompanyID:",
+        CompanyID
+      );
+
+      console.log(
+        "[Service Invoice] ShopID:",
+        ShopID
+      );
+
+      console.log(
+        "[Service Invoice] Counter ShopID:",
+        invoiceShopID
+      );
+
+      console.log(
+        "[Service Invoice] Invoice Type:",
+        rw
+      );
+
+      console.log(
+        "[Service Invoice] Previous Counter:",
+        currentService
+      );
+
+      console.log(
+        "[Service Invoice] New Counter:",
+        nextService
+      );
+
+      console.log(
+        "======================================================"
+      );
+
+
+      // =========================================================
+      // 21. COMMIT TRANSACTION
+      // =========================================================
+
+      await connection.commit();
+
+      transactionStarted = false;
+
+      console.log(
+        "[Service Invoice] Transaction committed successfully"
+      );
+
+
+      // =========================================================
+      // 22. RETURN FINAL SERVICE INVOICE NUMBER
+      // =========================================================
+
+      return newInvoiceID;
+
+
+    } catch (error) {
+
+      // =========================================================
+      // 23. ERROR LOG
+      // =========================================================
+
+      console.error(
+        "======================================================"
+      );
+
+      console.error(
+        "[Service Invoice] generateInvoiceNoForService ERROR"
+      );
+
+      console.error(
+        "======================================================"
+      );
+
+      console.error(
+        "[Service Invoice] Message:",
+        error.message
+      );
+
+      console.error(
+        "[Service Invoice] Stack:",
+        error.stack
+      );
+
+
+      // =========================================================
+      // 24. ROLLBACK
+      // =========================================================
+
+      if (
+        connection &&
+        transactionStarted
+      ) {
+
+        try {
+
+          await connection.rollback();
+
+          transactionStarted = false;
+
+          console.log(
+            "[Service Invoice] Transaction rolled back"
+          );
+
+        } catch (rollbackError) {
+
+          console.error(
+            "[Service Invoice] Rollback Error:",
+            rollbackError.message
+          );
+        }
+      }
+
+
+      // =========================================================
+      // 25. THROW ERROR
+      // =========================================================
+
+      throw error;
+
+
+    } finally {
+
+      // =========================================================
+      // 26. RELEASE CONNECTION
+      // =========================================================
+
+      if (connection) {
+
+        try {
+
+          connection.release();
+
+          console.log(
+            "[Service Invoice] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[Service Invoice] Connection release error:",
+            releaseError.message
+          );
+        }
+      }
+    }
+  },
+  generateInvoiceNoForServiceOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
@@ -1735,7 +3894,439 @@ module.exports = {
       }
     }
   },
-  generateOrderNoForService: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+  generateOrderNoForService: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData
+  ) => {
+    let connection;
+    let transactionStarted = false;
+
+    try {
+      // =========================================================
+      // 1. DATE FORMAT
+      // =========================================================
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      let changeFormate = false;
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
+      // =========================================================
+      // 2. DATABASE CONNECTION
+      // =========================================================
+
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+        throw new Error(
+          db?.message || "Unable to connect to database"
+        );
+      }
+
+      connection = await db.getConnection();
+
+      // =========================================================
+      // 3. GENERATE DATE PREFIX
+      // =========================================================
+      // Example:
+      // 2026-09-05
+      // YYYYMMDDHHMMSS
+      // substring(2, 6) => 2609
+      //
+      // Result:
+      // 2609
+      // =========================================================
+
+      let newOrderID = new Date()
+        .toISOString()
+        .replace(/\D/g, "")
+        .substring(2, 6);
+
+      // =========================================================
+      // 4. START TRANSACTION
+      // =========================================================
+
+      await connection.beginTransaction();
+      transactionStarted = true;
+
+      // =========================================================
+      // 5. GET SHOP DETAILS
+      // =========================================================
+
+      const [billShopWise] = await connection.query(
+        `
+        SELECT
+          ID,
+          BillShopWise
+        FROM shop
+        WHERE CompanyID = ?
+          AND ID = ?
+          AND Status = 1
+        LIMIT 1
+      `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      // =========================================================
+      // 6. CHECK SHOP-WISE BILLING
+      // =========================================================
+
+      let billShopWiseBoolean = false;
+
+      if (
+        billShopWise &&
+        billShopWise.length > 0
+      ) {
+        const billShopWiseValue =
+          billShopWise[0].BillShopWise;
+
+        if (
+          billShopWiseValue === true ||
+          billShopWiseValue === "true" ||
+          billShopWiseValue === 1 ||
+          billShopWiseValue === "1"
+        ) {
+          billShopWiseBoolean = true;
+        }
+      }
+
+      // =========================================================
+      // 7. DETERMINE COUNTER SHOP ID
+      // =========================================================
+      //
+      // Shop-wise:
+      //     Counter = CompanyID + ShopID
+      //
+      // Company-wise:
+      //     Counter = CompanyID + ShopID 0
+      //
+      // =========================================================
+
+      const invoiceShopID = billShopWiseBoolean
+        ? ShopID
+        : 0;
+
+      // =========================================================
+      // 8. GET + LOCK ORDER COUNTER
+      // =========================================================
+      //
+      // VERY IMPORTANT:
+      //
+      // FOR UPDATE locks the counter row until COMMIT/ROLLBACK.
+      //
+      // Request A:
+      //     SELECT ... FOR UPDATE
+      //     gets counter 100
+      //
+      // Request B:
+      //     SELECT ... FOR UPDATE
+      //     waits here
+      //
+      // Request A:
+      //     updates 100 -> 101
+      //     COMMIT
+      //
+      // Request B:
+      //     now reads 101
+      //     updates 101 -> 102
+      //     COMMIT
+      //
+      // Result:
+      //     A = 101
+      //     B = 102
+      //
+      // No duplicate number.
+      //
+      // =========================================================
+
+      const [lastInvoiceID] = await connection.query(
+        `
+        SELECT
+          \`Order\`
+        FROM invoice
+        WHERE CompanyID = ?
+          AND ShopID = ?
+        FOR UPDATE
+      `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      // =========================================================
+      // 9. VALIDATE COUNTER ROW
+      // =========================================================
+
+      if (
+        !lastInvoiceID ||
+        lastInvoiceID.length === 0
+      ) {
+        throw new Error(
+          `Service order counter not found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      // =========================================================
+      // 10. VALIDATE ONLY ONE COUNTER ROW
+      // =========================================================
+      //
+      // This is important.
+      //
+      // If invoice accidentally contains:
+      //
+      // CompanyID = 1
+      // ShopID    = 5
+      //
+      // more than one row, LIMIT 1 could silently select
+      // one row and create incorrect counters.
+      //
+      // =========================================================
+
+      if (lastInvoiceID.length !== 1) {
+        throw new Error(
+          `Multiple service order counter rows found. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      // =========================================================
+      // 11. GET CURRENT ORDER NUMBER
+      // =========================================================
+
+      const currentOrder = Number(
+        lastInvoiceID[0].Order || 0
+      );
+
+      // =========================================================
+      // 12. VALIDATE CURRENT ORDER NUMBER
+      // =========================================================
+
+      if (!Number.isFinite(currentOrder)) {
+        throw new Error(
+          `Invalid service order counter. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      // =========================================================
+      // 13. INCREMENT ORDER NUMBER
+      // =========================================================
+
+      const nextOrder = currentOrder + 1;
+
+      // =========================================================
+      // 14. UPDATE ORDER COUNTER
+      // =========================================================
+
+      const [update] = await connection.query(
+        `
+        UPDATE invoice
+        SET
+          \`Order\` = ?,
+          UpdatedOn = NOW()
+        WHERE CompanyID = ?
+          AND ShopID = ?
+      `,
+        [
+          nextOrder,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      // =========================================================
+      // 15. VERIFY UPDATE
+      // =========================================================
+
+      if (
+        !update ||
+        update.affectedRows !== 1
+      ) {
+        throw new Error(
+          `Service order counter update failed. CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      // =========================================================
+      // 16. GET SHOP DETAILS
+      // =========================================================
+
+      const [shopDetails] = await connection.query(
+        `
+        SELECT
+          ID,
+          Sno,
+          ShopSequence
+        FROM shop
+        WHERE CompanyID = ?
+          AND ID = ?
+          AND Status = 1
+        LIMIT 1
+      `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      // =========================================================
+      // 17. VALIDATE SHOP
+      // =========================================================
+
+      if (
+        !shopDetails ||
+        shopDetails.length === 0
+      ) {
+        throw new Error(
+          `Active shop not found. CompanyID=${CompanyID}, ShopID=${ShopID}`
+        );
+      }
+
+      // =========================================================
+      // 18. SHOP PREFIX
+      // =========================================================
+
+      let shopPre = "";
+
+      if (
+        billShopWiseBoolean &&
+        shopDetails.length > 0
+      ) {
+        shopPre = `-${shopDetails[0].Sno}`;
+      }
+
+      // =========================================================
+      // 19. FINAL SERVICE ORDER NUMBER
+      // =========================================================
+      //
+      // OLD FORMAT:
+      //
+      // 101-2609-05-S
+      //
+      // NEW FORMAT:
+      //
+      // 101-2609-05S
+      //
+      // =========================================================
+
+      if (changeFormate === false) {
+        newOrderID =
+          `${nextOrder}-${newOrderID}${shopPre}-S`;
+      } else {
+        newOrderID =
+          `${nextOrder}-${newOrderID}${shopPre}S`;
+      }
+
+      // =========================================================
+      // 20. COMMIT TRANSACTION
+      // =========================================================
+
+      await connection.commit();
+
+      transactionStarted = false;
+
+      // =========================================================
+      // 21. LOG
+      // =========================================================
+
+      console.log(
+        "[Service Order] Current Order:",
+        currentOrder
+      );
+
+      console.log(
+        "[Service Order] Next Order:",
+        nextOrder
+      );
+
+      console.log(
+        "[Service Order] Final Order Number:",
+        newOrderID
+      );
+
+      // =========================================================
+      // 22. RETURN
+      // =========================================================
+
+      return newOrderID;
+
+    } catch (error) {
+
+      // =========================================================
+      // 23. ERROR LOG
+      // =========================================================
+
+      console.error(
+        "[Service Order] generateOrderNoForService Error:",
+        error
+      );
+
+      // =========================================================
+      // 24. ROLLBACK
+      // =========================================================
+
+      if (
+        connection &&
+        transactionStarted
+      ) {
+        try {
+          await connection.rollback();
+
+          console.log(
+            "[Service Order] Transaction rolled back"
+          );
+
+        } catch (rollbackError) {
+
+          console.error(
+            "[Service Order] Rollback Error:",
+            rollbackError
+          );
+        }
+      }
+
+      // =========================================================
+      // 25. THROW ERROR
+      // =========================================================
+
+      throw error;
+
+    } finally {
+
+      // =========================================================
+      // 26. RELEASE CONNECTION
+      // =========================================================
+
+      if (connection) {
+        try {
+          connection.release();
+
+          console.log(
+            "[Service Order] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[Service Order] Connection release error:",
+            releaseError
+          );
+        }
+      }
+    }
+  },
+  generateOrderNoForServiceOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
     try {
 
