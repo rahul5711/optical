@@ -4159,7 +4159,7 @@ module.exports = {
 
       company_wise.closingstock = company_wise.openingstock + company_wise.addpurchase + company_wise.addpreorderpurchase - company_wise.deletepurchase - company_wise.addsale + company_wise.deletesale - company_wise.addpreordersale + company_wise.deletepreordersale + company_wise.accepttransfer - company_wise.initiatetransfer + company_wise.cancelTransfer - company_wise.otherdeletestock;
 
-      const [update_company_wise] = await connection.query(`update creport set AddPurchase=${company_wise.addpurchase}, AddPreOrderPurchase=${company_wise.addpreorderpurchase}, DeletePurchase=${company_wise.deletepurchase}, AddSale=${company_wise.addsale}, DeleteSale=${company_wise.deletesale}, AddPreOrderSale=${company_wise.addpreordersale}, DeletePreOrderSale=${company_wise.deletepreordersale}, AddManualSale=${company_wise.addmanualsale}, DeleteManualSale=${company_wise.deletemanualsale}, OtherDeleteStock=${company_wise.otherdeletestock}, InitiateTransfer=${company_wise.initiatetransfer}, CancelTransfer=${company_wise.cancelTransfer}, AcceptTransfer=${company_wise.accepttransfer}, ClosingStock=${company_wise.closingstock} where ID = ${fetch_company_wise[0].ID}`)
+      const [update_company_wise] = await connection.query(`update creport set AddPurchase=${company_wise.addpurchase}, AddPreOrderPurchase=${company_wise.addpreorderpurchase}, DeletePurchase=${company_wise.deletepurchase}, AddSale=${company_wise.addsale}, DeleteSale=${company_wise.deletesale}, AddPreOrderSale=${company_wise.addpreordersale}, DeletePreOrderSale=${company_wise.deletepreordersale}, AddManualSale=${company_wise.addmanualsale}, DeleteManualSale=${company_wise.deletemanualsale}, OtherDeleteStock=${company_wise.otherdeletestock}, InitiateTransfer=${company_wise.initiatetransfer}, CancelTransfer=${company_wise.cancelTransfer}, AcceptTransfer=${company_wise.accepttransfer}, ClosingStock=${company_wise.closingstock} where CompanyID = ${CompanyID} and ID = ${fetch_company_wise[0].ID}`)
 
       // console.log("===== company wise =====", date);
       // console.table(company_wise);
@@ -4189,7 +4189,7 @@ module.exports = {
 
       shop_wise.closingstock = shop_wise.openingstock + shop_wise.addpurchase + shop_wise.addpreorderpurchase - shop_wise.deletepurchase - shop_wise.addsale + shop_wise.deletesale - shop_wise.addpreordersale + shop_wise.deletepreordersale + shop_wise.accepttransfer - shop_wise.initiatetransfer + shop_wise.cancelTransfer - shop_wise.otherdeletestock;
 
-      const [update_shop_wise] = await connection.query(`update creport set AddPurchase=${shop_wise.addpurchase}, AddPreOrderPurchase=${shop_wise.addpreorderpurchase}, DeletePurchase=${shop_wise.deletepurchase}, AddSale=${shop_wise.addsale}, DeleteSale=${shop_wise.deletesale}, AddPreOrderSale=${shop_wise.addpreordersale}, DeletePreOrderSale=${shop_wise.deletepreordersale}, AddManualSale=${shop_wise.addmanualsale}, DeleteManualSale=${shop_wise.deletemanualsale}, OtherDeleteStock=${shop_wise.otherdeletestock}, InitiateTransfer=${shop_wise.initiatetransfer}, CancelTransfer=${shop_wise.cancelTransfer}, AcceptTransfer=${shop_wise.accepttransfer},ClosingStock=${shop_wise.closingstock} where ID = ${fetch_shop_wise[0].ID}`)
+      const [update_shop_wise] = await connection.query(`update creport set AddPurchase=${shop_wise.addpurchase}, AddPreOrderPurchase=${shop_wise.addpreorderpurchase}, DeletePurchase=${shop_wise.deletepurchase}, AddSale=${shop_wise.addsale}, DeleteSale=${shop_wise.deletesale}, AddPreOrderSale=${shop_wise.addpreordersale}, DeletePreOrderSale=${shop_wise.deletepreordersale}, AddManualSale=${shop_wise.addmanualsale}, DeleteManualSale=${shop_wise.deletemanualsale}, OtherDeleteStock=${shop_wise.otherdeletestock}, InitiateTransfer=${shop_wise.initiatetransfer}, CancelTransfer=${shop_wise.cancelTransfer}, AcceptTransfer=${shop_wise.accepttransfer},ClosingStock=${shop_wise.closingstock} where CompanyID = ${CompanyID} and ID = ${fetch_shop_wise[0].ID}`)
 
       // console.log("===== shop wise =====", date);
       // console.table(shop_wise);
@@ -4257,7 +4257,7 @@ module.exports = {
 
       company_wise.closingstock = company_wise.openingstock + company_wise.addpurchase + company_wise.addpreorderpurchase - company_wise.deletepurchase - company_wise.addsale + company_wise.deletesale - company_wise.addpreordersale + company_wise.deletepreordersale + company_wise.accepttransfer - company_wise.initiatetransfer + company_wise.cancelTransfer - company_wise.otherdeletestock;
 
-      const [update_company_wise] = await connection.query(`update creport set AmtAddPurchase=${company_wise.addpurchase}, AmtAddPreOrderPurchase=${company_wise.addpreorderpurchase}, AmtDeletePurchase=${company_wise.deletepurchase}, AmtAddSale=${company_wise.addsale}, AmtDeleteSale=${company_wise.deletesale}, AmtAddPreOrderSale=${company_wise.addpreordersale}, AmtDeletePreOrderSale=${company_wise.deletepreordersale}, AmtAddManualSale=${company_wise.addmanualsale}, AmtDeleteManualSale=${company_wise.deletemanualsale}, AmtOtherDeleteStock=${company_wise.otherdeletestock}, AmtInitiateTransfer=${company_wise.initiatetransfer}, AmtCancelTransfer=${company_wise.cancelTransfer}, AmtAcceptTransfer=${company_wise.accepttransfer}, AmtClosingStock=${company_wise.closingstock} where ID = ${fetch_company_wise[0].ID}`)
+      const [update_company_wise] = await connection.query(`update creport set AmtAddPurchase=${company_wise.addpurchase}, AmtAddPreOrderPurchase=${company_wise.addpreorderpurchase}, AmtDeletePurchase=${company_wise.deletepurchase}, AmtAddSale=${company_wise.addsale}, AmtDeleteSale=${company_wise.deletesale}, AmtAddPreOrderSale=${company_wise.addpreordersale}, AmtDeletePreOrderSale=${company_wise.deletepreordersale}, AmtAddManualSale=${company_wise.addmanualsale}, AmtDeleteManualSale=${company_wise.deletemanualsale}, AmtOtherDeleteStock=${company_wise.otherdeletestock}, AmtInitiateTransfer=${company_wise.initiatetransfer}, AmtCancelTransfer=${company_wise.cancelTransfer}, AmtAcceptTransfer=${company_wise.accepttransfer}, AmtClosingStock=${company_wise.closingstock} where CompanyID = ${CompanyID} and ID = ${fetch_company_wise[0].ID}`)
 
       //console.log("===== company wise Amount Report =====", date);
       //console.table(company_wise);
@@ -4287,7 +4287,7 @@ module.exports = {
 
       shop_wise.closingstock = shop_wise.openingstock + shop_wise.addpurchase + shop_wise.addpreorderpurchase - shop_wise.deletepurchase - shop_wise.addsale + shop_wise.deletesale - shop_wise.addpreordersale + shop_wise.deletepreordersale + shop_wise.accepttransfer - shop_wise.initiatetransfer + shop_wise.cancelTransfer - shop_wise.otherdeletestock;
 
-      const [update_shop_wise] = await connection.query(`update creport set AmtAddPurchase=${shop_wise.addpurchase}, AmtAddPreOrderPurchase=${shop_wise.addpreorderpurchase}, AmtDeletePurchase=${shop_wise.deletepurchase}, AmtAddSale=${shop_wise.addsale}, AmtDeleteSale=${shop_wise.deletesale}, AmtAddPreOrderSale=${shop_wise.addpreordersale}, AmtDeletePreOrderSale=${shop_wise.deletepreordersale}, AmtAddManualSale=${shop_wise.addmanualsale}, AmtDeleteManualSale=${shop_wise.deletemanualsale}, AmtOtherDeleteStock=${shop_wise.otherdeletestock}, AmtInitiateTransfer=${shop_wise.initiatetransfer}, AmtCancelTransfer=${shop_wise.cancelTransfer}, AmtAcceptTransfer=${shop_wise.accepttransfer},AmtClosingStock=${shop_wise.closingstock} where ID = ${fetch_shop_wise[0].ID}`)
+      const [update_shop_wise] = await connection.query(`update creport set AmtAddPurchase=${shop_wise.addpurchase}, AmtAddPreOrderPurchase=${shop_wise.addpreorderpurchase}, AmtDeletePurchase=${shop_wise.deletepurchase}, AmtAddSale=${shop_wise.addsale}, AmtDeleteSale=${shop_wise.deletesale}, AmtAddPreOrderSale=${shop_wise.addpreordersale}, AmtDeletePreOrderSale=${shop_wise.deletepreordersale}, AmtAddManualSale=${shop_wise.addmanualsale}, AmtDeleteManualSale=${shop_wise.deletemanualsale}, AmtOtherDeleteStock=${shop_wise.otherdeletestock}, AmtInitiateTransfer=${shop_wise.initiatetransfer}, AmtCancelTransfer=${shop_wise.cancelTransfer}, AmtAcceptTransfer=${shop_wise.accepttransfer},AmtClosingStock=${shop_wise.closingstock} where CompanyID = ${CompanyID} and ID = ${fetch_shop_wise[0].ID}`)
 
       // console.log("===== shop wise Amount Report =====", date);
       // console.table(shop_wise);
@@ -4453,7 +4453,7 @@ module.exports = {
           datum.Withdrawal = Number(fetchPettyCash[0].Withdrawal) + Amount
         }
 
-        const [update] = await connection.query(`update pettycashreport set Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee} , Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} where ID = ${fetchPettyCash[0].ID}`)
+        const [update] = await connection.query(`update pettycashreport set Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee} , Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} where CompanyID = ${CompanyID} and ID = ${fetchPettyCash[0].ID}`)
 
         console.table(datum)
 
@@ -4630,7 +4630,7 @@ module.exports = {
 
           // Update existing record
           await connection.query(
-            `UPDATE pettycashreport SET Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee}, Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} WHERE ID = ${fetchPettyCash[0].ID}`
+            `UPDATE pettycashreport SET Sale = ${datum.Sale}, Expense = ${datum.Expense}, Doctor = ${datum.Doctor}, Employee = ${datum.Employee}, Payroll = ${datum.Payroll}, Fitter = ${datum.Fitter}, Supplier = ${datum.Supplier}, Withdrawal = ${datum.Withdrawal}, Deposit = ${datum.Deposit}, ClosingBalance = ${datum.ClosingBalance} WHERE CompanyID = ${CompanyID} and ID = ${fetchPettyCash[0].ID}`
           );
 
           console.table(datum);
