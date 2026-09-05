@@ -455,7 +455,7 @@ module.exports = {
             // if (billingFlow === 3) {
             //     return res.send({ success: false, message: "Currently not accepting this Billing Flow" })
             // }
-            const serialNo = await generateBillSno(CompanyID, shopid,)
+            const serialNo = await generateBillSno(CompanyID, shopid, connection)
 
             billMaseterData.Sno = serialNo;
             billMaseterData.ShopID = shopid;
@@ -475,9 +475,9 @@ module.exports = {
                 let invoiceNo = ``
                 let orderNo = ``
                 if (billingFlow === 1) {
-                    invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+                    invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData, connection)
                 } else {
-                    orderNo = await generateOrderNo(CompanyID, shopid, billDetailData, billMaseterData)
+                    orderNo = await generateOrderNo(CompanyID, shopid, billDetailData, billMaseterData, connection)
                 }
                 billMaseterData.InvoiceNo = invoiceNo;
                 billMaseterData.OrderNo = orderNo;
@@ -489,9 +489,9 @@ module.exports = {
                 let invoiceNo = ``
                 let orderNo = ``
                 if (billingFlow === 1) {
-                    invoiceNo = await generateInvoiceNoForService(CompanyID, shopid, service, billMaseterData)
+                    invoiceNo = await generateInvoiceNoForService(CompanyID, shopid, service, billMaseterData, connection)
                 } else {
-                    orderNo = await generateOrderNoForService(CompanyID, shopid, service, billMaseterData)
+                    orderNo = await generateOrderNoForService(CompanyID, shopid, service, billMaseterData, connection)
                 }
                 billMaseterData.InvoiceNo = invoiceNo;
                 billMaseterData.OrderNo = orderNo;
@@ -574,7 +574,7 @@ module.exports = {
                     if (manual === 0 && preorder === 0 && order === 0) {
                         let [newPurchasePrice] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
 
-                        console.log("newPurchasePrice Query :- ", `select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
+                        // console.log("newPurchasePrice Query :- ", `select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and BaseBarCode = '${item.Barcode}' and ProductTypeID = ${item.ProductTypeID} and ProductName = '${item.ProductName}' and ProductTypeName = '${item.ProductTypeName}'`);
 
 
                         let newPurchaseRate = 0
@@ -692,13 +692,13 @@ module.exports = {
 
                         // update c report setting
 
-                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime, connection)
 
-                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
 
-                        const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode)
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode, connection)
 
-                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
                     } else if (ele.OrderRequest === 1) {
                         let count = ele.Quantity;
                         let j = 0;
@@ -711,13 +711,13 @@ module.exports = {
                 // save employee commission
 
                 if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser, connection)
                 }
 
                 // save doctor commission
 
                 if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser, connection)
                 }
             }
 
@@ -1352,11 +1352,11 @@ module.exports = {
 
                             // update c report setting
 
-                            const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                            const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime, connection)
 
-                            const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-                            const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode)
-                            const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                            const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
+                            const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode, connection)
+                            const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
                         } else if (ele.OrderRequest === 1) {
                             let count = ele.Quantity;
                             let j = 0;
@@ -1388,13 +1388,13 @@ module.exports = {
             // save employee commission
 
             if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser, connection)
             }
 
             // save doctor commission
 
             if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser, connection)
             }
 
 
@@ -1484,7 +1484,7 @@ module.exports = {
                 const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
 
                 if (billMaseterData) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser, connection)
                 }
 
 
@@ -1494,7 +1494,7 @@ module.exports = {
                 const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
 
                 if (billMaseterData) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', UserID, BillMasterID, billMaseterData[0], LoggedOnUser, connection)
                 }
 
             }
@@ -1850,7 +1850,7 @@ module.exports = {
 
             let deleteBill = ``
 
-            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID)
+            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID, connection)
             if (fetDeleteBillCommSetting === "false") {
                 deleteBill = ` and billmaster.Status = 1`
             }
@@ -1902,7 +1902,7 @@ module.exports = {
 
             let deleteBill = ``
 
-            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID)
+            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID, connection)
             if (fetDeleteBillCommSetting === "false") {
                 deleteBill = ` and billmaster.Status = 1`
             }
@@ -1953,7 +1953,7 @@ module.exports = {
 
             const [service] = await connection.query(`SELECT billservice.*, servicemaster.Name AS ServiceType  FROM  billservice  LEFT JOIN servicemaster ON servicemaster.ID = billservice.ServiceType WHERE billservice.CompanyID =  ${CompanyID} and BillID = ${ID} Order By ID Desc`)
 
-            const gst_detail = await gstDetailBill(CompanyID, ID) || []
+            const gst_detail = await gstDetailBill(CompanyID, ID, connection) || []
 
             response.message = "data fetch sucessfully"
             response.result.billMaster = billMaster
@@ -2500,11 +2500,11 @@ module.exports = {
 
                     // update c report setting
 
-                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime, connection)
 
-                    const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
-                    const totalAmount = await getTotalAmountByBarcode(CompanyID, billDetailData.Barcode)
-                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                    const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
+                    const totalAmount = await getTotalAmountByBarcode(CompanyID, billDetailData.Barcode, connection)
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
                 }
             }
 
@@ -2587,7 +2587,7 @@ module.exports = {
                 const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${fetchBill[0].ID}`);
 
                 if (billMaseterData) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData[0].Employee, billMaseterData[0].ID, billMaseterData[0], LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData[0].Employee, billMaseterData[0].ID, billMaseterData[0], LoggedOnUser, connection)
                 }
 
 
@@ -2597,7 +2597,7 @@ module.exports = {
                 const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${fetchBill[0].ID}`);
 
                 if (billMaseterData) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData[0].Employee, billMaseterData[0].ID, billMaseterData[0], LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData[0].Employee, billMaseterData[0].ID, billMaseterData[0], LoggedOnUser, connection)
                 }
 
             }
@@ -2763,13 +2763,13 @@ module.exports = {
 
                     // update c report setting
 
-                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                    const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime, connection)
 
-                    const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                    const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
 
-                    const totalAmount = await getTotalAmountByBarcode(CompanyID, billDetailData.Barcode)
+                    const totalAmount = await getTotalAmountByBarcode(CompanyID, billDetailData.Barcode, connection)
 
-                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                    const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, billDetailData.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
                 }
             }
 
@@ -2844,7 +2844,7 @@ module.exports = {
 
 
                 if (fetchBill) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser, connection)
                 }
 
 
@@ -2852,7 +2852,7 @@ module.exports = {
             } else {
 
                 if (fetchBill) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', fetchBill[0].Employee, fetchBill[0].ID, fetchBill[0], LoggedOnUser, connection)
                 }
 
             }
@@ -2943,13 +2943,13 @@ module.exports = {
             // save employee commission
 
             if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, billMaseterData.ID, billMaseterData, LoggedOnUser)
+                const saveEmpCommission = await updateCommission(CompanyID, 'Employee', billMaseterData.Employee, billMaseterData.ID, billMaseterData, LoggedOnUser, connection)
             }
 
             // save doctor commission
 
             if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, billMaseterData.ID, billMaseterData, LoggedOnUser)
+                const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, billMaseterData.ID, billMaseterData, LoggedOnUser, connection)
             }
 
             console.log(connected("BillDetail Update SuccessFUlly !!!"));
