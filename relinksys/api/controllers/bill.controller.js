@@ -444,7 +444,7 @@ module.exports = {
             // ======================== Validation ===================== //
 
 
-            const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where CompanyID = ${CompanyID} and  Status = 1 and ID = ${billMaseterData.ShopID}`)
+            const [existShop] = await connection.query(`select ID, Name, Status, AreaName from shop where CompanyID = ${CompanyID} and ID = ${billMaseterData.ShopID} and Status = 1`)
 
             if (!existShop.length) {
                 return res.send({ message: "You have already delete this shop" })
