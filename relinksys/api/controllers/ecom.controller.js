@@ -3600,7 +3600,7 @@ module.exports = {
                 paymentMode = 'Paid'
             }
 
-            billMaseterData.InvoiceNo = await generateInvoiceNoEcom(CompanyID, shopid, billDetailData, billMaseterData)
+            billMaseterData.InvoiceNo = await generateInvoiceNoEcom(CompanyID, shopid, billDetailData, billMaseterData, connection)
             billMaseterData.OrderNo = ""
 
             console.table({
