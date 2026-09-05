@@ -17,6 +17,10 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { ExcelService } from 'src/app/service/helpers/excel.service';
 import { MembershipcardService } from 'src/app/service/membershipcard.service';
 import { BillService } from 'src/app/service/bill.service';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'app-customer-report',
@@ -24,15 +28,15 @@ import { BillService } from 'src/app/service/bill.service';
   styleUrls: ['./customer-report.component.css']
 })
 export class CustomerReportComponent implements OnInit {
-   env = environment;
+  env = environment;
   shop: any = JSON.parse(localStorage.getItem('shop') || '');
   user: any = JSON.parse(localStorage.getItem('user') || '');
   selectedShop: any = JSON.parse(localStorage.getItem('selectedShop') || '');
   permission = JSON.parse(localStorage.getItem('permission') || '[]');
   companySetting: any = JSON.parse(localStorage.getItem('companysetting') || '[]');
   companyData: any = JSON.parse(localStorage.getItem('company') || '[]');
-  searchValue:any
-
+  searchValue: any
+  customerSearchSubject = new Subject<any>();
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -46,27 +50,70 @@ export class CustomerReportComponent implements OnInit {
     public sp: NgxSpinnerService,
     private modalService: NgbModal,
     private excelService: ExcelService,
-        public bill: BillService,
-  ) { }
+    public bill: BillService,
+  ) {
+    this.customerSearchSubject
+      .pipe(
+        debounceTime(500)
+      )
+      .subscribe((data: any) => {
+
+        let dtm: any = {
+          Name: '',
+          MobileNo1: '',
+          Address: '',
+          Sno: ''
+        };
+
+        const isNumeric = /^\d+$/.test(data.searchKey);
+
+        if (isNumeric) {
+          dtm.MobileNo1 = data.searchKey;
+        } else {
+          dtm.Name = data.searchKey;
+        }
+
+        const subs: Subscription = this.sup.customerSearch(dtm).subscribe({
+          next: (res: any) => {
+
+            if (res.success) {
+              this.filteredOptionC = res.data;
+            } else {
+              this.as.errorToast(res.message);
+            }
+
+            this.sp.hide();
+          },
+
+          error: (err: any) => {
+            console.log(err.message);
+            this.sp.hide();
+          },
+
+          complete: () => subs.unsubscribe()
+        });
+
+      });
+  }
 
   dataList: any = [];
   powerList: any = [];
   shopList: any = [];
   memberList: any = [];
   Type = 'Customer'
-  selectsShop :any;
+  selectsShop: any;
   data: any = {
-   FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, Type: 0
+    FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, Type: 0
   };
 
   memberCard: any = {
-   Type: 0,  MemberType:0, FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, MemberCradNo:'', CustomerID :0,
+    Type: 0, MemberType: 0, FromDate: moment().startOf('month').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, MemberCradNo: '', CustomerID: 0,
   };
 
-    data1: any = {
-     FilterTypes:'AllDue', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, VendorStatus: 0,
-    };
-  
+  data1: any = {
+    FilterTypes: 'AllDue', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, VendorStatus: 0,
+  };
+
   performanceList: any;
   currentPage = 1;
   itemsPerPage = 10;
@@ -74,44 +121,44 @@ export class CustomerReportComponent implements OnInit {
   collectionSize = 0
   page = 4;
 
-  
-  totalAmountD : any;
-  totalDiscountD : any;
-  totalDueAmountD : any;
-  totalGstAmountD : any;
-  totalPaidAmountD : any;
-  totalQtyD : any;
-  totalSubTotalD : any;
+
+  totalAmountD: any;
+  totalDiscountD: any;
+  totalDueAmountD: any;
+  totalGstAmountD: any;
+  totalPaidAmountD: any;
+  totalQtyD: any;
+  totalSubTotalD: any;
   dataList1: any = []
 
-   dataList1All: any = []
-  totalAmountDAll : any;
-  totalDueAmountDAll : any;
-  totalPaidAmountDAll : any;
-cusList:any
+  dataList1All: any = []
+  totalAmountDAll: any;
+  totalDueAmountDAll: any;
+  totalPaidAmountDAll: any;
+  cusList: any
   myControl = new FormControl('All');
-filteredOptions:any
+  filteredOptions: any
 
   dataRegister: any = {
     FromDate: '', ToDate: ''
   }
-searchTimer: any;
+  searchTimer: any;
   RegisterList: any = []
   RegisterDetailList: any = []
-  RegisterAmount:any = 0
-  RegisterPaid:any = 0
-  RegisterBalance:any = 0
-   RegisterTotalSale :any = 0
-  RegisterTotalPurchase :any = 0
-  RegisterTotalExpense:any = 0
-    RegisterProfit:any = 0
-  FilterTypeR:any 
+  RegisterAmount: any = 0
+  RegisterPaid: any = 0
+  RegisterBalance: any = 0
+  RegisterTotalSale: any = 0
+  RegisterTotalPurchase: any = 0
+  RegisterTotalExpense: any = 0
+  RegisterProfit: any = 0
+  FilterTypeR: any
 
   memberTypeList: any = []
- filteredOptionC :any = []
- memberCardList :any = []
- memberCardDetailList :any = []
- detailData:any 
+  filteredOptionC: any = []
+  memberCardList: any = []
+  memberCardDetailList: any = []
+  detailData: any
   ngOnInit(): void {
 
     // this.exportCustomerPower();
@@ -120,7 +167,7 @@ searchTimer: any;
       this.data.ShopID = this.shopList[0].ShopID
     } else {
       // this.dropdownShoplist();
-      this.bill.shopList$.subscribe((list:any) => {
+      this.bill.shopList$.subscribe((list: any) => {
         this.shopList = list
         let shop = list;
         this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
@@ -128,7 +175,7 @@ searchTimer: any;
       });
     }
 
-    this.bill.memberDataList$.subscribe((list:any) => {
+    this.bill.memberDataList$.subscribe((list: any) => {
       this.memberTypeList = list
     });
 
@@ -136,7 +183,7 @@ searchTimer: any;
     this.fetchCustomerPerformance()
   }
 
-   changePagesize(num: number): void {
+  changePagesize(num: number): void {
     this.itemsPerPage = this.pageSize + num;
   }
 
@@ -148,12 +195,12 @@ searchTimer: any;
     }
     const subs: Subscription = this.sup.fetchCustomerPerformance(dtm).subscribe({
       next: (res: any) => {
-        if(res.success){
+        if (res.success) {
           this.collectionSize = res.count;
           this.performanceList = res.data;
-        
+
           this.as.successToast(res.message)
-        }else{
+        } else {
           this.as.errorToast(res.message)
         }
         this.sp.hide();
@@ -316,7 +363,7 @@ searchTimer: any;
           VisitNo: e.VisitNo,
           Cust_ID: e.Sno,
           CustomerName: e.CustomerName,
-           MobileNo1: e.MobileNo1,
+          MobileNo1: e.MobileNo1,
           MobileNo2: e.MobileNo2,
           REDPSPH: e.REDPSPH,
           REDPCYL: e.REDPCYL,
@@ -401,27 +448,27 @@ searchTimer: any;
 
     if (this.data.FromDate !== '' && this.data.FromDate !== null) {
       let FromDate = moment(this.data.FromDate).format('YYYY-MM-DD')
-    
-      if(this.data.Type == 'All' ){
+
+      if (this.data.Type == 'All') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.CreatedOn, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
-      if(this.data.Type == 'Issue' ){
+      if (this.data.Type == 'Issue') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
-      if(this.data.Type == 'Deactive'){
+      if (this.data.Type == 'Deactive') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
-      if(this.data.Type == 'Active'){
+      if (this.data.Type == 'Active') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
       }
-   
+
     }
 
     if (this.data.ToDate !== '' && this.data.ToDate !== null) {
       let ToDate = moment(this.data.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
 
-      if(this.data.Type == 'Active'){
+      if (this.data.Type == 'Active') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d")  < ' + `'${ToDate}'`;
       }
     }
@@ -429,7 +476,7 @@ searchTimer: any;
     if (this.data.ShopID != 0) {
       Parem = Parem + ' and membershipcard.ShopID IN ' + `(${this.data.ShopID})`;
     }
-    
+
     const subs: Subscription = this.msc.MembershipcardByreport(Parem).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -469,83 +516,83 @@ searchTimer: any;
 
   customerSearch(searchKey: any, mode: any, type: any) {
 
-  clearTimeout(this.searchTimer);
+    clearTimeout(this.searchTimer);
 
-  this.searchTimer = setTimeout(() => {
+    this.searchTimer = setTimeout(() => {
 
-    this.filteredOptions = [];
+      this.filteredOptions = [];
 
-    let dtm: any = { Type: '', Name: '' };
+      let dtm: any = { Type: '', Name: '' };
 
-    if (type === 'Customer') {
-      dtm = {
-        Type: 'Customer',
-        Name: this.data1.CustomerID
-      };
-    }
-
-    if (searchKey.length >= 3) {
-
-      if (mode === 'Name') {
-        dtm.Name = searchKey;
+      if (type === 'Customer') {
+        dtm = {
+          Type: 'Customer',
+          Name: this.data1.CustomerID
+        };
       }
 
-      const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
-        next: (res: any) => {
-          if (res.success) {
-            this.filteredOptions = res.data;
-          } else {
-            this.as.errorToast(res.message);
-          }
-          this.sp.hide();
-        },
-        error: (err: any) => console.log(err.message),
-        complete: () => subs.unsubscribe(),
-      });
+      if (searchKey.length >= 3) {
+
+        if (mode === 'Name') {
+          dtm.Name = searchKey;
+        }
+
+        const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.filteredOptions = res.data;
+            } else {
+              this.as.errorToast(res.message);
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+
+    }, 1000); // 1 second delay
+
+  }
+
+  CustomerSelection(mode: any, ID: any) {
+    if (mode === 'Value') {
+      this.data1.CustomerID = ID
     }
 
-  }, 1000); // 1 second delay
+    if (mode === 'All') {
+      this.filteredOptions = []
+      this.data1.CustomerID = 0
 
-}
-  
-    CustomerSelection(mode: any, ID: any) {
-      if (mode === 'Value') {
-        this.data1.CustomerID = ID
-      }
-     
-      if (mode === 'All') {
-        this.filteredOptions = []
-        this.data1.CustomerID = 0
-   
-      }
     }
+  }
 
 
-    
-    getCustomerDuePayment() {
-    
-    if(this.data1.FilterTypes == 'InvoiceWise'){
+
+  getCustomerDuePayment() {
+
+    if (this.data1.FilterTypes == 'InvoiceWise') {
       this.sp.show()
       let Parem = '';
-    
+
       if (this.data1.FromDate !== '' && this.data1.FromDate !== null) {
         let FromDate = moment(this.data1.FromDate).format('YYYY-MM-DD')
         Parem = Parem + ' and DATE_FORMAT(billmaster.BillDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
-    
+
       if (this.data1.ToDate !== '' && this.data1.ToDate !== null) {
         let ToDate = moment(this.data1.ToDate).format('YYYY-MM-DD')
         Parem = Parem + ' and ' + `'${ToDate}'`;
       }
-    
+
       if (this.data1.ShopID != 0) {
         Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.data1.ShopID})`;
       }
-    
+
       if (this.data1.CustomerID != 0) {
         Parem = Parem + ' and billmaster.CustomerID = ' + `(${this.data1.CustomerID})`;
       }
-    
+
       const subs: Subscription = this.sup.getCustomerDuePayment(Parem).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -567,17 +614,17 @@ searchTimer: any;
         complete: () => subs.unsubscribe(),
       });
     }
-    else{
-     this.sp.show()
+    else {
+      this.sp.show()
       let Parem = '';
       if (this.data1.ShopID != 0) {
         Parem = Parem + ' and pm.ShopID IN ' + `(${this.data1.ShopID})`;
       }
-    
+
       if (this.data1.CustomerID != 0) {
         Parem = Parem + ' and pm.CustomerID = ' + `(${this.data1.CustomerID})`;
       }
-    
+
       const subs: Subscription = this.sup.getCustomerAllDuePayment(Parem).subscribe({
         next: (res: any) => {
           if (res.success) {
@@ -586,7 +633,7 @@ searchTimer: any;
             this.totalDueAmountDAll = res.calculation?.totalBillAmount?.toFixed(2);
             this.totalPaidAmountDAll = res.calculation?.totalPaidAmount?.toFixed(2);
             this.totalAmountDAll = res.calculation?.totalBalanceAmount?.toFixed(2);
-     
+
           } else {
             this.as.errorToast(res.message)
           }
@@ -595,52 +642,53 @@ searchTimer: any;
         error: (err: any) => console.log(err.message),
         complete: () => subs.unsubscribe(),
       });
-    }}
-    
+    }
+  }
 
-    
-    
-    FromReset1() {
-      this.data1 = {
-       FilterTypes:'InvoiceWise', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'),ShopID: 0, CustomerID: 0
-      };
-      this.dataList1 = [];
-    }
-    
-    exportAsXLSX1(): void {
-      let element = document.getElementById('CustomerDuaExcel');
-      const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-      
-      delete ws['A2'];
-      // Initialize column widths array
-      const colWidths: number[] = [];
-    
-      // Iterate over all cells to determine maximum width for each column
-      XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
-        row.forEach((cell: any, index: number) => {
-          const cellValue = cell ? String(cell) : '';
-          colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
-        });
+
+
+
+  FromReset1() {
+    this.data1 = {
+      FilterTypes: 'InvoiceWise', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0
+    };
+    this.dataList1 = [];
+  }
+
+  exportAsXLSX1(): void {
+    let element = document.getElementById('CustomerDuaExcel');
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
+
+    delete ws['A2'];
+    // Initialize column widths array
+    const colWidths: number[] = [];
+
+    // Iterate over all cells to determine maximum width for each column
+    XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row: any = []) => {
+      row.forEach((cell: any, index: number) => {
+        const cellValue = cell ? String(cell) : '';
+        colWidths[index] = Math.max(colWidths[index] || 0, cellValue.length);
       });
-    
-      // Set column widths in the worksheet
-      ws['!cols'] = colWidths.map((width: number) => ({
-        wch: width + 2, 
-        fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } }
-      }));
-    
-      const wb: XLSX.WorkBook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-      XLSX.writeFile(wb, 'Customer_DuaAmonut_Report.xlsx');
-    }
-    
-    print1() {
-      let shop = this.shopList
-      this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
-    
-      let printContent: any = document.getElementById('print-content1');
-      let printWindow: any = window.open('pp', '_blank');
-      printWindow.document.write(`
+    });
+
+    // Set column widths in the worksheet
+    ws['!cols'] = colWidths.map((width: number) => ({
+      wch: width + 2,
+      fill: { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } }
+    }));
+
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Customer_DuaAmonut_Report.xlsx');
+  }
+
+  print1() {
+    let shop = this.shopList
+    this.selectsShop = shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
+
+    let printContent: any = document.getElementById('print-content1');
+    let printWindow: any = window.open('pp', '_blank');
+    printWindow.document.write(`
       <html>
         <head>
         <title>Customer Due Report</title>
@@ -736,126 +784,110 @@ searchTimer: any;
         </body>
       </html>
     `);
-    
-      printWindow.document.querySelectorAll('.hide-on-print').forEach((element: any) => {
-        element.classList.add('hide-on-print');
-      });
-    
-      printWindow.document.close();
-      printWindow.print();
+
+    printWindow.document.querySelectorAll('.hide-on-print').forEach((element: any) => {
+      element.classList.add('hide-on-print');
+    });
+
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+
+
+  getRegisterSale() {
+
+    // let FromDate = moment(this.dataRegister.FromDate).format('YYYY-MM-DD')
+    // let ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+
+    let dtm = {
+      filterType: this.FilterTypeR,
+      FromDate: moment(this.dataRegister.FromDate).format('YYYY-MM-DD'),
+      ToDate: moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD'),
     }
 
+    const subs: Subscription = this.bill.getProfitReport(dtm).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.as.successToast(res.message)
+          this.RegisterList = res.data
+          this.RegisterTotalSale = res.header.TotalSale
+          this.RegisterTotalPurchase = res.header.TotalPurchase
+          this.RegisterTotalExpense = res.header.TotalExpense
+          this.RegisterProfit = res.header.Profit
 
-    
-      getRegisterSale() {
 
-        // let FromDate = moment(this.dataRegister.FromDate).format('YYYY-MM-DD')
-        // let ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
-     
-          let dtm = {
-            filterType : this.FilterTypeR,
-            FromDate : moment(this.dataRegister.FromDate).format('YYYY-MM-DD'),
-            ToDate :  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD'),
-          }
-
-        const subs: Subscription = this.bill.getProfitReport(dtm).subscribe({
-          next: (res: any) => {
-            if (res.success) {
-              this.as.successToast(res.message)
-              this.RegisterList = res.data
-              this.RegisterTotalSale = res.header.TotalSale
-              this.RegisterTotalPurchase = res.header.TotalPurchase
-              this.RegisterTotalExpense= res.header.TotalExpense
-              this.RegisterProfit= res.header.Profit
-
-       
-            } else {
-              this.as.errorToast(res.message)
-            }
-            this.sp.hide()
-          },
-          error: (err: any) => console.log(err.message),
-          complete: () => subs.unsubscribe(),
-        });
-    
-      }
-    
-      ChangeDate(){
-        if(this.FilterTypeR == "YearMonthWise"){
-                this.dataRegister.FromDate =  moment(this.dataRegister.FromDate).startOf('month').format('YYYY-MM-DD');
-                this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+        } else {
+          this.as.errorToast(res.message)
         }
-        if(this.FilterTypeR == "YearWise"){
-                this.dataRegister.FromDate =  moment(this.dataRegister.FromDate).startOf('year').format('YYYY-MM-DD');
-                this.dataRegister.ToDate =  moment(this.dataRegister.ToDate).endOf('year').format('YYYY-MM-DD');
-        }
-      }
+        this.sp.hide()
+      },
+      error: (err: any) => console.log(err.message),
+      complete: () => subs.unsubscribe(),
+    });
 
-      
-        customerSearchs(searchKey: any, mode: any, type: any) {
-          this.filteredOptionC = []
-      
-          let dtm = { Type: '', Name: '' }
-      
-          if (type === 'Customer') {
-            dtm = {
-              Type: 'Customer',
-              Name: this.memberCard.CustomerID
-            };
-          }
-      
-          if (searchKey.length >= 2) {
-            if (mode === 'Name') {
-              dtm.Name = searchKey;
-            }
-      
-            const subs: Subscription = this.supps.dropdownlistBySearch(dtm).subscribe({
-              next: (res: any) => {
-                if (res.success) {
-                  this.filteredOptionC = res.data
-                } else {
-                  this.as.errorToast(res.message)
-                }
-                this.sp.hide()
-              },
-              error: (err: any) => console.log(err.message),
-              complete: () => subs.unsubscribe(),
-            });
-          }
-      
-        }
-      
-        CustomerSelections(mode: any, ID: any) {
-          if (mode === 'Value') {
-            this.memberCard.CustomerID = ID
-          }
-        
-          if (mode === 'All') {
-            this.filteredOptionC = []
-            this.memberCard.CustomerID = 0
-          
-          }
-        }
-      
+  }
 
-   
+  ChangeDate() {
+    if (this.FilterTypeR == "YearMonthWise") {
+      this.dataRegister.FromDate = moment(this.dataRegister.FromDate).startOf('month').format('YYYY-MM-DD');
+      this.dataRegister.ToDate = moment(this.dataRegister.ToDate).endOf('month').format('YYYY-MM-DD');
+    }
+    if (this.FilterTypeR == "YearWise") {
+      this.dataRegister.FromDate = moment(this.dataRegister.FromDate).startOf('year').format('YYYY-MM-DD');
+      this.dataRegister.ToDate = moment(this.dataRegister.ToDate).endOf('year').format('YYYY-MM-DD');
+    }
+  }
+
+
+  customerSearchs(searchKey: any, mode: any, type: any) {
+
+    this.filteredOptionC = [];
+
+    if (searchKey.length >= 3 && mode === 'Name') {
+
+      this.customerSearchSubject.next({
+        searchKey: searchKey,
+        mode: mode,
+        type: type
+      });
+
+    }
+  }
+
+
+
+  CustomerSelections(mode: any, ID: any) {
+    if (mode === 'Value') {
+      this.memberCard.CustomerID = ID
+    }
+
+    if (mode === 'All') {
+      this.filteredOptionC = []
+      this.memberCard.CustomerID = 0
+
+    }
+  }
+
+
+
   searchDataMemberCard() {
     this.sp.show()
     let Parem = '';
 
     if (this.memberCard.FromDate !== '' && this.memberCard.FromDate !== null) {
       let FromDate = moment(this.memberCard.FromDate).format('YYYY-MM-DD')
-    
-      if(this.memberCard.Type == 'All' || this.memberCard.Type == 0){
+
+      if (this.memberCard.Type == 'All' || this.memberCard.Type == 0) {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.CreatedOn, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
-      if(this.memberCard.Type == 'Issue' ){
+      if (this.memberCard.Type == 'Issue') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
-      if(this.memberCard.Type == 'Deactive'){
+      if (this.memberCard.Type == 'Deactive') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d") between ' + `'${FromDate}'`;
       }
-      if(this.memberCard.Type == 'Active'){
+      if (this.memberCard.Type == 'Active') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.IssueDate, "%Y-%m-%d")  between ' + `'${FromDate}'`;
       }
     }
@@ -864,7 +896,7 @@ searchTimer: any;
       let ToDate = moment(this.memberCard.ToDate).format('YYYY-MM-DD')
       Parem = Parem + ' and ' + `'${ToDate}'`;
 
-      if(this.memberCard.Type == 'Active'){
+      if (this.memberCard.Type == 'Active') {
         Parem = Parem + ' and DATE_FORMAT(membershipcard.ExpiryDate, "%Y-%m-%d")  < ' + `'${ToDate}'`;
       }
     }
@@ -872,7 +904,7 @@ searchTimer: any;
     if (this.memberCard.ShopID != 0) {
       Parem = Parem + ' and membershipcard.ShopID IN ' + `(${this.memberCard.ShopID})`;
     }
-    
+
     if (this.memberCard.CustomerID != 0) {
       Parem = Parem + ' and membershipcard.CustomerID = ' + `${this.memberCard.CustomerID}`;
     }
@@ -882,7 +914,7 @@ searchTimer: any;
     if (this.memberCard.MemberCradNo != 0) {
       Parem = Parem + ' and customer.Idd = ' + `'${this.memberCard.MemberCradNo}'`;
     }
-    
+
     const subs: Subscription = this.msc.MembershipcardBynewReport(Parem).subscribe({
       next: (res: any) => {
         if (res.success) {
@@ -899,17 +931,17 @@ searchTimer: any;
     });
   }
 
-  memberCardDetail(CustomerID:any){
-   
+  memberCardDetail(CustomerID: any) {
+
   }
 
-   openModalR(contentR: any, data: any) {
-     
-            this.sp.show();
-        
-            this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
-       let dtm = {
-        MemberShipRefID : data.MemberShipRefID
+  openModalR(contentR: any, data: any) {
+
+    this.sp.show();
+
+    this.modalService.open(contentR, { centered: true, backdrop: 'static', keyboard: false, size: 'lg' });
+    let dtm = {
+      MemberShipRefID: data.MemberShipRefID
     }
     const subs: Subscription = this.msc.detailedReport(dtm).subscribe({
       next: (res: any) => {
@@ -926,6 +958,6 @@ searchTimer: any;
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
-          }
-           }
+  }
+}
 

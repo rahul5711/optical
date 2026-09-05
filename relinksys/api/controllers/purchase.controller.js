@@ -1623,7 +1623,7 @@ module.exports = {
                 //     [ProductBrandName, ProductModelName] = ele.ProductName.split("/").slice(0, 4);
                 // }
 
-                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1' && ele.ProductTypeName !== 'CONTACT LENS' && ele.ProductTypeName !== 'READING FRAME'  && ele.ProductTypeName !== 'READING' && ele.ProductTypeName !== 'WATCH') {
+                if (ele.ProductTypeName !== 'SUNGLASSES' && ele.ProductTypeName !== 'SUNGLASS' && ele.ProductTypeName !== 'Frames#1' && ele.ProductTypeName !== 'CONTACT LENS' && ele.ProductTypeName !== 'READING FRAME' && ele.ProductTypeName !== 'WATCH') {
                     [ProductTypess, ProductBrandName, ProductModelName] = ele.ProductName?.split("/")?.slice(0, 3) || [];
                 } else if (ele.ProductTypeName == 'CONTACT LENS') {
                     [ProductTypess, ProductBrandName, ProductModelName, Sph, Cyl] = ele.ProductName?.split("/")?.slice(0, 5) || [];
