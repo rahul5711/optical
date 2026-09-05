@@ -788,6 +788,7 @@
                               <th>SNo. </th>
                               <th>Detail Button</th>
                               <th>BillCount </th>
+                              <th>MemberType </th>
                               <th>CustomerName </th>
                               <th>CustomerMobileNo</th>
                               <th>IssueDate </th>
@@ -797,6 +798,7 @@
                             <tr>
                               <th> <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o excel"
                                   title="ExportAsXLSX" aria-hidden="true" type="button" (click)="exportEx()"> </i></th>
+                              <th></th>
                               <th></th>
                               <th></th>
                               <th></th>
@@ -814,6 +816,7 @@
                                     data-mdb-target="#exampleModal"> </i>
                                 </button> </td>
                               <td>{{ data.BillCount }} </td>
+                              <td>{{ data.MemberType }} </td>
                               <td>{{ data.CustomerName }} </td>
                               <td>{{ data.Mobile }} </td>
                               <td>{{ dateFormat(data.IssueDate) }} </td>
