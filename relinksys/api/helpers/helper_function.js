@@ -228,7 +228,7 @@ module.exports = {
         connection = await db.getConnection();
         shouldReleaseConnection = true;
       }
-      const [barcode] = await connection.query(`select barcode.${BarcodeType} from barcode where Status = 1 and CompanyID=${CompanyID}`);
+      const [barcode] = await connection.query(`select barcode.${BarcodeType} from barcode where CompanyID=${CompanyID} and Status = 1`);
       if (BarcodeType === 'SB') {
         const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].SB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
         return Number(barcode[0].SB)
@@ -269,9 +269,9 @@ module.exports = {
         shouldReleaseConnection = true;
       }
       if (CompanyID === 184 || CompanyID === "184") {
-        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
+        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE purchasedetailnew.CompanyID = ${CompanyID} and ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
       } else {
-        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1`
+        qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE purchasedetailnew.CompanyID = ${CompanyID} and ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.Status = 1`
         // qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1`
       }
 
@@ -307,7 +307,7 @@ module.exports = {
         connection = await db.getConnection();
         shouldReleaseConnection = true;
       }
-      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID} AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1`);
+      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} and ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID}  AND Status = 1`);
       if (fetch.length) {
         return true
       }
@@ -340,7 +340,7 @@ module.exports = {
         connection = await db.getConnection();
         shouldReleaseConnection = true;
       }
-      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID} AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1 and ID != ${ID}`);
+      const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID}  AND Status = 1 and ID != ${ID}`);
       if (fetch.length) {
         return true
       }
@@ -373,7 +373,7 @@ module.exports = {
         connection = await db.getConnection();
         shouldReleaseConnection = true;
       }
-      let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
+      let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE purchasedetailnew.CompanyID = ${CompanyID} and ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
       // let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
 
       const [barcode] = await connection.query(qry)
@@ -407,14 +407,14 @@ module.exports = {
         connection = await db.getConnection();
         shouldReleaseConnection = true;
       }
-      const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
+      const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where CompanyID = ${CompanyID} and Status = 1`)
 
       let NewBarcode = ''; // blank initiate uniq barcode
       year = moment(new Date()).format('YY');
       month = moment(new Date()).format('MM');
       partycode = '0'
 
-      const [fetchSupplier] = await connection.query(`select ID, Sno from supplier where Status = 1 and CompanyID = ${CompanyID} and ID = ${SupplierID}`)
+      const [fetchSupplier] = await connection.query(`select ID, Sno from supplier where CompanyID = ${CompanyID} and Status = 1 and ID = ${SupplierID}`)
 
       if (fetchSupplier.length) {
         if (fetchSupplier[0].Sno !== "" || fetchSupplier[0].Sno !== null || fetchSupplier[0].Sno !== undefined) {
@@ -474,7 +474,7 @@ module.exports = {
         connection = await db.getConnection();
         shouldReleaseConnection = true;
       }
-      const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
+      const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where CompanyID = ${CompanyID} and Status = 1`)
 
       let NewBarcode = ''; // blank initiate uniq barcode
       year = moment(new Date()).format('YY');
@@ -3466,7 +3466,7 @@ module.exports = {
       let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 };
 
       if (UserType === 'Employee') {
-        let [userData] = await connection.query(`select * from user where user.ID = ${UserID} and user.CompanyID=${CompanyID}`);
+        let [userData] = await connection.query(`select * from user where user.CompanyID=${CompanyID} and user.ID = ${UserID}`);
         if (userData.length !== 0 && userData[0].CommissionType == 1) {
           commission1.Type = userData[0].CommissionType;
           if (userData[0].CommissionMode == 2) {
@@ -3488,8 +3488,8 @@ module.exports = {
             commission1.Value = userData[0].CommissionValue;
           }
         } else if (userData.length !== 0 && userData[0].CommissionType == 2) {
-          let [userResultB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType = 1`);
-          let [userResultNB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType <> 1`);
+          let [userResultB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType = 1`);
+          let [userResultNB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType <> 1`);
           commission1.Type = userData[0].CommissionType;
           if (userData[0].CommissionMode == 1) {
             commission1.Type = userData[0].CommissionType;
@@ -3506,7 +3506,7 @@ module.exports = {
           //  console.log(save);
         }
       } else if (UserType === 'Doctor') {
-        let [doctorData] = await connection.query(`select * from doctor where doctor.ID = ${UserID} and doctor.CompanyID = ${CompanyID}`);
+        let [doctorData] = await connection.query(`select * from doctor where doctor.CompanyID = ${CompanyID} and doctor.ID = ${UserID} `);
         if (doctorData.length !== 0 && doctorData[0].CommissionType == 1) {
           commission.Type = doctorData[0].CommissionType;
           if (doctorData[0].CommissionMode == 2) {
@@ -3528,8 +3528,8 @@ module.exports = {
             commission.Value = doctorData[0].CommissionValue;
           }
         } else if (doctorData.length !== 0 && doctorData[0].CommissionType == 2) {
-          let [doctorResultB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType = 1`);
-          let [doctorResultNB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType <> 1`);
+          let [doctorResultB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType = 1`);
+          let [doctorResultNB] = await connection.query(`SELECT SUM(billdetail.SubTotal) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType <> 1`);
           commission.Type = doctorData[0].CommissionType;
           if (doctorData[0].CommissionMode == 1) {
             commission.Type = doctorData[0].CommissionType;
@@ -3579,7 +3579,7 @@ module.exports = {
       let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 };
 
       if (UserType === 'Employee') {
-        let [userData] = await connection.query(`select * from user where user.ID = ${UserID} and user.CompanyID = ${CompanyID}`);
+        let [userData] = await connection.query(`select * from user where user.CompanyID = ${CompanyID} and user.ID = ${UserID}`);
         if (userData.length !== 0 && userData[0].CommissionType == 1) {
           commission1.Type = userData[0].CommissionType;
           if (userData[0].CommissionMode == 2) {
@@ -3601,8 +3601,8 @@ module.exports = {
             commission1.Value = userData[0].CommissionValue;
           }
         } else if (userData.length !== 0 && userData[0].CommissionType == 2) {
-          let [userResultB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType = 1`);
-          let [userResultNB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType <> 1`);
+          let [userResultB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType = 1`);
+          let [userResultNB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType <> 1`);
 
           commission1.Type = userData[0].CommissionType;
           if (userData[0].CommissionMode == 1) {
@@ -3616,10 +3616,10 @@ module.exports = {
         }
 
         if (commission1.Type !== 0 && commission1.Amount !== 0) {
-          const [update] = await connection.query(`update commissiondetail set CommissionMode = ${commission1.Mode}, CommissionType = ${commission1.Type}, CommissionValue = ${commission1.Value}, CommissionAmount = ${commission1.Amount}, BrandedCommissionAmount = ${commission1.BrandedCommissionAmount}, NonBrandedCommissionAmount = ${commission1.NonBrandedCommissionAmount}, UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}' where BillmasterID = ${bMasterID} and UserType = 'Employee' and UserID = ${userData[0].ID} and CompanyID = ${CompanyID}`);
+          const [update] = await connection.query(`update commissiondetail set CommissionMode = ${commission1.Mode}, CommissionType = ${commission1.Type}, CommissionValue = ${commission1.Value}, CommissionAmount = ${commission1.Amount}, BrandedCommissionAmount = ${commission1.BrandedCommissionAmount}, NonBrandedCommissionAmount = ${commission1.NonBrandedCommissionAmount}, UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}' where CompanyID = ${CompanyID} and BillmasterID = ${bMasterID} and UserType = 'Employee' and UserID = ${userData[0].ID}`);
         }
       } else if (UserType === 'Doctor') {
-        let [doctorData] = await connection.query(`select * from doctor where doctor.ID = ${UserID} and doctor.CompanyID = ${CompanyID}`);
+        let [doctorData] = await connection.query(`select * from doctor where doctor.CompanyID = ${CompanyID} and doctor.ID = ${UserID}`);
         if (doctorData.length !== 0 && doctorData[0].CommissionType == 1) {
           commission.Type = doctorData[0].CommissionType;
           if (doctorData[0].CommissionMode == 2) {
@@ -3641,8 +3641,8 @@ module.exports = {
             commission.Value = doctorData[0].CommissionValue;
           }
         } else if (doctorData.length !== 0 && doctorData[0].CommissionType == 2) {
-          let [doctorResultB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID}  AND purchasedetailnew.BrandType = 1`);
-          let [doctorResultNB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.BillID = '${bMasterID}' and billdetail.CompanyID = ${CompanyID} AND purchasedetailnew.BrandType <> 1`);
+          let [doctorResultB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType = 1`);
+          let [doctorResultNB] = await connection.query(`SELECT ROUND(SUM(billdetail.SubTotal), 2) as SubTotalVal FROM billdetail LEFT JOIN barcodemasternew ON billdetail.ID = barcodemasternew.BillDetailID LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID WHERE billdetail.CompanyID = ${CompanyID} and billdetail.BillID = '${bMasterID}' AND purchasedetailnew.BrandType <> 1`);
 
           commission.Type = doctorData[0].CommissionType;
           if (doctorData[0].CommissionMode == 1) {
@@ -3656,7 +3656,7 @@ module.exports = {
         }
 
         if (commission.Type !== 0 && commission.Amount !== 0) {
-          const [update] = await connection.query(`update commissiondetail set CommissionMode = ${commission.Mode}, CommissionType = ${commission.Type}, CommissionValue = ${commission.Value}, CommissionAmount = ${commission.Amount}, BrandedCommissionAmount = ${commission.BrandedCommissionAmount}, NonBrandedCommissionAmount = ${commission.NonBrandedCommissionAmount}, UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}' where BillmasterID = ${bMasterID} and UserType = 'Doctor' and UserID = ${doctorData[0].ID} and CompanyID = ${CompanyID}`);
+          const [update] = await connection.query(`update commissiondetail set CommissionMode = ${commission.Mode}, CommissionType = ${commission.Type}, CommissionValue = ${commission.Value}, CommissionAmount = ${commission.Amount}, BrandedCommissionAmount = ${commission.BrandedCommissionAmount}, NonBrandedCommissionAmount = ${commission.NonBrandedCommissionAmount}, UpdatedOn = now(), UpdatedBy = '${LoggedOnUser}' where CompanyID = ${CompanyID} and  BillmasterID = ${bMasterID} and UserType = 'Doctor' and UserID = ${doctorData[0].ID}`);
         }
       }
       return;
@@ -3904,28 +3904,28 @@ module.exports = {
 
       // company wise
 
-      const [fetch_company_wise] = await connection.query(`select OpeningStock, AmtOpeningStock  from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+      const [fetch_company_wise] = await connection.query(`select OpeningStock, AmtOpeningStock  from creport where CompanyID = ${CompanyID} and ShopID = 0 and Date = '${date}' `)
 
-      const [fetch_back_date_company_wise] = await connection.query(`select ClosingStock, AmtClosingStock  from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+      const [fetch_back_date_company_wise] = await connection.query(`select ClosingStock, AmtClosingStock  from creport where CompanyID = ${CompanyID} and ShopID = 0 and Date = '${back_date}'`)
 
       if (fetch_back_date_company_wise[0].ClosingStock !== fetch_company_wise[0].OpeningStock) {
-        const [update] = await connection.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+        const [update] = await connection.query(`update creport set OpeningStock = ${fetch_back_date_company_wise[0].ClosingStock} where CompanyID = ${CompanyID} and ShopID = 0 and Date = '${date}'`)
       }
       if (fetch_back_date_company_wise[0].AmtClosingStock !== fetch_company_wise[0].AmtOpeningStock) {
-        const [update] = await connection.query(`update creport set AmtOpeningStock = ${fetch_back_date_company_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+        const [update] = await connection.query(`update creport set AmtOpeningStock = ${fetch_back_date_company_wise[0].AmtClosingStock} where CompanyID = ${CompanyID} and ShopID = 0 and Date = '${date}' `)
       }
 
       // shop wise
 
-      const [fetch_shop_wise] = await connection.query(`select OpeningStock, ClosingStock, AmtOpeningStock, AmtClosingStock from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+      const [fetch_shop_wise] = await connection.query(`select OpeningStock, ClosingStock, AmtOpeningStock, AmtClosingStock from creport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Date = '${date}'`)
 
-      const [fetch_back_date_shop_wise] = await connection.query(`select * from creport where Date = '${back_date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+      const [fetch_back_date_shop_wise] = await connection.query(`select * from creport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Date = '${back_date}'`)
 
       if (fetch_back_date_shop_wise[0].ClosingStock !== fetch_shop_wise[0].OpeningStock) {
-        const [update] = await connection.query(`update creport set OpeningStock = ${fetch_shop_wise[0].ClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+        const [update] = await connection.query(`update creport set OpeningStock = ${fetch_shop_wise[0].ClosingStock} where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Date = '${date}'`)
       }
       if (fetch_back_date_shop_wise[0].AmtClosingStock !== fetch_shop_wise[0].AmtOpeningStock) {
-        const [update] = await connection.query(`update creport set AmtOpeningStock = ${fetch_shop_wise[0].AmtClosingStock} where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+        const [update] = await connection.query(`update creport set AmtOpeningStock = ${fetch_shop_wise[0].AmtClosingStock} where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Date = '${date}'`)
       }
       return ({ success: true, message: "update_c_report_setting done" })
     } catch (error) {
@@ -4002,7 +4002,7 @@ module.exports = {
       }
       //  console.log("================== getTotalAmountByBarcode ===========");
       //  console.log(CompanyID, Barcode);
-      const [fetchPurchaseDetail] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and BaseBarCode = '${Barcode}'`);
+      const [fetchPurchaseDetail] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where CompanyID = ${CompanyID} and Status = 1 and BaseBarCode = '${Barcode}'`);
       //  console.log(fetchPurchaseDetail);
       if (!fetchPurchaseDetail.length) {
         return ({ success: false, message: `Purchase detail not found from Barcode no :- ${Barcode}` })
@@ -4137,7 +4137,7 @@ module.exports = {
 
       // company wise
 
-      const [fetch_company_wise] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+      const [fetch_company_wise] = await connection.query(`select * from creport where CompanyID = ${CompanyID} and ShopID = 0 and Date = '${date}'`)
 
       let company_wise = {
         openingstock: parseInt(fetch_company_wise[0].OpeningStock),
@@ -4166,7 +4166,7 @@ module.exports = {
 
       // shop wise
 
-      const [fetch_shop_wise] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+      const [fetch_shop_wise] = await connection.query(`select * from creport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Date = '${date}'`)
 
       let shop_wise = {
         openingstock: parseInt(fetch_shop_wise[0].OpeningStock),
@@ -4235,7 +4235,7 @@ module.exports = {
 
       // company wise
 
-      const [fetch_company_wise] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = 0`)
+      const [fetch_company_wise] = await connection.query(`select * from creport where CompanyID = ${CompanyID} and ShopID = 0 and Date = '${date}'`)
 
       let company_wise = {
         openingstock: parseInt(fetch_company_wise[0].AmtOpeningStock),
@@ -4264,7 +4264,7 @@ module.exports = {
 
       // shop wise
 
-      const [fetch_shop_wise] = await connection.query(`select * from creport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+      const [fetch_shop_wise] = await connection.query(`select * from creport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Date = '${date}'`)
 
       let shop_wise = {
         openingstock: parseInt(fetch_shop_wise[0].AmtOpeningStock),
@@ -4355,9 +4355,9 @@ module.exports = {
       if (!fetch.length) {
         if (RegisterType === "PettyCash") {
 
-          const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
+          const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where CompanyID = ${CompanyID} and Status = 1 and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Deposit'`)
 
-          const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
+          const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where CompanyID = ${CompanyID} and Status = 1 and ShopID = ${ShopID} and CashType='PettyCash' and CreditType='Withdrawal'`)
 
           let Balance = DepositBalance[0]?.Amount - WithdrawalBalance[0]?.Amount || 0
 
@@ -4374,9 +4374,9 @@ module.exports = {
         }
         if (RegisterType === "CashCounter") {
 
-          const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
+          const [DepositBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where CompanyID = ${CompanyID} and Status = 1 and  ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Deposit'`)
 
-          const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
+          const [WithdrawalBalance] = await connection.query(`select SUM(pettycash.Amount) as Amount from pettycash where CompanyID = ${CompanyID} and Status = 1 and  ShopID = ${ShopID} and CashType='CashCounter' and CreditType='Withdrawal'`)
 
           let Balance = DepositBalance[0]?.Amount - WithdrawalBalance[0]?.Amount || 0
           if (Type === "Sale" || Type === "Deposit") {
@@ -4390,7 +4390,7 @@ module.exports = {
         }
       }
 
-      const [fetchPettyCash] = await connection.query(`select * from pettycashreport where Date = '${date}' and CompanyID = ${CompanyID} and ShopID = ${ShopID} and RegisterType = '${RegisterType}' `)
+      const [fetchPettyCash] = await connection.query(`select * from pettycashreport where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Date = '${date}'  and RegisterType = '${RegisterType}' `)
 
       if (!fetchPettyCash.length) {
 
@@ -4574,11 +4574,11 @@ module.exports = {
 
         // Calculate current Deposit and Withdrawal totals
         const [DepositBalance] = await connection.query(
-          `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE Status = 1 AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND CashType='${RegisterType}' AND CreditType='Deposit'`
+          `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1 AND  CashType='${RegisterType}' AND CreditType='Deposit'`
         );
 
         const [WithdrawalBalance] = await connection.query(
-          `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE Status = 1 AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND CashType='${RegisterType}' AND CreditType='Withdrawal'`
+          `SELECT SUM(pettycash.Amount) as Amount FROM pettycash WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1 AND  CashType='${RegisterType}' AND CreditType='Withdrawal'`
         );
 
         // Calculate initial Balance
@@ -4603,7 +4603,7 @@ module.exports = {
         }
 
         const [fetchPettyCash] = await connection.query(
-          `SELECT * FROM pettycashreport WHERE Date = '${date}' AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND RegisterType = '${RegisterType}'`
+          `SELECT * FROM pettycashreport WHERE CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Date = '${date}' AND  RegisterType = '${RegisterType}'`
         );
 
         if (fetchPettyCash.length) {
@@ -4700,7 +4700,7 @@ module.exports = {
         return { success: false, message: "Invalid ShopID Data" };
       }
       console.table({ CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType });
-      const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where Status = 1 and CompanyID = ${CompanyID}`);
+      const [fetchCompany] = await connection.query(`select companysetting.ID, companysetting.RewardExpiryDate,companysetting.RewardPercentage,companysetting.AppliedReward from companysetting where CompanyID = ${CompanyID} and Status = 1`);
 
       if (!fetchCompany.length) {
         return { success: false, message: "Invalid CompanyID Data" };
@@ -4791,9 +4791,9 @@ module.exports = {
         return { success: false, message: "Invalid CustomerID Data" };
       }
 
-      const [CreditBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditType='credit'`)
+      const [CreditBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where CompanyID = ${CompanyID} and Status = 1 and  CustomerID = ${CustomerID} and CreditType='credit'`)
 
-      const [DebitBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where Status = 1 and CompanyID = ${CompanyID} and CustomerID = ${CustomerID} and CreditType='debit'`)
+      const [DebitBalance] = await connection.query(`select SUM(rewardmaster.Amount) as Amount from rewardmaster where CompanyID = ${CompanyID} and Status = 1 and CustomerID = ${CustomerID} and CreditType='debit'`)
 
       let Balance = CreditBalance[0]?.Amount - DebitBalance[0]?.Amount || 0;
       // console.log("Balance ====> ", Balance);
@@ -4915,7 +4915,7 @@ module.exports = {
       if (Location.length) {
         for (let item of Location) {
 
-          const [fetch] = await connection.query(`select ID, Qty from locationmaster where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductTypeName = '${ProductTypeName}' and Barcode = '${Barcode}' and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID}`);
+          const [fetch] = await connection.query(`select ID, Qty from locationmaster where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and  ProductTypeID = ${ProductTypeID} and ProductTypeName = '${ProductTypeName}' and Barcode = '${Barcode}' and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID}`);
 
           if (fetch.length) {
             let datum = {
@@ -4925,7 +4925,7 @@ module.exports = {
             // console.log("updateLocatedProductCount datum ===> ", datum);
 
 
-            const [update] = await connection.query(`update locationmaster set Qty = ${datum.Qty} where Status = 1 and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID} and Barcode = '${Barcode}' and CompanyID = ${CompanyID} and ShopID = ${ShopID} `);
+            const [update] = await connection.query(`update locationmaster set Qty = ${datum.Qty} where CompanyID = ${CompanyID} and ShopID = ${ShopID} and Status = 1 and ID = ${item.LocationMasterID} and LocationID = ${item.LocationID} and Barcode = '${Barcode}'`);
 
           }
 
