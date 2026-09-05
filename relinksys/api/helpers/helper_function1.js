@@ -179,55 +179,37 @@ module.exports = {
 
     }
   },
-  generateVisitNo: async (CompanyID, CustomerID, TableName, existingConnection = null
-  ) => {
+  generateVisitNo: async (CompanyID, CustomerID, TableName) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const [visitNo] = await connection.query(`select ID from ${TableName} where CompanyID = ${CompanyID} and CustomerID = ${CustomerID}`)
 
       return visitNo.length + 1;
     } catch (error) {
       console.log(error);
+
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  generateBarcode: async (CompanyID, BarcodeType, existingConnection = null) => {
+  generateBarcode: async (CompanyID, BarcodeType) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const [barcode] = await connection.query(`select barcode.${BarcodeType} from barcode where Status = 1 and CompanyID=${CompanyID}`);
       if (BarcodeType === 'SB') {
         const [updateBarcode] = await connection.query(`update barcode set ${BarcodeType} = ${Number(barcode[0].SB) + 1}, UpdatedOn = now() where CompanyID=${CompanyID}`)
@@ -242,32 +224,22 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  doesExistProduct: async (CompanyID, Body, existingConnection = null) => {
+  doesExistProduct: async (CompanyID, Body) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
       let qry = ``;
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       if (CompanyID === 184 || CompanyID === "184") {
         qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 AND DATE_FORMAT(purchasedetailnew.CreatedOn,"%Y-%m-%d") >= '2024-06-07' `
       } else {
@@ -281,32 +253,22 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
 
   },
-  doesExistDiscoutSetting: async (CompanyID, ShopID, Body, existingConnection = null) => {
+  doesExistDiscoutSetting: async (CompanyID, ShopID, Body) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID} AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1`);
       if (fetch.length) {
         return true
@@ -315,31 +277,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  doesExistDiscoutSettingUpdate: async (CompanyID, ShopID, ID, Body, existingConnection = null) => {
+  doesExistDiscoutSettingUpdate: async (CompanyID, ShopID, ID, Body) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const [fetch] = await connection.query(`SELECT ID FROM discountsetting WHERE ProductName = '${Body.ProductName}' AND ProductTypeID = ${Body.ProductTypeID} AND CompanyID = ${CompanyID} AND ShopID = ${ShopID} AND Status = 1 and ID != ${ID}`);
       if (fetch.length) {
         return true
@@ -348,31 +300,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  doesExistProduct2: async (CompanyID, Body, existingConnection = null) => {
+  doesExistProduct2: async (CompanyID, Body) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
       // let qry = `SELECT MAX(BaseBarCode) AS MaxBarcode FROM purchasedetailnew WHERE ProductName = '${Body.ProductName}' AND ProductTypeName = '${Body.ProductTypeName}' AND purchasedetailnew.RetailPrice = ${Body.RetailPrice} AND purchasedetailnew.UnitPrice = ${Body.UnitPrice} AND purchasedetailnew.MultipleBarcode = ${Body.Multiple} AND purchasedetailnew.CompanyID = ${CompanyID} AND purchasedetailnew.Status = 1 and purchasedetailnew.ID != ${Body.ID}`;
 
@@ -381,32 +323,22 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
 
   },
-  generateUniqueBarcode: async (CompanyID, SupplierID, Body, existingConnection = null) => {
+  generateUniqueBarcode: async (CompanyID, SupplierID, Body) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
 
       let NewBarcode = ''; // blank initiate uniq barcode
@@ -449,31 +381,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  generateUniqueBarcodePreOrder: async (CompanyID, Body, existingConnection = null) => {
+  generateUniqueBarcodePreOrder: async (CompanyID, Body) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const [fetchcompanysetting] = await connection.query(`select year, month, partycode, type from companysetting where Status = 1 and CompanyID = ${CompanyID} `)
 
       let NewBarcode = ''; // blank initiate uniq barcode
@@ -518,31 +440,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  gstDetail: async (CompanyID, PurchaseID, existingConnection = null) => {
+  gstDetail: async (CompanyID, PurchaseID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
       gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
       const values = []
@@ -622,31 +534,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  gstDetailQuotation: async (CompanyID, PurchaseID, existingConnection = null) => {
+  gstDetailQuotation: async (CompanyID, PurchaseID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let [gstTypes] = await connection.query(`select ID, Name, Status, TableName from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
       gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
       const values = []
@@ -684,31 +586,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  gstDetailBill: async (CompanyID, BillID, existingConnection = null) => {
+  gstDetailBill: async (CompanyID, BillID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let [gstTypes] = await connection.query(`select ID, Name, Status, TableName  from supportmaster where CompanyID = ${CompanyID} and Status = 1 and TableName = 'TaxType'`)
       gstTypes = JSON.parse(JSON.stringify(gstTypes)) || []
       const values = []
@@ -788,31 +680,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  getBillDeleteSetting: async (CompanyID, existingConnection = null) => {
+  getBillDeleteSetting: async (CompanyID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
 
       let values = true;
 
@@ -826,11 +708,9 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
@@ -853,12 +733,10 @@ module.exports = {
     CompanyID,
     ShopID,
     billDetailData,
-    billMaseterData,
-    existingConnection = null
+    billMaseterData
   ) => {
 
     let connection;
-    let shouldReleaseConnection = false;
     let transactionStarted = false;
 
     try {
@@ -892,19 +770,17 @@ module.exports = {
       // 2. DATABASE CONNECTION
       // =========================================================
 
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+
+        throw new Error(
+          db?.message ||
+          "Unable to connect to database"
+        );
       }
+
+      connection = await db.getConnection();
 
 
       // =========================================================
@@ -1419,9 +1295,464 @@ module.exports = {
 
 
     } finally {
+
       // =========================================================
       // 25. RELEASE CONNECTION
       // =========================================================
+
+      if (connection) {
+
+        try {
+
+          connection.release();
+
+          console.log(
+            "[Invoice] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[Invoice] Connection release failed:",
+            releaseError.message
+          );
+        }
+      }
+    }
+  },
+  generateInvoiceNoOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+
+      let today = moment();
+      let checkDate = moment("2026-04-01"); // 1 April 2026
+      let changeFormate = false;
+
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let rw = "W";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
+      if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+        rw = "R";
+      }
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale  from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+        }
+
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
+
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+        }
+
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
+      }
+
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+      console.log("newInvoiceID", newInvoiceID);
+
+      if (lastInvoiceID) {
+        if (changeFormate === false) {
+          newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale);
+        } else {
+          newInvoiceID = (rw === "R" ? lastInvoiceID[0].Retail : lastInvoiceID[0].WholeSale) + "-" + newInvoiceID + "-" + shopDetails[0].Sno + rw;
+        }
+
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
+  generateInvoiceNoOOO: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (existingConnection) {
+
+        // Use parent's transaction connection
+        connection = existingConnection;
+
+      } else {
+
+        // Existing behavior for old callers
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE FORMAT
+      |--------------------------------------------------------------------------
+      */
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      const changeFormate = today.isSameOrAfter(checkDate);
+
+      /*
+      |--------------------------------------------------------------------------
+      | DEFAULT INVOICE TYPE
+      |--------------------------------------------------------------------------
+      */
+
+      let rw = "W";
+
+      if (
+        billDetailData &&
+        billDetailData.length !== 0 &&
+        !billDetailData[0].WholeSale
+      ) {
+        rw = "R";
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | TEMP INVOICE ID
+      |--------------------------------------------------------------------------
+      */
+
+      let newInvoiceID = new Date();
+
+      if (
+        billMaseterData.ID === null ||
+        billMaseterData.ID === undefined
+      ) {
+
+        newInvoiceID = new Date()
+          .toISOString()
+          .replace(
+            /[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi,
+            ""
+          )
+          .substring(2, 6);
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CHECK SHOP BILLING CONFIGURATION
+      |--------------------------------------------------------------------------
+      */
+
+      const [billShopWise] = await connection.query(
+        `
+            SELECT
+                ID,
+                BillShopWise
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      let billShopWiseBoolean = false;
+
+      if (billShopWise.length) {
+
+        billShopWiseBoolean =
+          billShopWise[0].BillShopWise === true ||
+          billShopWise[0].BillShopWise === "true" ||
+          billShopWise[0].BillShopWise === 1;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      const invoiceShopID =
+        billShopWiseBoolean
+          ? ShopID
+          : 0;
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Lock the invoice counter row.
+      |
+      | Because this helper may be called inside an existing
+      | payment transaction, FOR UPDATE will remain locked
+      | until the parent transaction commits.
+      |
+      */
+
+      const [lastInvoiceID] = await connection.query(
+        `
+            SELECT
+                Retail,
+                WholeSale
+            FROM invoice
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            FOR UPDATE
+            `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      if (!lastInvoiceID.length) {
+
+        throw new Error(
+          `Invoice counter not found for CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CURRENT COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      const currentRetail =
+        Number(lastInvoiceID[0].Retail || 0);
+
+      const currentWholeSale =
+        Number(lastInvoiceID[0].WholeSale || 0);
+
+      /*
+      |--------------------------------------------------------------------------
+      | NEXT COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      const nextRetail =
+        rw === "R"
+          ? currentRetail + 1
+          : currentRetail;
+
+      const nextWholeSale =
+        rw === "W"
+          ? currentWholeSale + 1
+          : currentWholeSale;
+
+      /*
+      |--------------------------------------------------------------------------
+      | UPDATE COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      await connection.query(
+        `
+            UPDATE invoice
+            SET
+                Retail = ?,
+                WholeSale = ?,
+                UpdatedOn = NOW()
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            `,
+        [
+          nextRetail,
+          nextWholeSale,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | SHOP DETAILS
+      |--------------------------------------------------------------------------
+      */
+
+      const [shopDetails] = await connection.query(
+        `
+            SELECT
+                ID,
+                Sno,
+                ShopSequence
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      if (!shopDetails.length) {
+
+        throw new Error(
+          `Shop details not found for ShopID=${ShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | SELECT GENERATED NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      const generatedNumber =
+        rw === "R"
+          ? nextRetail
+          : nextWholeSale;
+
+      /*
+      |--------------------------------------------------------------------------
+      | GENERATE FINAL INVOICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      if (changeFormate === false) {
+
+        newInvoiceID =
+          newInvoiceID +
+          "-" +
+          rw +
+          shopDetails[0].ShopSequence +
+          "-" +
+          shopDetails[0].Sno +
+          "-" +
+          generatedNumber;
+
+      } else {
+
+        newInvoiceID =
+          generatedNumber +
+          "-" +
+          newInvoiceID +
+          "-" +
+          shopDetails[0].Sno +
+          rw;
+      }
+
+      console.log(
+        "Generated Invoice No:",
+        newInvoiceID
+      );
+
+      return newInvoiceID;
+
+    } catch (error) {
+
+      console.error(
+        "generateInvoiceNo Error:",
+        error
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Parent customerPayment() owns the transaction.
+      |
+      | Therefore we DO NOT rollback here.
+      |
+      */
+
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY OUR OWN CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
       if (
         connection &&
         shouldReleaseConnection
@@ -1434,11 +1765,9 @@ module.exports = {
     CompanyID,
     ShopID,
     billDetailData,
-    billMaseterData,
-    existingConnection = null
+    billMaseterData
   ) => {
     let connection;
-    let shouldReleaseConnection = false;
     let transactionStarted = false;
 
     try {
@@ -1462,19 +1791,15 @@ module.exports = {
       // 2. DATABASE CONNECTION
       // =========================================================
 
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+        throw new Error(
+          db?.message || "Unable to connect to database"
+        );
       }
+
+      connection = await db.getConnection();
 
       // =========================================================
       // 3. INVOICE TYPE
@@ -1897,11 +2222,108 @@ module.exports = {
       // =========================================================
       // 27. RELEASE CONNECTION
       // =========================================================
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+
+      if (connection) {
+        try {
+          connection.release();
+
+          console.log(
+            "[E-Commerce Invoice] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[E-Commerce Invoice] Connection release error:",
+            releaseError
+          );
+        }
+      }
+    }
+  },
+  generateInvoiceNoEcomOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+
+      let today = moment();
+      let checkDate = moment("2026-04-01"); // 1 April 2026
+      let changeFormate = false;
+
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let rw = "E";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
+      if (billDetailData.length !== 0 && !billDetailData[0].WholeSale) {
+        rw = "R";
+      }
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale, Ecommerce  from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+          Ecommerce: rw === "E" ? lastInvoiceID[0].Ecommerce + 1 : lastInvoiceID[0].Ecommerce,
+        }
+
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, Ecommerce = ${updateDatum.Ecommerce}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select Retail, WholeSale, Ecommerce from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
+
+        const updateDatum = {
+          Retail: rw === "R" ? lastInvoiceID[0].Retail + 1 : lastInvoiceID[0].Retail,
+          WholeSale: rw === "W" ? lastInvoiceID[0].WholeSale + 1 : lastInvoiceID[0].WholeSale,
+          Ecommerce: rw === "E" ? lastInvoiceID[0].Ecommerce + 1 : lastInvoiceID[0].Ecommerce,
+        }
+
+        const [update] = await connection.query(`update invoice set Retail = ${updateDatum.Retail}, WholeSale = ${updateDatum.WholeSale}, Ecommerce = ${updateDatum.Ecommerce}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
+      }
+
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+      if (lastInvoiceID) {
+        if (changeFormate === false) {
+          newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + (rw === "E" ? lastInvoiceID[0].Ecommerce : lastInvoiceID[0].Retail);
+        } else {
+          newInvoiceID = (rw === "E" ? lastInvoiceID[0].Ecommerce : lastInvoiceID[0].Retail) + "-" + newInvoiceID + "-" + shopDetails[0].Sno + rw;
+        }
+
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
@@ -1909,11 +2331,9 @@ module.exports = {
     CompanyID,
     ShopID,
     billDetailData,
-    billMaseterData,
-    existingConnection = null
+    billMaseterData
   ) => {
     let connection;
-    let shouldReleaseConnection = false;
     let transactionStarted = false;
 
     try {
@@ -1936,19 +2356,15 @@ module.exports = {
       // 2. DATABASE CONNECTION
       // =========================================================
 
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+        throw new Error(
+          db?.message || "Unable to connect to database"
+        );
       }
+
+      connection = await db.getConnection();
 
       // =========================================================
       // 3. GENERATE DATE PREFIX
@@ -2285,11 +2701,99 @@ module.exports = {
       // =========================================================
       // 23. RELEASE CONNECTION
       // =========================================================
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+
+      if (connection) {
+        try {
+          connection.release();
+
+          console.log(
+            "[Order] Connection released"
+          );
+        } catch (releaseError) {
+          console.error(
+            "[Order] Connection release failed:",
+            releaseError.message
+          );
+        }
+      }
+    }
+  },
+  generateOrderNoOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+
+      let today = moment();
+      let checkDate = moment("2026-04-01"); // 1 April 2026
+      let changeFormate = false;
+
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);;
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
+      }
+
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+      let shopPre = ``
+      if (billShopWiseBoolean && shopDetails.length) {
+        shopPre = `-${shopDetails[0].Sno}`
+      }
+
+      if (lastInvoiceID) {
+        if (changeFormate === false) {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-O`
+        } else {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}O`
+        }
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
@@ -2297,11 +2801,9 @@ module.exports = {
     CompanyID,
     ShopID,
     billDetailData,
-    billMaseterData,
-    existingConnection = null
+    billMaseterData
   ) => {
     let connection;
-    let shouldReleaseConnection = false;
     let transactionStarted = false;
 
     try {
@@ -2335,19 +2837,17 @@ module.exports = {
       // 2. DATABASE CONNECTION
       // =========================================================
 
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+
+        throw new Error(
+          db?.message ||
+          "Unable to connect to database"
+        );
       }
+
+      connection = await db.getConnection();
 
 
       // =========================================================
@@ -2830,6 +3330,419 @@ module.exports = {
       // =========================================================
       // 26. RELEASE CONNECTION
       // =========================================================
+
+      if (connection) {
+
+        try {
+
+          connection.release();
+
+          console.log(
+            "[Service Invoice] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[Service Invoice] Connection release error:",
+            releaseError.message
+          );
+        }
+      }
+    }
+  },
+  generateInvoiceNoForServiceOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+
+      let today = moment();
+      let checkDate = moment("2026-04-01"); // 1 April 2026
+      let changeFormate = false;
+
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
+      } else {
+        console.log("Date is NOT after 2026-03-31");
+      }
+
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let rw = "S";
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date();
+      if (billMaseterData.ID === null || billMaseterData.ID === undefined) {
+        newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+      }
+
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Service: lastInvoiceID[0].Service + 1
+        }
+
+        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select Service from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
+
+        const updateDatum = {
+          Service: lastInvoiceID[0].Service + 1
+        }
+
+        const [update] = await connection.query(`update invoice set Service = ${updateDatum.Service}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
+      }
+
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+      if (lastInvoiceID) {
+        if (changeFormate === false) {
+          newInvoiceID = newInvoiceID + "-" + rw + shopDetails[0].ShopSequence + "-" + shopDetails[0].Sno + "-" + lastInvoiceID[0].Service;
+        } else {
+          newInvoiceID = lastInvoiceID[0].Service + "-" + newInvoiceID + "-" + shopDetails[0].Sno + rw;
+        }
+
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
+  generateInvoiceNoForServiceOOO: async (
+    CompanyID,
+    ShopID,
+    billDetailData,
+    billMaseterData,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (existingConnection) {
+
+        // Use parent's transaction connection
+        connection = existingConnection;
+
+      } else {
+
+        // Backward-compatible behavior
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE FORMAT
+      |--------------------------------------------------------------------------
+      */
+
+      const today = moment();
+      const checkDate = moment("2026-04-01");
+
+      const changeFormate =
+        today.isSameOrAfter(checkDate);
+
+      /*
+      |--------------------------------------------------------------------------
+      | SERVICE INVOICE
+      |--------------------------------------------------------------------------
+      */
+
+      const rw = "S";
+
+      /*
+      |--------------------------------------------------------------------------
+      | TEMP INVOICE ID
+      |--------------------------------------------------------------------------
+      */
+
+      let newInvoiceID = new Date();
+
+      if (
+        billMaseterData.ID === null ||
+        billMaseterData.ID === undefined
+      ) {
+
+        newInvoiceID = new Date()
+          .toISOString()
+          .replace(
+            /[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi,
+            ""
+          )
+          .substring(2, 6);
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CHECK SHOP BILLING CONFIGURATION
+      |--------------------------------------------------------------------------
+      */
+
+      const [billShopWise] = await connection.query(
+        `
+            SELECT
+                ID,
+                BillShopWise
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      let billShopWiseBoolean = false;
+
+      if (billShopWise.length) {
+
+        billShopWiseBoolean =
+          billShopWise[0].BillShopWise === true ||
+          billShopWise[0].BillShopWise === "true" ||
+          billShopWise[0].BillShopWise === 1;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INVOICE COUNTER SHOP
+      |--------------------------------------------------------------------------
+      */
+
+      const invoiceShopID =
+        billShopWiseBoolean
+          ? ShopID
+          : 0;
+
+      /*
+      |--------------------------------------------------------------------------
+      | LOCK INVOICE COUNTER
+      |--------------------------------------------------------------------------
+      |
+      | This prevents two concurrent requests from
+      | generating the same Service invoice number.
+      |
+      */
+
+      const [lastInvoiceID] = await connection.query(
+        `
+            SELECT
+                Service
+            FROM invoice
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            FOR UPDATE
+            `,
+        [
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      if (!lastInvoiceID.length) {
+
+        throw new Error(
+          `Invoice counter not found for CompanyID=${CompanyID}, ShopID=${invoiceShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CURRENT SERVICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      const currentService =
+        Number(lastInvoiceID[0].Service || 0);
+
+      /*
+      |--------------------------------------------------------------------------
+      | NEXT SERVICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      const nextService =
+        currentService + 1;
+
+      /*
+      |--------------------------------------------------------------------------
+      | UPDATE COUNTER
+      |--------------------------------------------------------------------------
+      */
+
+      await connection.query(
+        `
+            UPDATE invoice
+            SET
+                Service = ?,
+                UpdatedOn = NOW()
+            WHERE CompanyID = ?
+              AND ShopID = ?
+            `,
+        [
+          nextService,
+          CompanyID,
+          invoiceShopID
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | SHOP DETAILS
+      |--------------------------------------------------------------------------
+      */
+
+      const [shopDetails] = await connection.query(
+        `
+            SELECT
+                ID,
+                Sno,
+                ShopSequence
+            FROM shop
+            WHERE CompanyID = ?
+              AND ID = ?
+              AND Status = 1
+            LIMIT 1
+            `,
+        [
+          CompanyID,
+          ShopID
+        ]
+      );
+
+      if (!shopDetails.length) {
+
+        throw new Error(
+          `Shop details not found for ShopID=${ShopID}`
+        );
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | GENERATE FINAL INVOICE NUMBER
+      |--------------------------------------------------------------------------
+      */
+
+      if (changeFormate === false) {
+
+        newInvoiceID =
+          newInvoiceID +
+          "-" +
+          rw +
+          shopDetails[0].ShopSequence +
+          "-" +
+          shopDetails[0].Sno +
+          "-" +
+          nextService;
+
+      } else {
+
+        newInvoiceID =
+          nextService +
+          "-" +
+          newInvoiceID +
+          "-" +
+          shopDetails[0].Sno +
+          rw;
+      }
+
+      console.log(
+        "Generated Service Invoice No:",
+        newInvoiceID
+      );
+
+      return newInvoiceID;
+
+    } catch (error) {
+
+      console.error(
+        "generateInvoiceNoForService Error:",
+        error
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Parent transaction owns rollback.
+      |
+      */
+
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY OUR OWN CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
       if (
         connection &&
         shouldReleaseConnection
@@ -2842,11 +3755,9 @@ module.exports = {
     CompanyID,
     ShopID,
     billDetailData,
-    billMaseterData,
-    existingConnection = null
+    billMaseterData
   ) => {
     let connection;
-    let shouldReleaseConnection = false;
     let transactionStarted = false;
 
     try {
@@ -2870,19 +3781,15 @@ module.exports = {
       // 2. DATABASE CONNECTION
       // =========================================================
 
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      const db = await dbConnection(CompanyID);
+
+      if (!db || db.success === false) {
+        throw new Error(
+          db?.message || "Unable to connect to database"
+        );
       }
+
+      connection = await db.getConnection();
 
       // =========================================================
       // 3. GENERATE DATE PREFIX
@@ -3257,31 +4164,115 @@ module.exports = {
       // =========================================================
       // 26. RELEASE CONNECTION
       // =========================================================
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+
+      if (connection) {
+        try {
+          connection.release();
+
+          console.log(
+            "[Service Order] Connection released"
+          );
+
+        } catch (releaseError) {
+
+          console.error(
+            "[Service Order] Connection release error:",
+            releaseError
+          );
+        }
       }
     }
   },
-  generateInvoiceNo2: async (CompanyID, ShopID, billDetailData, billMaseterData, existingConnection = null) => {
+  generateOrderNoForServiceOld: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
+
+      let today = moment();
+      let checkDate = moment("2026-04-01"); // 1 April 2026
+      let changeFormate = false;
+
+
+      if (today.isSameOrAfter(checkDate)) {
+        console.log("Today is after 31 March 2026");
+        changeFormate = true;
       } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+        console.log("Date is NOT after 2026-03-31");
       }
+
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
+      let billShopWiseBoolean = false
+      let newInvoiceID = new Date().toISOString().replace(/[`~!@#$%^&*()_|+\-=?TZ;:'",.<>\{\}\[\]\\\/]/gi, "").substring(2, 6);
+
+      const [billShopWise] = await connection.query(`select ID, BillShopWise from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`);
+      if (billShopWise.length) {
+        if (billShopWise[0].BillShopWise == true || billShopWise[0].BillShopWise == "true") {
+          billShopWiseBoolean = true
+        } else {
+          billShopWiseBoolean = false
+        }
+      }
+
+      let lastInvoiceID = []
+
+      if (billShopWiseBoolean) {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
+
+      } else {
+        [lastInvoiceID] = await connection.query(`select invoice.Order from invoice WHERE CompanyID = ${CompanyID} and ShopID = 0`);
+
+        const updateDatum = {
+          Order: lastInvoiceID[0].Order + 1
+        }
+
+        const [update] = await connection.query(`update invoice set invoice.Order = ${updateDatum.Order}, UpdatedOn = now() WHERE CompanyID = ${CompanyID} and ShopID = 0`)
+      }
+
+
+      const [shopDetails] = await connection.query(`select ID, Sno, ShopSequence from shop where CompanyID = ${CompanyID} and ID = ${ShopID} and Status = 1`)
+
+      let shopPre = ``
+      if (billShopWiseBoolean && shopDetails.length) {
+        shopPre = `-${shopDetails[0].Sno}`
+      }
+
+      if (lastInvoiceID) {
+        if (changeFormate === false) {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}-S`;
+        } else {
+          newInvoiceID = `${lastInvoiceID[0].Order}-${newInvoiceID}${shopPre}S`;
+        }
+      }
+
+      return newInvoiceID
+    } catch (error) {
+      console.log(error);
+    } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
+  generateInvoiceNo2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
+    let connection;
+    try {
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
+      }
+      connection = await db.getConnection();
       let rw = "W";
       let billShopWiseBoolean = false
       let newInvoiceID = new Date();
@@ -3327,31 +4318,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  generateInvoiceNoForService2: async (CompanyID, ShopID, billDetailData, billMaseterData, existingConnection = null) => {
+  generateInvoiceNoForService2: async (CompanyID, ShopID, billDetailData, billMaseterData) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let rw = "S";
       let billShopWiseBoolean = false
       let newInvoiceID = new Date();
@@ -3394,62 +4375,42 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  generateBillSno: async (CompanyID, ShopID, existingConnection = null) => {
+  generateBillSno: async (CompanyID, ShopID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const [sNo] = await connection.query(`select ID from billmaster where CompanyID = ${CompanyID} and ShopID = ${ShopID}`)
 
       return sNo.length + 1;
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser, existingConnection = null) => {
+  generateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
 
       let commission = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 };
       let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 };
@@ -3539,31 +4500,21 @@ module.exports = {
       // next(error);
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  updateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser, existingConnection = null) => {
+  updateCommission: async (CompanyID, UserType, UserID, bMasterID, billMaseterData, LoggedOnUser) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let commission = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 };
       let commission1 = { Type: 0, Mode: 0, Value: 0, Amount: 0, BrandedCommissionAmount: 0, NonBrandedCommissionAmount: 0 };
 
@@ -3652,31 +4603,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  generatePreOrderProduct: async (CompanyID, ShopID, Item, LoggedOnUser, existingConnection = null) => {
+  generatePreOrderProduct: async (CompanyID, ShopID, Item, LoggedOnUser) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       // delete Item.MeasurementID
 
       // calcultaion
@@ -3856,32 +4797,22 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
 
   },
-  update_c_report_setting: async (CompanyID, ShopID, CurrentDate, existingConnection = null) => {
+  update_c_report_setting: async (CompanyID, ShopID, CurrentDate) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let date = moment(CurrentDate).format("YYYY-MM-DD")
       let back_date = moment(date).subtract(1, 'days').format("YYYY-MM-DD");
       if (!CompanyID) {
@@ -3920,31 +4851,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  getInventory: async (CompanyID, ShopID, existingConnection = null) => {
+  getInventory: async (CompanyID, ShopID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       let Qty = 0;
       let shopid = ShopID;
       let params = ``
@@ -3964,31 +4885,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  getTotalAmountByBarcode: async (CompanyID, Barcode, existingConnection = null) => {
+  getTotalAmountByBarcode: async (CompanyID, Barcode) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       //  console.log("================== getTotalAmountByBarcode ===========");
       //  console.log(CompanyID, Barcode);
       const [fetchPurchaseDetail] = await connection.query(`select UnitPrice, DiscountPercentage, GSTPercentage from purchasedetailnew where Status = 1 and CompanyID = ${CompanyID} and BaseBarCode = '${Barcode}'`);
@@ -4020,31 +4931,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  getInventoryAmt: async (CompanyID, ShopID, existingConnection = null) => {
+  getInventoryAmt: async (CompanyID, ShopID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       const response = {
         data: null, success: true, message: "", calculation: [{
           "totalQty": 0,
@@ -4088,31 +4989,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate, existingConnection = null) => {
+  update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       // let updatesetting = await this.update_c_report_setting(CompanyID, ShopID, CurrentDate)
 
       let date = moment(CurrentDate).format("YYYY-MM-DD")
@@ -4186,31 +5077,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  amt_update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate, existingConnection = null) => {
+  amt_update_c_report: async (CompanyID, ShopID, AddPurchase, AddPreOrderPurchase, DeletePurchase, AddSale, DeleteSale, AddPreOrderSale, DeletePreOrderSale, AddManualSale, DeleteManualSale, OtherDeleteStock, InitiateTransfer, CancelTransfer, AcceptTransfer, CurrentDate) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       // let updatesetting = await this.update_c_report_setting(CompanyID, ShopID, CurrentDate)
 
       let date = moment(CurrentDate).format("YYYY-MM-DD")
@@ -4284,31 +5165,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate, existingConnection = null) => {
+  update_pettycash_report: async (CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       console.table({ CompanyID, ShopID, Type, Amount, RegisterType, CurrentDate });
 
       let date = moment(CurrentDate).format("YYYY-MM-DD")
@@ -4499,6 +5370,570 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+
+  },
+  update_pettycash_reportOOO: async (
+    CompanyID,
+    ShopID,
+    Type,
+    Amount,
+    RegisterType,
+    CurrentDate,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION
+      |--------------------------------------------------------------------------
+      */
+
+      if (existingConnection) {
+
+        // Use transaction connection from parent
+        connection = existingConnection;
+
+      } else {
+
+        // Existing behavior for old callers
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | DATE
+      |--------------------------------------------------------------------------
+      */
+
+      const date = moment(CurrentDate).format("YYYY-MM-DD");
+
+      /*
+      |--------------------------------------------------------------------------
+      | BASE DATA
+      |--------------------------------------------------------------------------
+      */
+
+      let datum = {
+        date: date,
+        OpeningBalance: 0,
+        CompanyID: CompanyID,
+        ShopID: ShopID,
+        RegisterType: RegisterType,
+        Sale: 0,
+        Expense: 0,
+        Doctor: 0,
+        Employee: 0,
+        Payroll: 0,
+        Fitter: 0,
+        Supplier: 0,
+        Deposit: 0,
+        Withdrawal: 0,
+        ClosingBalance: 0
+      };
+
+      console.table({
+        CompanyID,
+        ShopID,
+        Type,
+        Amount,
+        RegisterType,
+        CurrentDate
+      });
+
+      /*
+      |--------------------------------------------------------------------------
+      | CHECK REPORT EXISTENCE
+      |--------------------------------------------------------------------------
+      */
+
+      const [fetch] = await connection.query(
+        `
+            SELECT *
+            FROM pettycashreport
+            WHERE CompanyID = ?
+              AND ShopID = ?
+              AND RegisterType = ?
+            `,
+        [
+          CompanyID,
+          ShopID,
+          RegisterType
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | CREATE PREVIOUS DAY REPORT IF REQUIRED
+      |--------------------------------------------------------------------------
+      */
+
+      if (!fetch.length) {
+
+        if (
+          RegisterType === "PettyCash" ||
+          RegisterType === "CashCounter"
+        ) {
+
+          const [DepositBalance] = await connection.query(
+            `
+                    SELECT COALESCE(SUM(Amount), 0) AS Amount
+                    FROM pettycash
+                    WHERE Status = 1
+                      AND CompanyID = ?
+                      AND ShopID = ?
+                      AND CashType = ?
+                      AND CreditType = 'Deposit'
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              RegisterType
+            ]
+          );
+
+          const [WithdrawalBalance] = await connection.query(
+            `
+                    SELECT COALESCE(SUM(Amount), 0) AS Amount
+                    FROM pettycash
+                    WHERE Status = 1
+                      AND CompanyID = ?
+                      AND ShopID = ?
+                      AND CashType = ?
+                      AND CreditType = 'Withdrawal'
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              RegisterType
+            ]
+          );
+
+          let Balance =
+            Number(DepositBalance[0]?.Amount || 0) -
+            Number(WithdrawalBalance[0]?.Amount || 0);
+
+          /*
+          |--------------------------------------------------------------------------
+          | IMPORTANT
+          |--------------------------------------------------------------------------
+          |
+          | Sale/Deposit increases CashCounter/PettyCash report
+          | Expense/Withdrawal decreases it.
+          |
+          */
+
+          if (
+            Type === "Sale" ||
+            Type === "Deposit"
+          ) {
+            Balance = Balance + Number(Amount);
+          } else {
+            Balance = Balance - Number(Amount);
+          }
+
+          const back_date = moment(date)
+            .subtract(1, "days")
+            .format("YYYY-MM-DD");
+
+          await connection.query(
+            `
+                    INSERT INTO pettycashreport
+                    (
+                        CompanyID,
+                        ShopID,
+                        RegisterType,
+                        Date,
+                        OpeningBalance,
+                        Sale,
+                        Expense,
+                        Doctor,
+                        Employee,
+                        Payroll,
+                        Fitter,
+                        Supplier,
+                        Withdrawal,
+                        Deposit,
+                        ClosingBalance
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              RegisterType,
+              back_date,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              Balance
+            ]
+          );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET TODAY REPORT
+      |--------------------------------------------------------------------------
+      */
+
+      const [fetchPettyCash] = await connection.query(
+        `
+            SELECT *
+            FROM pettycashreport
+            WHERE Date = ?
+              AND CompanyID = ?
+              AND ShopID = ?
+              AND RegisterType = ?
+            LIMIT 1
+            `,
+        [
+          date,
+          CompanyID,
+          ShopID,
+          RegisterType
+        ]
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | GET OPENING BALANCE
+      |--------------------------------------------------------------------------
+      */
+
+      if (!fetchPettyCash.length) {
+
+        const [fetchPettyCashBackDate] = await connection.query(
+          `
+                SELECT *
+                FROM pettycashreport
+                WHERE CompanyID = ?
+                  AND ShopID = ?
+                  AND RegisterType = ?
+                ORDER BY ID DESC
+                LIMIT 1
+                `,
+          [
+            CompanyID,
+            ShopID,
+            RegisterType
+          ]
+        );
+
+        if (fetchPettyCashBackDate.length) {
+
+          datum.OpeningBalance =
+            Number(
+              fetchPettyCashBackDate[0].ClosingBalance || 0
+            );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | UPDATE EXISTING REPORT
+      |--------------------------------------------------------------------------
+      */
+
+      if (fetchPettyCash.length) {
+
+        const existing = fetchPettyCash[0];
+
+        datum.OpeningBalance =
+          Number(existing.ClosingBalance || 0);
+
+        datum.Sale =
+          Number(existing.Sale || 0);
+
+        datum.Expense =
+          Number(existing.Expense || 0);
+
+        datum.Doctor =
+          Number(existing.Doctor || 0);
+
+        datum.Employee =
+          Number(existing.Employee || 0);
+
+        datum.Payroll =
+          Number(existing.Payroll || 0);
+
+        datum.Fitter =
+          Number(existing.Fitter || 0);
+
+        datum.Supplier =
+          Number(existing.Supplier || 0);
+
+        datum.Deposit =
+          Number(existing.Deposit || 0);
+
+        datum.Withdrawal =
+          Number(existing.Withdrawal || 0);
+
+        const amount = Number(Amount || 0);
+
+        /*
+        |--------------------------------------------------------------------------
+        | APPLY TRANSACTION
+        |--------------------------------------------------------------------------
+        */
+
+        if (Type === "Sale") {
+
+          datum.ClosingBalance += amount;
+          datum.Sale += amount;
+
+        } else if (Type === "Deposit") {
+
+          datum.ClosingBalance += amount;
+          datum.Deposit += amount;
+
+        } else if (Type === "Expense") {
+
+          datum.ClosingBalance -= amount;
+          datum.Expense += amount;
+
+        } else if (Type === "Doctor") {
+
+          datum.ClosingBalance -= amount;
+          datum.Doctor += amount;
+
+        } else if (Type === "Employee") {
+
+          datum.ClosingBalance -= amount;
+          datum.Employee += amount;
+
+        } else if (Type === "Payroll") {
+
+          datum.ClosingBalance -= amount;
+          datum.Payroll += amount;
+
+        } else if (Type === "Fitter") {
+
+          datum.ClosingBalance -= amount;
+          datum.Fitter += amount;
+
+        } else if (Type === "Supplier") {
+
+          datum.ClosingBalance -= amount;
+          datum.Supplier += amount;
+
+        } else if (Type === "Withdrawal") {
+
+          datum.ClosingBalance -= amount;
+          datum.Withdrawal += amount;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE
+        |--------------------------------------------------------------------------
+        */
+
+        await connection.query(
+          `
+                UPDATE pettycashreport
+                SET
+                    Sale = ?,
+                    Expense = ?,
+                    Doctor = ?,
+                    Employee = ?,
+                    Payroll = ?,
+                    Fitter = ?,
+                    Supplier = ?,
+                    Withdrawal = ?,
+                    Deposit = ?,
+                    ClosingBalance = ?
+                WHERE ID = ?
+                `,
+          [
+            datum.Sale,
+            datum.Expense,
+            datum.Doctor,
+            datum.Employee,
+            datum.Payroll,
+            datum.Fitter,
+            datum.Supplier,
+            datum.Withdrawal,
+            datum.Deposit,
+            datum.ClosingBalance,
+            existing.ID
+          ]
+        );
+
+        console.table(datum);
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | INSERT TODAY REPORT
+      |--------------------------------------------------------------------------
+      */
+
+      if (!fetchPettyCash.length) {
+
+        const amount = Number(Amount || 0);
+
+        datum.ClosingBalance =
+          Number(datum.OpeningBalance || 0);
+
+        if (Type === "Sale") {
+
+          datum.ClosingBalance += amount;
+          datum.Sale = amount;
+
+        } else if (Type === "Deposit") {
+
+          datum.ClosingBalance += amount;
+          datum.Deposit = amount;
+
+        } else if (Type === "Expense") {
+
+          datum.ClosingBalance -= amount;
+          datum.Expense = amount;
+
+        } else if (Type === "Doctor") {
+
+          datum.ClosingBalance -= amount;
+          datum.Doctor = amount;
+
+        } else if (Type === "Employee") {
+
+          datum.ClosingBalance -= amount;
+          datum.Employee = amount;
+
+        } else if (Type === "Payroll") {
+
+          datum.ClosingBalance -= amount;
+          datum.Payroll = amount;
+
+        } else if (Type === "Fitter") {
+
+          datum.ClosingBalance -= amount;
+          datum.Fitter = amount;
+
+        } else if (Type === "Supplier") {
+
+          datum.ClosingBalance -= amount;
+          datum.Supplier = amount;
+
+        } else if (Type === "Withdrawal") {
+
+          datum.ClosingBalance -= amount;
+          datum.Withdrawal = amount;
+        }
+
+        await connection.query(
+          `
+                INSERT INTO pettycashreport
+                (
+                    CompanyID,
+                    ShopID,
+                    RegisterType,
+                    Date,
+                    OpeningBalance,
+                    Sale,
+                    Expense,
+                    Doctor,
+                    Employee,
+                    Payroll,
+                    Fitter,
+                    Supplier,
+                    Withdrawal,
+                    Deposit,
+                    ClosingBalance
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `,
+          [
+            datum.CompanyID,
+            datum.ShopID,
+            datum.RegisterType,
+            date,
+            datum.OpeningBalance,
+            datum.Sale,
+            datum.Expense,
+            datum.Doctor,
+            datum.Employee,
+            datum.Payroll,
+            datum.Fitter,
+            datum.Supplier,
+            datum.Withdrawal,
+            datum.Deposit,
+            datum.ClosingBalance
+          ]
+        );
+      }
+
+      return {
+        success: true,
+        message: "Petty cash report updated successfully"
+      };
+
+    } catch (error) {
+
+      console.error(
+        "update_pettycash_report Error:",
+        error
+      );
+
+      // Let parent transaction handle rollback
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY CONNECTION CREATED HERE
+      |--------------------------------------------------------------------------
+      */
+
       if (
         connection &&
         shouldReleaseConnection
@@ -4506,25 +5941,16 @@ module.exports = {
         connection.release();
       }
     }
-
   },
-  update_pettycash_counter_report: async (CompanyID, ShopID, Type, Amount, CurrentDate, existingConnection = null) => {
+  update_pettycash_counter_report: async (CompanyID, ShopID, Type, Amount, CurrentDate) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       console.table({ CompanyID, ShopID, Type, Amount, CurrentDate });
 
       let date = moment(CurrentDate).format("YYYY-MM-DD");
@@ -4657,31 +6083,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser, existingConnection = null) => {
+  reward_master: async (CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       if (!CompanyID) {
         return { success: false, message: "Invalid CompanyID Data" };
       }
@@ -4746,6 +6162,336 @@ module.exports = {
     } catch (error) {
       console.log("reward_master", error);
     } finally {
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
+      }
+    }
+  },
+  reward_masterOOO: async (
+    CompanyID,
+    ShopID,
+    CustomerID,
+    InvoiceNo,
+    PaidAmount,
+    CreditType,
+    LoggedOnUser,
+    existingConnection = null
+  ) => {
+
+    let connection;
+    let shouldReleaseConnection = false;
+
+    try {
+
+      /*
+      |--------------------------------------------------------------------------
+      | CONNECTION HANDLING
+      |--------------------------------------------------------------------------
+      |
+      | If existingConnection is provided:
+      |     Use it.
+      |
+      | If not provided:
+      |     Create a new connection.
+      |
+      */
+
+      if (existingConnection) {
+
+        connection = existingConnection;
+
+      } else {
+
+        const db = await dbConnection(CompanyID);
+
+        if (!db || db.success === false) {
+          return {
+            success: false,
+            message: "Database connection failed"
+          };
+        }
+
+        connection = await db.getConnection();
+
+        shouldReleaseConnection = true;
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | VALIDATION
+      |--------------------------------------------------------------------------
+      */
+
+      if (!CompanyID) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      if (!ShopID) {
+        return {
+          success: false,
+          message: "Invalid ShopID Data"
+        };
+      }
+
+      if (!CustomerID) {
+        return {
+          success: false,
+          message: "Invalid CustomerID Data"
+        };
+      }
+
+      if (!InvoiceNo) {
+        return {
+          success: false,
+          message: "Invalid InvoiceNo Data"
+        };
+      }
+
+      if (
+        PaidAmount === null ||
+        PaidAmount === undefined ||
+        Number.isNaN(Number(PaidAmount))
+      ) {
+        return {
+          success: false,
+          message: "Invalid PaidAmount Data"
+        };
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | FETCH COMPANY SETTINGS
+      |--------------------------------------------------------------------------
+      */
+
+      const [fetchCompany] = await connection.query(
+        `
+            SELECT
+                ID,
+                RewardExpiryDate,
+                RewardPercentage,
+                AppliedReward
+            FROM companysetting
+            WHERE Status = 1
+              AND CompanyID = ?
+            LIMIT 1
+            `,
+        [CompanyID]
+      );
+
+      if (!fetchCompany.length) {
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
+      }
+
+      const companySetting = fetchCompany[0];
+
+      /*
+      |--------------------------------------------------------------------------
+      | CREDIT
+      |--------------------------------------------------------------------------
+      */
+
+      if (CreditType === "credit") {
+
+        const rewardPercentage = Number(
+          companySetting.RewardPercentage || 0
+        );
+
+        const rewardAmount = Number(
+          calculateAmount(
+            Number(PaidAmount),
+            rewardPercentage
+          ) || 0
+        );
+
+        if (rewardAmount > 0) {
+
+          await connection.query(
+            `
+                    INSERT INTO rewardmaster
+                    (
+                        CompanyID,
+                        ShopID,
+                        CustomerID,
+                        InvoiceNo,
+                        PaidAmount,
+                        RewardPercentage,
+                        Amount,
+                        CreditType,
+                        Status,
+                        CreatedBy,
+                        CreatedOn
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              CustomerID,
+              InvoiceNo,
+              Number(PaidAmount),
+              rewardPercentage,
+              rewardAmount,
+              "credit",
+              1,
+              LoggedOnUser
+            ]
+          );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | DEBIT
+      |--------------------------------------------------------------------------
+      */
+
+      if (CreditType === "debit") {
+
+        const rewardPercentage = Number(
+          companySetting.AppliedReward || 0
+        );
+
+        const rewardAmount = Number(PaidAmount || 0);
+
+        if (rewardAmount > 0) {
+
+          await connection.query(
+            `
+                    INSERT INTO rewardmaster
+                    (
+                        CompanyID,
+                        ShopID,
+                        CustomerID,
+                        InvoiceNo,
+                        PaidAmount,
+                        RewardPercentage,
+                        Amount,
+                        CreditType,
+                        Status,
+                        CreatedBy,
+                        CreatedOn
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              CustomerID,
+              InvoiceNo,
+              Number(PaidAmount),
+              rewardPercentage,
+              rewardAmount,
+              "debit",
+              1,
+              LoggedOnUser
+            ]
+          );
+        }
+      }
+
+      /*
+      |--------------------------------------------------------------------------
+      | CUSTOMER RETURN DEBIT
+      |--------------------------------------------------------------------------
+      */
+
+      if (CreditType === "customer_return_debit") {
+
+        const rewardPercentage = Number(
+          companySetting.RewardPercentage || 0
+        );
+
+        const rewardAmount = Number(
+          calculateAmount(
+            Number(PaidAmount),
+            rewardPercentage
+          ) || 0
+        );
+
+        if (rewardAmount > 0) {
+
+          await connection.query(
+            `
+                    INSERT INTO rewardmaster
+                    (
+                        CompanyID,
+                        ShopID,
+                        CustomerID,
+                        InvoiceNo,
+                        PaidAmount,
+                        RewardPercentage,
+                        Amount,
+                        CreditType,
+                        Status,
+                        CreatedBy,
+                        CreatedOn
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                    `,
+            [
+              CompanyID,
+              ShopID,
+              CustomerID,
+              InvoiceNo,
+              Number(PaidAmount),
+              rewardPercentage,
+              rewardAmount,
+              "debit",
+              1,
+              LoggedOnUser
+            ]
+          );
+        }
+      }
+
+      return {
+        success: true,
+        message: "data update"
+      };
+
+    } catch (error) {
+
+      console.error(
+        "reward_master Error:",
+        error
+      );
+
+      /*
+      |--------------------------------------------------------------------------
+      | IMPORTANT
+      |--------------------------------------------------------------------------
+      |
+      | Do NOT rollback here.
+      |
+      | Parent function owns transaction.
+      |
+      */
+
+      throw error;
+
+    } finally {
+
+      /*
+      |--------------------------------------------------------------------------
+      | RELEASE ONLY OUR OWN CONNECTION
+      |--------------------------------------------------------------------------
+      |
+      | If connection was passed by caller:
+      |     DO NOT release it.
+      |
+      | If we created it:
+      |     Release it.
+      |
+      */
+
       if (
         connection &&
         shouldReleaseConnection
@@ -4754,23 +6500,15 @@ module.exports = {
       }
     }
   },
-  getCustomerRewardBalance: async (CustomerID, CompanyID, existingConnection = null) => {
+  getCustomerRewardBalance: async (CustomerID, CompanyID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       // console.table({ CustomerID, CompanyID });
 
       if (!CompanyID) {
@@ -4792,11 +6530,9 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
@@ -4809,24 +6545,15 @@ module.exports = {
     }
     return retVal;
   },
-  getProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID, existingConnection = null) => {
+  getProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
-
+      connection = await db.getConnection();
       let qry = `SELECT barcodemasternew.Barcode, COUNT(barcodemasternew.ID) AS TotalQty,barcodemasternew.Status, barcodemasternew.CurrentStatus FROM barcodemasternew LEFT JOIN purchasedetailnew ON purchasedetailnew.ID = barcodemasternew.PurchaseDetailID LEFT JOIN purchasemasternew ON purchasemasternew.ID = purchasedetailnew.PurchaseID LEFT JOIN supplier ON supplier.ID = purchasemasternew.SupplierID  LEFT JOIN shop ON shop.ID = barcodemasternew.ShopID where  barcodemasternew.CompanyID = ${CompanyID} and barcodemasternew.ShopID = ${ShopID} AND barcodemasternew.Barcode = '${Barcode}' and purchasedetailnew.Status = 1 and supplier.Name != 'PreOrder Supplier'  ` + " GROUP BY barcodemasternew.Barcode, barcodemasternew.ShopID, barcodemasternew.CurrentStatus " + " HAVING barcodemasternew.Status = 1 and barcodemasternew.CurrentStatus = 'Available'";
       const [fetch] = await connection.query(qry)
 
@@ -4841,32 +6568,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  getLocatedProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID, existingConnection = null) => {
+  getLocatedProductCountByBarcodeNumber: async (Barcode, CompanyID, ShopID) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
-
+      connection = await db.getConnection();
       const [fetch] = await connection.query(`select SUM(locationmaster.Qty) as LocatedQty from locationmaster where locationmaster.CompanyID = ${CompanyID} and locationmaster.ShopID = ${ShopID} and locationmaster.Barcode = '${Barcode}' and locationmaster.Status = 1`);
 
       if (fetch.length) {
@@ -4876,31 +6592,21 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
-  updateLocatedProductCount: async (CompanyID, ShopID, ProductTypeID, ProductTypeName, Barcode, Location, existingConnection = null) => {
+  updateLocatedProductCount: async (CompanyID, ShopID, ProductTypeID, ProductTypeName, Barcode, Location) => {
     let connection;
-    let shouldReleaseConnection = false;
     try {
-      if (existingConnection) {
-        connection = existingConnection;
-      } else {
-        const db = await dbConnection(CompanyID);
-        if (!db || db.success === false) {
-          return {
-            success: false,
-            message: "Database connection failed"
-          };
-        }
-        connection = await db.getConnection();
-        shouldReleaseConnection = true;
+      // const db = await dbConfig.dbByCompanyID(CompanyID);
+      const db = await dbConnection(CompanyID)
+      if (db.success === false) {
+        return res.status(200).json(db);
       }
+      connection = await db.getConnection();
       if (Location.length) {
         for (let item of Location) {
 
@@ -4926,11 +6632,9 @@ module.exports = {
     } catch (error) {
       console.log(error);
     } finally {
-      if (
-        connection &&
-        shouldReleaseConnection
-      ) {
-        connection.release();
+      if (connection) {
+        connection.release(); // Always release the connection
+        connection.destroy();
       }
     }
   },
