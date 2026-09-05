@@ -3587,7 +3587,7 @@ module.exports = {
             let billDetailData = BillDetail;
 
             let billingFlow = 1;
-            const serialNo = await generateBillSno(CompanyID, shopid,)
+            const serialNo = await generateBillSno(CompanyID, shopid, connection)
             billMaseterData.Sno = serialNo;
             billMaseterData.ShopID = shopid;
             billMaseterData.CompanyID = CompanyID;
@@ -3672,7 +3672,7 @@ module.exports = {
 
 
                     } else if (manual === 1 && preorder === 0) {
-                        item.BaseBarCode = await generateBarcode(CompanyID, 'MB')
+                        item.BaseBarCode = await generateBarcode(CompanyID, 'MB', connection)
                         item.Barcode = Number(item.BaseBarCode);
                         [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate, ProductDeliveryDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.SalePrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.Quantity},${item.TotalAmonut}, ${item.DiscountPercentage ? item.DiscountPercentage : 0},${item.DiscountAmount ? item.DiscountAmount : 0},${item.GSTPercentage ? item.GSTPercentage : 0},${item.GSTAmount ? item.GSTAmount : 0},'${item.GSTType ? item.GSTType : 'None'}',${item.TotalAmonut},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.power ? item.power : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}', '${item.ProductDeliveryDate ? item.ProductDeliveryDate : '0000-00-00'}')`
@@ -3708,26 +3708,26 @@ module.exports = {
 
                         // update c report setting
 
-                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime, connection)
 
-                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
 
-                        const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode)
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID, ele.Barcode, connection)
 
-                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, ele.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
                     }
                 }
 
                 // save employee commission
 
                 if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser, connection)
                 }
 
                 // save doctor commission
 
                 if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser, connection)
                 }
             }
 
