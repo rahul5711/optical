@@ -628,7 +628,7 @@ module.exports = {
                         item.Barcode = Number(item.BaseBarCode)
                         // generate unique barcode
                         item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
-                        const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
+                        const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser, connection);
 
                         [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate, ProductDeliveryDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.prod_TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}', '${item.ProductDeliveryDate}')`
@@ -799,7 +799,7 @@ module.exports = {
             }
 
 
-            const serialNo = await generateBillSno(CompanyID, shopid,)
+            const serialNo = await generateBillSno(CompanyID, shopid, connection)
 
             billMaseterData.Sno = serialNo;
             billMaseterData.ShopID = shopid;
@@ -816,14 +816,14 @@ module.exports = {
 
 
             if (billDetailData.length) {
-                const invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData)
+                const invoiceNo = await generateInvoiceNo(CompanyID, shopid, billDetailData, billMaseterData, connection)
                 billMaseterData.InvoiceNo = invoiceNo;
                 productStatus = 'Pending'
             }
 
             if (service.length && !billDetailData.length) {
                 billType = 0
-                const invoiceNo = await generateInvoiceNoForService(CompanyID, shopid, service, billMaseterData)
+                const invoiceNo = await generateInvoiceNoForService(CompanyID, shopid, service, billMaseterData, connection)
                 billMaseterData.InvoiceNo = invoiceNo;
             }
             console.log("Invoice No ======>", billMaseterData.InvoiceNo);
@@ -977,8 +977,8 @@ module.exports = {
                         item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
                         item.Barcode = Number(item.BaseBarCode)
                         // generate unique barcode
-                        item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
-                        const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
+                        item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item, connection)
+                        const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser, connection)
                         let [result] = await connection.query(
                             `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.prod_UnitPrice},${item.PurchasePrice},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType}',${item.prod_TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
                         );
@@ -1038,13 +1038,13 @@ module.exports = {
                 // save employee commission
 
                 if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser, connection)
                 }
 
                 // save doctor commission
 
                 if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser, connection)
                 }
             }
 
@@ -1293,8 +1293,8 @@ module.exports = {
                             item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
                             item.Barcode = Number(item.BaseBarCode)
                             // generate unique barcode
-                            item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
-                            const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser);
+                            item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item, connection)
+                            const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser, connection);
                             [result] = await connection.query(`insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,PurchasePrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate, ProductDeliveryDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode ? item.HSNCode : ''}',${item.prod_UnitPrice},${item.PurchasePrice ? item.PurchasePrice : 0},${item.prod_Quantity},${item.prod_SubTotal}, ${item.prod_DiscountPercentage},${item.prod_DiscountAmount},${item.prod_GSTPercentage},${item.prod_GSTAmount},'${item.GSTType ? item.GSTType : 'None'}',${item.prod_TotalAmount},${wholesale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID ? item.MeasurementID : []}','${item.Option ? item.Option : ''}','${item.Family ? item.Family : 'Self'}', ${LoggedOnUser}, '${req.headers.currenttime}', ${item.SupplierID ? item.SupplierID : 0}, '${item.Remark ? item.Remark : ''}', '${item.Warranty ? item.Warranty : ''}', '${item.ProductExpDate ? item.ProductExpDate : '0000-00-00'}', '${item.ProductDeliveryDate}')`
                             );
                         } else if (manual === 1 && preorder === 0) {
@@ -1681,8 +1681,8 @@ module.exports = {
                     item.BaseBarCode = await generateBarcode(CompanyID, 'PB')
                     item.Barcode = Number(item.BaseBarCode) * 1000
                     // generate unique barcode
-                    item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item)
-                    const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser)
+                    item.UniqueBarcode = await generateUniqueBarcodePreOrder(CompanyID, item, connection)
+                    const data = await generatePreOrderProduct(CompanyID, shopid, item, LoggedOnUser, connection)
                     console.log(item, 'item');
                     result = await connection.query(
                         `insert into billdetail (BillID,CompanyID,ProductTypeID,ProductTypeName,ProductName,HSNCode,UnitPrice,Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage,GSTAmount,GSTType,TotalAmount,WholeSale, Manual, PreOrder,BaseBarCode,Barcode,Status, MeasurementID, Optionsss, Family, CreatedBy,CreatedOn, SupplierID, Remark, Warranty, ProductExpDate) values (${bMasterID}, ${CompanyID}, ${item.ProductTypeID},'${item.ProductTypeName}','${item.ProductName}', '${item.HSNCode}',${item.UnitPrice},${item.Quantity},${item.SubTotal}, ${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.WholeSale},${manual}, ${preorder}, '${item.BaseBarCode}' ,'${item.Barcode}',1,'${item.MeasurementID}','${item.Option}','${item.Family}', ${LoggedOnUser}, now(), ${item.SupplierID}, '${item.Remark}', '${item.Warranty}', '${item.ProductExpDate}')`
@@ -1730,13 +1730,13 @@ module.exports = {
             // save employee commission
 
             if (billMaseterData.Employee !== 0 && billMaseterData.Employee !== undefined && billMaseterData.Employee !== null) {
-                const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser)
+                const saveEmpCommission = await generateCommission(CompanyID, 'Employee', billMaseterData.Employee, bMasterID, billMaseterData, LoggedOnUser, connection)
             }
 
             // save doctor commission
 
             if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
-                const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser)
+                const saveDocCommission = await generateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, bMasterID, billMaseterData, LoggedOnUser, connection)
             }
 
             //  update payment
@@ -1795,7 +1795,7 @@ module.exports = {
             let shopId = ``
             let deleteBill = ``
 
-            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID)
+            const fetDeleteBillCommSetting = await getBillDeleteSetting(CompanyID, connection)
             if (fetDeleteBillCommSetting === "false") {
                 deleteBill = ` and billmaster.Status = 1`
             }
@@ -6078,7 +6078,7 @@ module.exports = {
             for (const item of PurchaseDetail) {
 
                 // generate unique barcode
-                item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item)
+                item.UniqueBarcode = await generateUniqueBarcode(CompanyID, supplierId, item, connection)
 
                 const [savePurchaseDetail] = await connection.query(`insert into purchasedetailnew(PurchaseID,CompanyID,ProductName,ProductTypeID,ProductTypeName,UnitPrice, Quantity,SubTotal,DiscountPercentage,DiscountAmount,GSTPercentage, GSTAmount,GSTType,TotalAmount,RetailPrice,WholeSalePrice,MultipleBarCode,WholeSale,BaseBarCode,Ledger,Status,NewBarcode,ReturnRef,BrandType,UniqueBarcode,Checked,BillDetailIDForPreOrder,CreatedBy,CreatedOn)values(${savePurchase.insertId},${CompanyID},'${item.ProductName}',${item.ProductTypeID},'${item.ProductTypeName}', ${item.UnitPrice},${item.Quantity},${item.SubTotal},${item.DiscountPercentage},${item.DiscountAmount},${item.GSTPercentage},${item.GSTAmount},'${item.GSTType}',${item.TotalAmount},${item.RetailPrice},${item.WholeSalePrice},0,${item.WholeSale},'${item.BaseBarcode}',0,1,'${item.BaseBarcode}',0,0,'${item.UniqueBarcode}',0,0,${LoggedOnUser},'${req.headers.currenttime}')`)
 
@@ -13218,7 +13218,7 @@ module.exports = {
                 return res.status(200).json(db);
             }
             connection = await db.getConnection();
-            const checkExist = await doesExistDiscoutSetting(CompanyID, ShopID, req.body)
+            const checkExist = await doesExistDiscoutSetting(CompanyID, ShopID, req.body, connection)
 
             if (checkExist) {
                 return res.send({ success: false, message: `Discount setting already exist from ${ProductName}` });
@@ -13273,7 +13273,7 @@ module.exports = {
                 return res.send({ message: "Discount setting does not exist from provided id" })
             }
 
-            const checkExist = await doesExistDiscoutSettingUpdate(CompanyID, ShopID, ID, req.body)
+            const checkExist = await doesExistDiscoutSettingUpdate(CompanyID, ShopID, ID, req.body, connection)
 
             if (checkExist) {
                 return res.send({ success: false, message: `Discount setting already exist from ${ProductName}` });
@@ -14325,13 +14325,13 @@ module.exports = {
 
                         // update c report setting
 
-                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime)
+                        const var_update_c_report_setting = await update_c_report_setting(CompanyID, shopid, req.headers.currenttime, connection)
 
-                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        const var_update_c_report = await update_c_report(CompanyID, shopid, 0, 0, 0, 0, item.Quantity, 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
 
-                        const totalAmount = await getTotalAmountByBarcode(CompanyID, item.Barcode)
+                        const totalAmount = await getTotalAmountByBarcode(CompanyID, item.Barcode, connection)
 
-                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, item.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime)
+                        const var_amt_update_c_report = await amt_update_c_report(CompanyID, shopid, 0, 0, 0, 0, item.Quantity * Number(totalAmount), 0, 0, 0, 0, 0, 0, 0, 0, req.headers.currenttime, connection)
                     }
                 }
             }
@@ -15859,11 +15859,11 @@ module.exports = {
                 if (fetchInvoiceMaster.length) {
                     if (fetchInvoiceMaster[0].BillType === 1) {
                         const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
-                        inv = await generateInvoiceNo(CompanyID, fetchInvoiceMaster[0].ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                        inv = await generateInvoiceNo(CompanyID, fetchInvoiceMaster[0].ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null }, connection)
 
                     }
                     if (fetchInvoiceMaster[0].BillType === 0) {
-                        inv = await generateInvoiceNoForService(CompanyID, fetchInvoiceMaster[0].ShopID, [], { ID: null })
+                        inv = await generateInvoiceNoForService(CompanyID, fetchInvoiceMaster[0].ShopID, [], { ID: null }, connection)
                     }
 
                     const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${item.ID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 3`);
@@ -16737,10 +16737,10 @@ module.exports = {
 
                             if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 1) {
                                 const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${item.ID} and CompanyID = ${CompanyID} limit 1 `);
-                                inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                                inv = await generateInvoiceNo(CompanyID, ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null }, connection)
                             }
                             if (fetchInvoiceMaster.length && fetchInvoiceMaster[0].BillType === 0) {
-                                inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null })
+                                inv = await generateInvoiceNoForService(CompanyID, ShopID, [], { ID: null }, connection)
                             }
 
                             if (fetchInvoiceMaster.length) {
@@ -16755,14 +16755,14 @@ module.exports = {
                         if (PaymentMode.toUpperCase() === "CASH") {
 
                             const [saveDataPettycash] = await connection.query(`insert into pettycash (CompanyID, ShopID, EmployeeID, RefID, CashType, CreditType, Amount,   Comments, Status, CreatedBy , CreatedOn,InvoiceNo, ActionType ) values (${CompanyID},${ShopID}, ${billRows[0].CustomerID},${pMasterID}, 'CashCounter', 'Deposit', ${item.Amount},'', 1 , ${LoggedOnUser}, now(),'${item.InvoiceNo}', 'Customer')`);
-                            const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime)
+                            const update_pettycash = update_pettycash_report(CompanyID, ShopID, "Sale", item.Amount, "CashCounter", req.headers.currenttime, connection)
 
                         }
 
                         if (item.PaymentStatus === "Paid") {
                             const [fetchBillMaster] = await connection.query(`select SUM(paymentdetail.Amount) as Amount from paymentdetail where CompanyID = ${CompanyID} and BillID = '${item.InvoiceNo}' and PaymentType = 'Customer' and Credit = 'Credit'`)
                             const [delReward] = await connection.query(`delete from rewardmaster where CompanyID = ${CompanyID} and InvoiceNo = '${item.InvoiceNo}' and CreditType = 'credit'`)
-                            const saveReward = await reward_master(CompanyID, ShopID, billRows[0].CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
+                            const saveReward = await reward_master(CompanyID, ShopID, billRows[0].CustomerID, item.InvoiceNo, fetchBillMaster[0].Amount, "credit", LoggedOnUser, connection) //CompanyID, ShopID, CustomerID, InvoiceNo, PaidAmount, CreditType, LoggedOnUser
                         }
 
                     }
@@ -17772,13 +17772,13 @@ const updateDoctor = async () => {
                     const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${item.ID} and CompanyID = ${CompanyID} and UserType = 'Doctor' and CommissionMasterID = 0 `)
                     const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${item.ID}`);
                     if (billMaseterData) {
-                        const saveCommission = await generateCommission(CompanyID, 'Doctor', UserID, item.ID, billMaseterData[0], item.CreatedBy)
+                        const saveCommission = await generateCommission(CompanyID, 'Doctor', UserID, item.ID, billMaseterData[0], item.CreatedBy, connection)
                     }
 
                 } else {
                     const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${item.ID}`);
                     if (billMaseterData) {
-                        const saveCommission = await generateCommission(CompanyID, 'Doctor', UserID, item.ID, billMaseterData[0], item.CreatedBy);
+                        const saveCommission = await generateCommission(CompanyID, 'Doctor', UserID, item.ID, billMaseterData[0], item.CreatedBy, connection);
                     }
                 }
 
