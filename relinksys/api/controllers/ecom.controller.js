@@ -1931,6 +1931,7 @@ module.exports = {
                 State,
                 Country,
                 Address,
+                Landmark,
                 LoginName,
                 Password,
                 CreatedBy = 1,
@@ -2051,7 +2052,7 @@ module.exports = {
             /* ---------- CREATE USER ---------- */
             const UserID = Math.floor(1000000000 + Math.random() * 9000000000);
 
-            await connection.query(`INSERT INTO ecom_user (CompanyID, UserID, Title, Name, MobileNo, AltMobileNo,DOB, Email, Pincode, City, State, Country, Address,LoginName, Password, Status, CreatedBy, UpdatedBy, CreatedOn ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NOW())`,
+            await connection.query(`INSERT INTO ecom_user (CompanyID, UserID, Title, Name, MobileNo, AltMobileNo,DOB, Email, Pincode, City, State, Country, Address, Landmark,LoginName, Password, Status, CreatedBy, UpdatedBy, CreatedOn ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NOW())`,
                 [
                     CompanyID,
                     UserID,
@@ -2066,6 +2067,7 @@ module.exports = {
                     State || "",
                     Country || "",
                     Address || "",
+                    Landmark || "",
                     LoginName,
                     Password,
                     CreatedBy,
