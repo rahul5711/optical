@@ -17497,6 +17497,344 @@ ORDER BY ReportYear,ReportMonthNo`;
                 error: error.response?.data || error.message
             });
         }
+    },
+
+    sendWhatsAppTemplateNew: async (req, res) => {
+        try {
+            // =====================================================
+            // REQUEST BODY
+            // =====================================================
+            let {
+                mobile,
+                customer_name,
+                discount_amount,
+                payable_amount
+            } = req.body;
+
+            // =====================================================
+            // 1. VALIDATE MOBILE NUMBER
+            // =====================================================
+
+            if (!mobile) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Mobile number is required."
+                });
+            }
+
+            // =====================================================
+            // 2. REMOVE SPECIAL CHARACTERS
+            // =====================================================
+
+            const formattedMobile = mobile
+                .toString()
+                .trim()
+                .replace(/\D/g, "");
+
+            // =====================================================
+            // 3. VALIDATE INDIAN MOBILE NUMBER
+            //
+            // Supported:
+            // 9876543210
+            // 919876543210
+            // +919876543210
+            // +91 9876543210
+            // =====================================================
+
+            if (!/^(91)?[6-9]\d{9}$/.test(formattedMobile)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid Indian mobile number."
+                });
+            }
+
+            // =====================================================
+            // 4. PREPARE WHATSAPP MOBILE NUMBER
+            //
+            // MSG91 requires:
+            // 919876543210
+            //
+            // NOT:
+            // +919876543210
+            // =====================================================
+
+            const whatsappMobile = formattedMobile.startsWith("91")
+                ? formattedMobile
+                : `91${formattedMobile}`;
+
+            // =====================================================
+            // 5. GENERATE 6 DIGIT OTP
+            // =====================================================
+
+            const otp = Math.floor(
+                100000 + Math.random() * 900000
+            ).toString();
+
+            // =====================================================
+            // 6. GENERATE IST TIMESTAMP
+            // =====================================================
+
+            const timestamp = new Date().toLocaleString(
+                "en-IN",
+                {
+                    timeZone: "Asia/Kolkata",
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false
+                }
+            );
+
+            // =====================================================
+            // 7. PREPARE TEMPLATE VALUES
+            // =====================================================
+
+            const customerName =
+                customer_name &&
+                    customer_name.toString().trim()
+                    ? customer_name.toString().trim()
+                    : "Customer";
+
+            const discountAmount =
+                discount_amount !== undefined &&
+                    discount_amount !== null &&
+                    discount_amount !== ""
+                    ? discount_amount
+                    : 0;
+
+            const payableAmount =
+                payable_amount !== undefined &&
+                    payable_amount !== null &&
+                    payable_amount !== ""
+                    ? payable_amount
+                    : 0;
+
+            // =====================================================
+            // 8. MSG91 WHATSAPP PAYLOAD
+            //
+            // Template:
+            //
+            // Hi {{1}}, here is your billing summary from
+            // Purvanchal Netralaya & Retina Care Centre.
+            //
+            // Authorisation code: {{2}}
+            // Discount applied: Rs {{3}}
+            // Net payable amount: Rs {{4}}
+            //
+            // =====================================================
+
+            const payload = {
+                integrated_number: "919236349106",
+                content_type: "template",
+                payload: {
+                    messaging_product: "whatsapp",
+                    type: "template",
+                    template: {
+                        // =================================================
+                        // MSG91 TEMPLATE NAME
+                        // =================================================
+                        name: "authotp",
+                        // =================================================
+                        // TEMPLATE LANGUAGE
+                        // =================================================
+                        language: {
+                            code: "en",
+                            policy: "deterministic"
+                        },
+                        // =================================================
+                        // MSG91 NAMESPACE
+                        // =================================================
+                        namespace: "f974ed6f_cc7d_4751_b242_0ed90aa51445",
+                        // =================================================
+                        // RECIPIENT + TEMPLATE VARIABLES
+                        // =================================================
+                        to_and_components: [
+                            {
+                                // =============================================
+                                // WHATSAPP MOBILE NUMBER
+                                // =============================================
+
+                                to: [
+                                    whatsappMobile
+                                ],
+
+                                // =============================================
+                                // TEMPLATE VARIABLES
+                                // =============================================
+
+                                components: {
+
+                                    // {{1}}
+                                    // Customer Name
+
+                                    body_1: {
+                                        type: "text",
+                                        value: customerName
+                                    },
+
+                                    // {{2}}
+                                    // Authorization Code / OTP
+
+                                    body_2: {
+                                        type: "text",
+                                        value: otp
+                                    },
+
+                                    // {{3}}
+                                    // Discount Amount
+
+                                    body_3: {
+                                        type: "text",
+                                        value: String(discountAmount)
+                                    },
+
+                                    // {{4}}
+                                    // Net Payable Amount
+
+                                    body_4: {
+                                        type: "text",
+                                        value: String(payableAmount)
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            };
+
+            // =====================================================
+            // 9. LOG REQUEST
+            // =====================================================
+
+            console.log(
+                "=========================================="
+            );
+
+            console.log(
+                "MSG91 WHATSAPP REQUEST"
+            );
+
+            console.log(
+                "=========================================="
+            );
+
+            console.log(
+                JSON.stringify(
+                    payload,
+                    null,
+                    2
+                )
+            );
+
+            // =====================================================
+            // 10. MSG91 API CALL
+            // =====================================================
+
+            const response = await axios.post(
+                "https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/",
+                payload,
+                {
+                    timeout: 30000,
+                    headers: {
+                        "Content-Type": "application/json",
+                        // MSG91 AUTH KEY
+                        "authkey": "554656A6QeuJHDQp3J6a8e9b58P1"
+                    }
+                }
+            );
+
+            // =====================================================
+            // 11. LOG MSG91 RESPONSE
+            // =====================================================
+
+            console.log(
+                "=========================================="
+            );
+
+            console.log(
+                "MSG91 WHATSAPP RESPONSE"
+            );
+
+            console.log(
+                "=========================================="
+            );
+
+            console.log(
+                JSON.stringify(
+                    response.data,
+                    null,
+                    2
+                )
+            );
+
+            // =====================================================
+            // 12. SUCCESS RESPONSE
+            // =====================================================
+
+            return res.status(200).json({
+                mobile: whatsappMobile,
+                success: true,
+                message: "WhatsApp OTP sent successfully.",
+                otp,
+                generatedAt: timestamp,
+                data: response.data
+            });
+
+        } catch (error) {
+
+            // =====================================================
+            // 13. ERROR LOG
+            // =====================================================
+
+            console.error(
+                "=========================================="
+            );
+
+            console.error(
+                "MSG91 WHATSAPP API ERROR"
+            );
+
+            console.error(
+                "=========================================="
+            );
+
+            console.error(
+                "Message:",
+                error.message
+            );
+
+            console.error(
+                "Status:",
+                error.response?.status
+            );
+
+            console.error(
+                "Response:",
+                error.response?.data
+            );
+
+            // =====================================================
+            // 14. ERROR RESPONSE
+            // =====================================================
+
+            return res.status(
+                error.response?.status || 500
+            ).json({
+
+                success: false,
+
+                message:
+                    "Failed to send WhatsApp OTP.",
+
+                error:
+                    error.response?.data ||
+                    error.message
+
+            });
+        }
     }
 
 }
