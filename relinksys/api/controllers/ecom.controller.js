@@ -2621,6 +2621,497 @@ module.exports = {
         }
     },
 
+    manageCartBulk: async (req, res) => {
+        let connection;
+        try {
+            // =========================================================
+            // REQUEST BODY
+            // req.body MUST be an ARRAY
+            // =========================================================
+            const items = req.body;
+
+            if (!Array.isArray(items) || items.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Request body must be a non-empty array"
+                });
+            }
+
+            const allowedTypes = ["addtocart", "wishlist"];
+            const allowedActions = ["add", "update", "delete"];
+
+            // =========================================================
+            // 1. NORMALIZE + VALIDATE ALL ITEMS
+            // =========================================================
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+
+                if (!item || typeof item !== "object") {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Invalid item at index ${i}`,
+                        index: i
+                    });
+                }
+
+                let {
+                    CompanyID,
+                    UserID,
+                    PublishCode,
+                    Quantity,
+                    action,
+                    Type
+                } = item;
+
+                Type = Type?.toLowerCase()?.trim();
+                action = action?.toLowerCase()?.trim();
+
+                // Normalize values
+                item.Type = Type;
+                item.action = action;
+
+                // -----------------------------------------------------
+                // Required fields
+                // -----------------------------------------------------
+                if (
+                    !CompanyID ||
+                    !UserID ||
+                    !PublishCode ||
+                    !Type ||
+                    !action
+                ) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Required fields missing at index ${i}`,
+                        index: i
+                    });
+                }
+
+                // -----------------------------------------------------
+                // Validate Type
+                // -----------------------------------------------------
+                if (!allowedTypes.includes(Type)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Type should be either addtocart or wishlist at index ${i}`,
+                        index: i
+                    });
+                }
+
+                // -----------------------------------------------------
+                // Validate Action
+                // -----------------------------------------------------
+                if (!allowedActions.includes(action)) {
+                    return res.status(400).json({
+                        success: false,
+                        message: `Invalid action at index ${i}`,
+                        index: i
+                    });
+                }
+
+                // -----------------------------------------------------
+                // Quantity validation
+                // Only required for cart add/update
+                // -----------------------------------------------------
+                if (
+                    Type === "addtocart" &&
+                    (action === "add" || action === "update")
+                ) {
+                    if (
+                        Quantity === undefined ||
+                        Quantity === null ||
+                        Number(Quantity) <= 0
+                    ) {
+                        return res.status(400).json({
+                            success: false,
+                            message: `Quantity must be greater than 0 at index ${i}`,
+                            index: i
+                        });
+                    }
+
+                    // Convert to number
+                    item.Quantity = Number(Quantity);
+                }
+            }
+
+            // =========================================================
+            // 2. CHECK SAME COMPANY
+            // =========================================================
+            const CompanyID = items[0].CompanyID;
+
+            const invalidCompany = items.some(
+                item => String(item.CompanyID) !== String(CompanyID)
+            );
+
+            if (invalidCompany) {
+                return res.status(400).json({
+                    success: false,
+                    message: "All items must have the same CompanyID"
+                });
+            }
+
+            // =========================================================
+            // 3. GET DATABASE
+            // =========================================================
+            const db = await dbConfig.dbByCompanyID(CompanyID);
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            // =========================================================
+            // 4. START TRANSACTION
+            // =========================================================
+            await connection.beginTransaction();
+
+            // =========================================================
+            // 5. CHECK ALL USERS IN ONE QUERY
+            // =========================================================
+            const userIds = [
+                ...new Set(items.map(item => item.UserID))
+            ];
+
+            const userPlaceholders = userIds
+                .map(() => "?")
+                .join(",");
+
+            const [users] = await connection.query(
+                `
+                SELECT ID, UserID
+                FROM ecom_user
+                WHERE UserID IN (${userPlaceholders})
+                AND Status = 1
+            `,
+                userIds
+            );
+
+            const existingUserIds = new Set(
+                users.map(user => String(user.UserID))
+            );
+
+            const invalidUser = items.find(
+                item => !existingUserIds.has(String(item.UserID))
+            );
+
+            if (invalidUser) {
+                await connection.rollback();
+                return res.status(404).json({
+                    success: false,
+                    message: `UserID does not exist: ${invalidUser.UserID}`
+                });
+            }
+
+            // =========================================================
+            // 6. PROCESS ITEMS
+            // =========================================================
+            const results = [];
+
+            for (const item of items) {
+
+                const {
+                    CompanyID,
+                    UserID,
+                    PublishCode,
+                    Quantity,
+                    action,
+                    Type
+                } = item;
+
+                // =====================================================
+                // FIND EXISTING RECORD
+                // =====================================================
+                const [existing] = await connection.query(
+                    `
+                    SELECT
+                        ID,
+                        Quantity
+                    FROM ecom_addtocart
+                    WHERE CompanyID = ?
+                    AND UserID = ?
+                    AND PublishCode = ?
+                    AND Type = ?
+                    AND Status = 1
+                    LIMIT 1
+                `,
+                    [
+                        CompanyID,
+                        UserID,
+                        PublishCode,
+                        Type
+                    ]
+                );
+
+                // =====================================================
+                // ADD
+                // =====================================================
+                if (action === "add") {
+
+                    // -------------------------------------------------
+                    // RECORD ALREADY EXISTS
+                    // -------------------------------------------------
+                    if (existing.length > 0) {
+
+                        // -------------------------------------------------
+                        // CART
+                        // -------------------------------------------------
+                        if (Type === "addtocart") {
+
+                            await connection.query(
+                                `
+                                UPDATE ecom_addtocart
+                                SET
+                                    Quantity = ?,
+                                    UpdatedOn = NOW()
+                                WHERE ID = ?
+                            `,
+                                [
+                                    Quantity,
+                                    existing[0].ID
+                                ]
+                            );
+
+                            results.push({
+                                PublishCode,
+                                action,
+                                Type,
+                                success: true,
+                                message: "Cart updated successfully"
+                            });
+
+                        }
+                        // -------------------------------------------------
+                        // WISHLIST
+                        // -------------------------------------------------
+                        else {
+
+                            results.push({
+                                PublishCode,
+                                action,
+                                Type,
+                                success: true,
+                                message: "Wishlist already exists"
+                            });
+                        }
+
+                    }
+
+                    // -------------------------------------------------
+                    // INSERT NEW RECORD
+                    // -------------------------------------------------
+                    else {
+
+                        const insertQuantity =
+                            Type === "addtocart"
+                                ? Quantity
+                                : 0;
+
+                        await connection.query(
+                            `
+                            INSERT INTO ecom_addtocart
+                            (
+                                CompanyID,
+                                UserID,
+                                PublishCode,
+                                Quantity,
+                                Type,
+                                Status,
+                                CreatedOn,
+                                UpdatedOn
+                            )
+                            VALUES (?, ?, ?, ?, ?, 1, NOW(), NOW())
+                        `,
+                            [
+                                CompanyID,
+                                UserID,
+                                PublishCode,
+                                insertQuantity,
+                                Type
+                            ]
+                        );
+
+                        results.push({
+                            PublishCode,
+                            action,
+                            Type,
+                            success: true,
+                            message: Type === "addtocart" ? "Cart added successfully" : "Wishlist added successfully"
+                        });
+                    }
+                }
+
+                // =====================================================
+                // UPDATE
+                // =====================================================
+                else if (action === "update") {
+
+                    // -------------------------------------------------
+                    // RECORD NOT FOUND
+                    // -------------------------------------------------
+                    if (existing.length === 0) {
+
+                        results.push({
+                            PublishCode,
+                            action,
+                            Type,
+                            success: false,
+                            message: Type === "addtocart" ? "Item not found in cart" : "Item not found in wishlist"
+                        });
+
+                        continue;
+                    }
+
+                    // -------------------------------------------------
+                    // CART UPDATE
+                    // -------------------------------------------------
+                    if (Type === "addtocart") {
+
+                        await connection.query(
+                            `
+                            UPDATE ecom_addtocart
+                            SET
+                                Quantity = ?,
+                                UpdatedOn = NOW()
+                            WHERE ID = ?
+                        `,
+                            [
+                                Quantity,
+                                existing[0].ID
+                            ]
+                        );
+
+                        results.push({
+                            PublishCode,
+                            action,
+                            Type,
+                            success: true,
+                            message: "Cart quantity updated"
+                        });
+
+                    }
+
+                    // -------------------------------------------------
+                    // WISHLIST UPDATE
+                    // -------------------------------------------------
+                    else {
+
+                        results.push({
+                            PublishCode,
+                            action,
+                            Type,
+                            success: true,
+                            message: "Wishlist updated successfully"
+                        });
+                    }
+                }
+
+                // =====================================================
+                // DELETE
+                // =====================================================
+                else if (action === "delete") {
+
+                    // -------------------------------------------------
+                    // RECORD NOT FOUND
+                    // -------------------------------------------------
+                    if (existing.length === 0) {
+
+                        results.push({
+                            PublishCode,
+                            action,
+                            Type,
+                            success: false,
+                            message: "Item not found"
+                        });
+
+                        continue;
+                    }
+
+                    // -------------------------------------------------
+                    // SOFT DELETE
+                    // -------------------------------------------------
+                    await connection.query(
+                        `
+                        UPDATE ecom_addtocart
+                        SET
+                            Status = 0,
+                            UpdatedOn = NOW()
+                        WHERE ID = ?
+                    `,
+                        [
+                            existing[0].ID
+                        ]
+                    );
+
+                    results.push({
+                        PublishCode,
+                        action,
+                        Type,
+                        success: true,
+                        message: Type === "addtocart" ? "Item removed from cart" : "Item removed from wishlist"
+                    });
+                }
+            }
+
+            // =========================================================
+            // 7. COMMIT
+            // =========================================================
+            await connection.commit();
+
+            // =========================================================
+            // 8. RESPONSE
+            // =========================================================
+            const failedItems = results.filter(
+                item => item.success === false
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "Bulk cart operation completed successfully",
+                total: items.length,
+                successful: results.length - failedItems.length,
+                failed: failedItems.length,
+                data: results
+            });
+
+        } catch (error) {
+
+            // =========================================================
+            // ROLLBACK
+            // =========================================================
+            if (connection) {
+                try {
+                    await connection.rollback();
+                } catch (rollbackError) {
+                    console.error(
+                        "Rollback Error:",
+                        rollbackError
+                    );
+                }
+            }
+
+            console.error(
+                "manageCart Bulk Error:",
+                error
+            );
+
+            return res.status(500).json({
+                success: false,
+                message: "Error while managing bulk cart",
+                error: error.message
+            });
+
+        } finally {
+
+            // =========================================================
+            // RELEASE CONNECTION
+            // =========================================================
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+
     // save order
 
     saveOrder: async (req, res) => {

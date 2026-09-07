@@ -27,6 +27,7 @@ router.get('/getCounterDataByUserID', Controller.getCounterDataByUserID);
 // add to cart
 
 router.post("/manageCart", Controller.manageCart);
+router.post("/manageCartBulk", Controller.manageCartBulk);
 router.post("/saveOrder", Controller.saveOrder);
 router.post("/saveOrderAfterPayment", Controller.saveOrderAfterPayment);
 router.post("/cancelOrder", Controller.cancelOrder);
