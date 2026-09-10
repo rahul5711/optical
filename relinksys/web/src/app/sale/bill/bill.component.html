@@ -842,7 +842,7 @@
                         <mat-label>TAX%</mat-label>
                         <input matInput name="GST" type="number" min="0" [(ngModel)]="Service.GSTPercentage"
                             (blur)="calculations('GSTPercentageSer', 'serviceGst')" required #GSTcontrol
-                            [autocomplete]="false" >
+                            [autocomplete]="false" [disabled]="company.ID == 504">
                         <mat-error>
                             TAX is required
                         </mat-error>
