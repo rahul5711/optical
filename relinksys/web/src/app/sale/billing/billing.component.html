@@ -2132,7 +2132,7 @@
 
                                             <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
                                                 <div class="membership-card col-4"
-                                                    [class.disabled]="memberCard.MemberType != 'GOLD'">
+                                                    [class.disabled]=" memberCard.MemberType != (company.ID == 541 ? 'GOLD MAX' : 'GOLD')">
                                                     <div class="membership-card-inner">
                                                         <!-- Front -->
                                                         <div class="membership-card-front">
@@ -2155,10 +2155,12 @@
                                                                 </div>
 
                                                                 <!-- Card -->
-                                                                <div class="card-number-title">
+                                                               
+                                                                <div class="card-number-title" >
                                                                     <!-- {{this.data.Other || 'Gold'}} -->
-                                                                    Gold
+                                                                 {{company.ID == 541 ? 'GOLD MAX' : 'GOLD'}}
                                                                 </div>
+                                                               
 
                                                                 <div class="card-number">
                                                                     **** **** *{{this.data.Idd}}
@@ -2194,7 +2196,7 @@
 
                                                         <!-- Back -->
                                                         <div class="membership-card-back"
-                                                            [class.disabled]="memberCard.MemberType != 'GOLD'">
+                                                            [class.disabled]=" memberCard.MemberType != (company.ID == 541 ? 'GOLD MAX' : 'GOLD')">
                                                             <div
                                                                 style="background-image:url('../../../assets/images/pcmbg.png'); background-size: 100% 100%;">
                                                                 <div class="back-content">
@@ -2224,7 +2226,7 @@
                                                 </div>
 
                                                 <div class="membership-card col-4"
-                                                    [class.disabled]="memberCard.MemberType != 'SILVER'">
+                                                    [class.disabled]=" memberCard.MemberType != (company.ID == 541 ? 'GOLD' : 'SILVER')">
                                                     <div class="membership-card-inner">
 
                                                         <!-- Front -->
@@ -2249,10 +2251,12 @@
                                                                 </div>
 
                                                                 <!-- Card -->
-                                                                <div class="card-number-title">
+                                                                <div class="card-number-title" >
                                                                     <!-- {{this.data.Other || 'Silver'}} -->
-                                                                    Silver
+                                                                   {{company.ID == 541 ? 'GOLD' : 'SILVER'}}
                                                                 </div>
+                                                                
+                                                                
 
                                                                 <div class="card-number">
                                                                     **** **** *{{this.data.Idd}}
@@ -2288,7 +2292,7 @@
 
                                                         <!-- Back -->
                                                         <div class="membership-card-back"
-                                                            [class.disabled]="memberCard.MemberType != 'SILVER'">
+                                                            [class.disabled]="memberCard.MemberType != (company.ID == 541 ? 'GOLD' : 'SILVER') ">
                                                             <div
                                                                 style="background-image:url('../../../assets/images/sbpmc.png'); background-size: 100% 100%;">
                                                                 <div class="back-content">
@@ -3229,7 +3233,7 @@
 
                                             <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
                                                 <div class="membership-card col-4"
-                                                    [class.disabled]="memberCard.MemberType != 'GOLD'">
+                                                    [class.disabled]="memberCard.MemberType != 'GOLD' || memberCard.MemberType != 'GOLD MAX'">
                                                     <div class="membership-card-inner">
                                                         <!-- Front -->
                                                         <div class="membership-card-front">
@@ -3252,9 +3256,13 @@
                                                                 </div>
 
                                                                 <!-- Card -->
-                                                                <div class="card-number-title">
+                                                                <div class="card-number-title" *ngIF="memberCard.MemberType == 'GOLD'">
                                                                     <!-- {{this.data.Other || 'Gold'}} -->
-                                                                    Gold
+                                                                     Gold
+                                                                </div>
+                                                                <div class="card-number-title" *ngIF="memberCard.MemberType == 'GOLD MAX'">
+                                                                    <!-- {{this.data.Other || 'Gold'}} -->
+                                                                     Gold Max
                                                                 </div>
 
                                                                 <div class="card-number">
@@ -3291,7 +3299,7 @@
 
                                                         <!-- Back -->
                                                         <div class="membership-card-back"
-                                                            [class.disabled]="memberCard.MemberType != 'GOLD'">
+                                                            [class.disabled]="memberCard.MemberType != 'GOLD' || memberCard.MemberType != 'GOLD MAX'">
                                                             <div
                                                                 style="background-image:url('../../../assets/images/pcmbg.png'); background-size: 100% 100%;">
                                                                 <div class="back-content">
@@ -3321,7 +3329,7 @@
                                                 </div>
 
                                                 <div class="membership-card col-4"
-                                                    [class.disabled]="memberCard.MemberType != 'SILVER'">
+                                                    [class.disabled]="memberCard.MemberType != 'SILVER' ">
                                                     <div class="membership-card-inner">
 
                                                         <!-- Front -->
@@ -3346,10 +3354,12 @@
                                                                 </div>
 
                                                                 <!-- Card -->
-                                                                <div class="card-number-title">
+                                                                <div class="card-number-title" >
                                                                     <!-- {{this.data.Other || 'Silver'}} -->
                                                                     Silver
                                                                 </div>
+
+                                                              
 
                                                                 <div class="card-number">
                                                                     **** **** *{{this.data.Idd}}
@@ -3580,6 +3590,8 @@
                                                     </div>
 
                                             </div>
+
+                                            
                                         </div>
                                     </div>
                                 </ng-template>

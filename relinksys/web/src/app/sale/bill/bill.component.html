@@ -704,7 +704,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX%</mat-label>
                         <input matInput type="number" min="0" name="GSTPercentage" [(ngModel)]="BillItem.GSTPercentage" required
-                            (blur)="calculations('GSTPercentage', 'gst')" #GSTPercentagecontrol [autocomplete]="false">
+                            (blur)="calculations('GSTPercentage', 'gst')" #GSTPercentagecontrol [autocomplete]="false" [disabled]="company.ID == 504">
                         <mat-error>
                             TAX is required
                         </mat-error>
@@ -714,7 +714,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="BillItem.GSTType"
-                            (selectionChange)="calculations('TotalAmount', 'total')" [required]=true #GSTTypecontrol>
+                            (selectionChange)="calculations('TotalAmount', 'total')" [required]=true #GSTTypecontrol [disabled]="company.ID == 504">
                             <mat-option value="None" *ngIf="BillItem.GSTPercentage === 0">None</mat-option>
                             <span *ngIf="BillItem.GSTPercentage !== 0">
                                 <mat-option [value]="g.Name" *ngFor="let g of gstList">
@@ -842,7 +842,7 @@
                         <mat-label>TAX%</mat-label>
                         <input matInput name="GST" type="number" min="0" [(ngModel)]="Service.GSTPercentage"
                             (blur)="calculations('GSTPercentageSer', 'serviceGst')" required #GSTcontrol
-                            [autocomplete]="false">
+                            [autocomplete]="false" >
                         <mat-error>
                             TAX is required
                         </mat-error>
@@ -852,7 +852,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Amt</mat-label>
                         <input matInput name="GSTAmt" type="number" min="0" [(ngModel)]="Service.GSTAmount" required
-                            #GSTAmtcontrol disabled [autocomplete]="false">
+                            #GSTAmtcontrol disabled [autocomplete]="false" >
                     </mat-form-field>
                 </div>
                 <div *ngIf="this.Service.GSTPercentage === 0 && this.loginShop?.GSTnumber === 'true'" class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0">
@@ -868,7 +868,7 @@
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>TAX Type</mat-label>
                         <mat-select name="GSTType" [(ngModel)]="Service.GSTType"
-                            (blur)="calculations('TotalAmount', 'serviceTotal')" required #GSTTypecontrol1>
+                            (blur)="calculations('TotalAmount', 'serviceTotal')" required #GSTTypecontrol1 >
                             <mat-option [value]="gs.Name" *ngFor="let gs of gstList">{{gs.Name}}</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -1334,7 +1334,7 @@
 
                     <button type="button" *ngIf="this.company.EmailMsg == 'true'" [disabled]="BillMaster.ID === null" (click)="sendEmail('Bill')" class="bgRemove ms-0 me-0"><i class="fa-solid fa-envelope EmailBill"></i></button>
 
-                    <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="this.BillLink == '' || this.fortyPercentDisabledB == true" (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Final</button>
+                    <button type="button" *ngIf="this.company.WhatsappMsg == 'true'"  (click)="sendWhatsapp('Fbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Final</button>
                     <button type="button" *ngIf="this.company.WhatsappMsg == 'true'" [disabled]="!this.BillMaster.InvoiceNo || this.fortyPercentDisabledB == true" (click)="sendWhatsapp('Textbill')" class="bgRemove whatsappfBill ms-lg-2 me-lg-1 ms-md-3 me-md-3 ms-0 me-0"><i  class="fa-brands fa-whatsapp "></i> Text</button>
                 </div>
             </div>

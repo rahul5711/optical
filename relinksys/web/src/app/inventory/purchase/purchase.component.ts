@@ -499,6 +499,7 @@ export class PurchaseComponent implements OnInit {
           }
         });
 
+          this.item.ProductName = this.item.ProductName.replace(/[`'"]/g, '');
          this.item.ProductNameArray = [];
     let obj: any = {};
 

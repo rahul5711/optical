@@ -77,6 +77,7 @@ export class ReminderService {
     return this.httpClient.post<any>(this.url + '/getReminderReport', {Type:Type, FromDate:FromDate, ToDate:ToDate, ShopID:ShopID}, httpOptions)
     .pipe(catchError(this.handleError));
   }
+  
 
 
 
