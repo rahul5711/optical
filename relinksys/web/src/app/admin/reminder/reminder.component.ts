@@ -372,7 +372,8 @@ export class ReminderComponent implements OnInit {
     if (this.shop != undefined) {
       const msg = `*Hi ${Titles} ${data.Name},*%0A` +
         `${WhatsappMsg}%0A%0A` +
-        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}%0A${this.shop.Website}%0A${p}`;
+        `${p}%0A${this.shop.Website}%0A%0A` +
+        `*${this.shop.Name}* - ${this.shop.AreaName}%0A${this.shop.MobileNo1}`;
 
       const mob = this.company.Code + data.MobileNo1;
       // const url = `https://wa.me/${mob}?text=${msg}`;
