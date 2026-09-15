@@ -320,11 +320,11 @@ paidSendWhatsapp(mode:any,customer:any) {
    if(mode === 'Fbill') {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill OrderReady');
         msg = `*Hi ${customer.Title} ${customer.Name},*%0A` +
-        `${WhatsappMsg}%0A` +
-        `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
-        `${this.loginShop.MobileNo1}%0A` +
-        `${this.loginShop.Website}%0A` +
-        `*Please give your valuable Review for us !*`
+        `${WhatsappMsg}%0A%0A` +
+          `*Please give your valuable Review for us !*` +
+           `%0A${this.loginShop.Website}%0A%0A` +
+          `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
+          `${this.loginShop.MobileNo1}%0A` 
     } 
 
     if(customer.MobileNo1 != ''){

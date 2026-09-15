@@ -1084,6 +1084,7 @@ export class BillingComponent implements OnInit {
             this.spectacle.CustomerID = this.id;
             this.clens.CustomerID = this.id;
             this.other.CustomerID = this.id;
+            this.cs.setCustomerId(this.id);
             this.router.navigate(['/sale/billing', res.data[0].ID, 0]);
             this.getCustomerById();
             Swal.fire({
@@ -1310,7 +1311,7 @@ export class BillingComponent implements OnInit {
     this.Check = { SpectacleCheck: true, ContactCheck: false, OtherCheck: false, };
 
     this.id = 0;
-
+    this.cs.setCustomerId(this.id);
     this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
       this.router.navigate(['/sale/billing', 0, 0]);
     });
@@ -1604,6 +1605,7 @@ export class BillingComponent implements OnInit {
     this.sp.show()
     this.filteredOptions = []
     this.id = ID;
+    this.cs.setCustomerId(this.id);
     this.router.navigate(['/sale/billing', ID, 0]);
     if (this.company.ID == 241 || this.company.ID == 300) {
       if (this.shop.RoleName == 'optometrist') {

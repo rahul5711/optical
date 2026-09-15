@@ -1374,7 +1374,7 @@ let dtm
               }
 
               this.selectedProduct = this.searchList.ProductTypeName;
-              this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+              this.BillItem.ProductName = (this.searchList?.ProductName || '').toUpperCase();
               this.BillItem.ProductTypeID = this.searchList.ProductTypeID;
               this.BillItem.Barcode = this.searchList.Barcode;
               this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
@@ -1494,7 +1494,7 @@ let dtm
               this.selectedProduct = this.searchList.ProductTypeName;
               this.BillItem.ProductTypeName = this.searchList.ProductTypeName;
               this.BillItem.ProductTypeID = this.searchList.ProductTypeID;
-              this.BillItem.ProductName = this.searchList.ProductName.toUpperCase();
+              this.BillItem.ProductName = (this.searchList?.ProductName || '').toUpperCase();
               this.BillItem.Barcode = this.searchList.Barcode;
               this.BillItem.BarCodeCount = this.searchList.BarCodeCount;
               this.BillItem.BaseBarCode = this.searchList.BaseBarCode;
@@ -4633,6 +4633,7 @@ paidSendWhatsapp(mode:any) {
           `${WhatsappMsg}%0A` +
           `Save your Credit note: ${this.CreditPDF}%0A%0A` +
           `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A${this.loginShop.MobileNo1}%0A${this.loginShop.Website}`;
+
       } else if (mode === 'Fbill') {
         WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Bill FinalDelivery');
         var msg = `*Hi ${this.customer.Title} ${this.customer.Name}*,%0A` +
@@ -4670,7 +4671,6 @@ paidSendWhatsapp(mode:any) {
           `Open Bill : ${this.BillLink}%0A%0A` + `Reply Hi to  download the BIll%0A%0A` +
           `*${this.loginShop.Name}* - ${this.loginShop.AreaName}%0A` +
           `${this.loginShop.MobileNo1}%0A` 
-         
       }
 
       if (this.customer.MobileNo1 != '') {

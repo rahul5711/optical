@@ -332,7 +332,12 @@ export class BillComponent implements OnInit {
 
 
   ngOnInit(): void {
-
+    this.cs.customerId$.subscribe((id: any) => {
+      if (id && id != 0) {
+      this.id = id;
+      console.log(this.id,'this.id this.id ')
+    }
+  });
 
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'CustomerBill') {
@@ -2061,6 +2066,7 @@ export class BillComponent implements OnInit {
 
 
   onSubmit(content1: TemplateRef<any>) {
+   
     this.sp.show();
     this.BillMaster.ShopID = this.loginShop.ID;
     this.BillMaster.CustomerID = this.customerID2;

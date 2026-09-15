@@ -2690,6 +2690,15 @@ this.NoteMemberCardPlatinum = note.filter(
     });
   }
 
+  getMaskedId(idd: any): string {
+  const id = String(idd || '');
+  const masked = '*'.repeat(Math.max(0, 12 - id.length)) + id;
+
+  return masked.substring(0, 4) + ' ' +
+         masked.substring(4, 8) + ' ' +
+         masked.substring(8, 12);
+}
+
   membarshipSave() {
     if (this.id != 0) {
       this.sp.show();

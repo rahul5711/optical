@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse, HttpParams } from '@angular
 import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { BehaviorSubject } from 'rxjs';
 
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
@@ -15,6 +16,14 @@ export class CustomerService {
 
   constructor(private httpClient: HttpClient) { }
   private url = environment.apiUrl + '/customer';
+
+  private customerIdSubject = new BehaviorSubject<any>(0);
+
+customerId$ = this.customerIdSubject.asObservable();
+
+setCustomerId(id: any) {
+  this.customerIdSubject.next(id);
+}
 
 
 
