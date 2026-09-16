@@ -493,9 +493,8 @@
                                             <tbody>
                                                 <tr *ngFor="let data of itemList ; let i = index;">
                                                     <td class="text-center">
-                                                        <mat-checkbox [(ngModel)]="data.Checked" name="{{i + 'name'}}"
-                                                            [checked]="data.Checked"
-                                                            [ngModelOptions]="{standalone: true}" (click)="singleSelectBarcode(i)">
+                                                        <mat-checkbox [(ngModel)]="data.Checked"
+                                                            [ngModelOptions]="{standalone: true}" (change)="singleSelectBarcode(i)">
                                                         </mat-checkbox>
                                                     </td>
                                                     <!-- <td style="z-index: -999 !important;" *ngIf="data.Status === 0"></td> -->

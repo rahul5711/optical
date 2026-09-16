@@ -1091,17 +1091,37 @@ export class PurchaseComponent implements OnInit {
 
   
 
-  singleSelectBarcode(i: any) {
-    const currentItem = this.itemList[i];
+  // singleSelectBarcode(i: any) {
+  //   const currentItem = this.itemList[i];
 
-    if (currentItem.Checked === false || currentItem.Checked === 0) {
-      currentItem.index = i;
-      this.barcodeListt.push(currentItem);
-    } else if (currentItem.Checked === true || currentItem.Checked === 1) {
-      // Use filter to remove the item from barcodeListt based on the index
-      this.barcodeListt = this.barcodeListt.filter((el: any) => el.index !== i);
+  //   if (currentItem.Checked === false || currentItem.Checked === 0) {
+  //     currentItem.index = i;
+  //     this.barcodeListt.push(currentItem);
+  //   } else if (currentItem.Checked === true || currentItem.Checked === 1) {
+  //     // Use filter to remove the item from barcodeListt based on the index
+  //     this.barcodeListt = this.barcodeListt.filter((el: any) => el.index !== i);
+  //   }
+  // }
+
+  singleSelectBarcode(i: any) {
+  const currentItem = this.itemList[i];
+
+  if (currentItem.Checked === true || currentItem.Checked === 1) {
+
+    if (!this.barcodeListt.some((x: any) => x.ID === currentItem.ID)) {
+      this.barcodeListt.push({
+        ...currentItem
+      });
     }
+
+  } else {
+
+    this.barcodeListt = this.barcodeListt.filter(
+      (x: any) => x.ID !== currentItem.ID
+    );
+
   }
+}
 
 //   singleSelectBarcode(i: number) {
 //   const currentItem = this.itemList[i];

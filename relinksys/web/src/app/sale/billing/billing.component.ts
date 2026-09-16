@@ -2627,7 +2627,18 @@ this.NoteMemberCardPlatinum = note.filter(
 
           if (this.shop.isWhatsappPaidService == 'false' && (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84 && this.data.CompanyID != 128 && this.data.CompanyID != 430) {
             var mob = this.company.Code + this.data.MobileNo1;
-            let msg = `This Is Your MemberShip Card.%0A` + `Click On : ${this.membarship}%0A`
+            let WhatsappMsg
+            if(this.company.ID == 541){
+              WhatsappMsg = '🎉 अभिनंदन! सर/मॅम%0A ➡️आपण नेत्रप्रभा ऑप्टिकल्सची *मेंबरशिप* यशस्वीरित्या खरेदी केली आहे,व त्या अंतर्गत मिळणाऱ्या सर्व विशेष ऑफर्सचा आनंद घेऊ शकता व खालील दिलेल्या लिंक वर जाऊन आपण आपले मेंबरशिप कार्ड बघू शकता व तसेच आपल्या विश्वासाबद्दल मनःपूर्वक धन्यवाद! 🙏'
+            }else{
+              WhatsappMsg = 'This Is Your MemberShip Card.'
+            }
+            let msg = 
+            `${WhatsappMsg}.%0A%0A` + `Click On : ${this.membarship}%0A%0A` +
+              `*Please give your valuable Review for us !*` +
+           `%0A${this.shop.Website}%0A%0A`  +
+          `*${this.shop.Name}* - ${this.shop.AreaName}%0A` +
+          `${this.shop.MobileNo1}%0A` 
             // var url1 = `https://wa.me/${mob.trim()}?text=${msg}`;
               var url1 = `https://api.whatsapp.com/send?phone=${mob.trim()}&text=${msg}`;
             window.open(url1, "_blank");
