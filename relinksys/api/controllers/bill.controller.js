@@ -3212,11 +3212,31 @@ module.exports = {
             });
             console.log(printdata.gstSlabList, 'printdata.gstSlabList');
 
+                console.log( printdata.billItemList,' printdata.billItemList');
+                
+            // printdata.billItemList = printdata.billItemList.map((element) => {
+            //     if (element.Status === 1) {
+            //         printdata.GSTTypes = element.GSTType;
+            //         if (element.GSTType?.toUpperCase().includes("CGST-SGST")) {
+            //             return {
+            //                 ...element,
+            //                 GSTPercentage: (element.GSTPercentage / 2) + '%',
+            //                 GSTAmount: (element.GSTAmount / 2).toFixed(2),
+            //             };
+            //         }
+            //         console.log(printdata.GSTTypes,'printdata.GSTTypes')
+            //     }
+            //     return element;
+            // });
 
+            printdata.GSTTypes = 'NONE';
             printdata.billItemList = printdata.billItemList.map((element) => {
                 if (element.Status === 1) {
-                    printdata.GSTTypes = element.GSTType;
-                    if (element.GSTType.toUpperCase() === "CGST-SGST") {
+                    if ( element.GSTType && element.GSTType.toUpperCase() !== 'NONE') {
+                        printdata.GSTTypes = element.GSTType;
+                    }
+                
+                    if (element.GSTType?.toUpperCase().includes("CGST-SGST")) {
                         return {
                             ...element,
                             GSTPercentage: (element.GSTPercentage / 2) + '%',
@@ -3226,12 +3246,14 @@ module.exports = {
                 }
                 return element;
             });
-
 
             printdata.serviceList = printdata.serviceList.map((element) => {
                 if (element.Status === 1) {
-                    printdata.GSTTypes = element.GSTType;
-                    if (element.GSTType.toUpperCase() === "CGST-SGST") {
+                    if ( element.GSTType && element.GSTType.toUpperCase() !== 'NONE') {
+                        printdata.GSTTypes = element.GSTType;
+                    }
+                
+                    if (element.GSTType?.toUpperCase().includes("CGST-SGST")) {
                         return {
                             ...element,
                             GSTPercentage: (element.GSTPercentage / 2) + '%',
@@ -3241,6 +3263,20 @@ module.exports = {
                 }
                 return element;
             });
+
+            // printdata.serviceList = printdata.serviceList.map((element) => {
+            //     if (element.Status === 1) {
+            //         printdata.GSTTypes = element.GSTType;
+            //         if (element.GSTType?.toUpperCase().includes("CGST-SGST")) {
+            //             return {
+            //                 ...element,
+            //                 GSTPercentage: (element.GSTPercentage / 2) + '%',
+            //                 GSTAmount: (element.GSTAmount / 2).toFixed(2),
+            //             };
+            //         }
+            //     }
+            //     return element;
+            // });
 
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
             printdata.WaterMark = clientConfig.appURL + printdata.shopdetails.WaterMark;
