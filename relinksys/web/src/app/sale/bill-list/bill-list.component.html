@@ -925,7 +925,7 @@
               </div>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-12 mb-3">
                       <button *ngIf="this.approved == true" class="me-3" type="button" mat-raised-button color="primary"
-                        [disabled]="!fi.valid || InsuranceList[0].PaymentStatus == 'Applied'" (click)="updateInsuranceQuotation()">Update</button>
+                        [disabled]="!fi.valid && InsuranceList[0].PaymentStatus == 'Applied'" (click)="updateInsuranceQuotation()">Update</button>
                       <button *ngIf="this.InsuranceList.length == 0" type="submit" class="me-3" mat-raised-button
                         color="primary" [disabled]="!fi.valid">Save</button>
                     </div>
@@ -958,7 +958,7 @@
 
                         <div class="col-xl-3 col-lg-4 col-md-6 col-6 mb-0" >
                       <button *ngIf="this.approved == true" class="me-3" type="button" mat-raised-button color="primary"
-                        (click)="applyInsuranceQuotation()">Apply</button>
+                        (click)="applyInsuranceQuotation()" [disabled]="!Insurance.PaidAmount">Apply</button>
                      
                     </div>
 

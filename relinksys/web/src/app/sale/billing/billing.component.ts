@@ -1139,26 +1139,81 @@ getWebsiteLink(){
     }
   }
 
-  openModal(content: any) {
-    this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
-    // this.otherSuppList()
-    // this.ReferenceSuppList()
-    let note = JSON.parse(this.shop.WelcomeNote);
-      this.NoteMemberCardGold = note.filter(
-  (ele: any) => ele.NoteType === "MemberCardGold"
-);
+//   openModal(content: any) {
+//     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
+//     // this.otherSuppList()
+//     // this.ReferenceSuppList()
+//     let note = JSON.parse(this.shop.WelcomeNote);
+//       this.NoteMemberCardGold = note.filter(
+//   (ele: any) => ele.NoteType === "MemberCardGold"
+// );
 
-this.NoteMemberCardSilver = note.filter(
-  (ele: any) => ele.NoteType === "MemberCardSilver"
-);
+// this.NoteMemberCardSilver = note.filter(
+//   (ele: any) => ele.NoteType === "MemberCardSilver"
+// );
 
-this.NoteMemberCardPlatinum = note.filter(
-  (ele: any) => ele.NoteType === "MemberCardPlatinum"
-);
-    if (this.id != 0) {
-      this.getMembershipcardByCustomerID(this.id)
+// this.NoteMemberCardPlatinum = note.filter(
+//   (ele: any) => ele.NoteType === "MemberCardPlatinum"
+// );
+//     if (this.id != 0) {
+//       this.getMembershipcardByCustomerID(this.id)
+//     }
+//   }
+
+
+
+openModal(content: any) {
+
+  this.modalService.open(content, {
+    centered: true,
+    backdrop: 'static',
+    keyboard: false,
+    size: 'md'
+  });
+
+  const companyID = this.shop?.CompanyID;
+
+  // Company ki saari shops
+  const shopList = JSON.parse(
+    localStorage.getItem('shop') || '[]'
+  );
+
+  // Same CompanyID ki koi bhi shop jisme WelcomeNote available hai
+  const companyShop = shopList.find(
+    (x: any) =>
+      x.CompanyID == companyID &&
+      x.WelcomeNote
+  );
+
+  let note: any[] = [];
+
+  if (companyShop?.WelcomeNote) {
+    try {
+      note = typeof companyShop.WelcomeNote === 'string'
+        ? JSON.parse(companyShop.WelcomeNote)
+        : companyShop.WelcomeNote;
+    } catch (e) {
+      console.log('WelcomeNote JSON error', e);
+      note = [];
     }
   }
+
+  this.NoteMemberCardGold = note.filter(
+    (ele: any) => ele.NoteType === 'MemberCardGold'
+  );
+
+  this.NoteMemberCardSilver = note.filter(
+    (ele: any) => ele.NoteType === 'MemberCardSilver'
+  );
+
+  this.NoteMemberCardPlatinum = note.filter(
+    (ele: any) => ele.NoteType === 'MemberCardPlatinum'
+  );
+
+  if (this.id != 0) {
+    this.getMembershipcardByCustomerID(this.id);
+  }
+}
 
   otherSuppList() {
     this.sp.show();
@@ -2626,12 +2681,14 @@ this.NoteMemberCardPlatinum = note.filter(
            let type = '';
 
           if (this.shop.isWhatsappPaidService == 'false' && (this.data.MobileNo1 != '' && Number(this.data.MobileNo1) == this.data.MobileNo1) && this.data.CompanyID != 84 && this.data.CompanyID != 128 && this.data.CompanyID != 430) {
+            const temp = JSON.parse(this.companySetting.WhatsappSetting);
             var mob = this.company.Code + this.data.MobileNo1;
-            let WhatsappMsg
+            let WhatsappMsg 
             if(this.company.ID == 541){
               WhatsappMsg = '🎉 अभिनंदन! सर/मॅम%0A ➡️आपण नेत्रप्रभा ऑप्टिकल्सची *मेंबरशिप* यशस्वीरित्या खरेदी केली आहे,व त्या अंतर्गत मिळणाऱ्या सर्व विशेष ऑफर्सचा आनंद घेऊ शकता व खालील दिलेल्या लिंक वर जाऊन आपण आपले मेंबरशिप कार्ड बघू शकता व तसेच आपल्या विश्वासाबद्दल मनःपूर्वक धन्यवाद! 🙏'
             }else{
               WhatsappMsg = 'This Is Your MemberShip Card.'
+              WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Membership_Card') || 'This Is Your MemberShip Card.';
             }
             let msg = 
             `${WhatsappMsg}.%0A%0A` + `Click On : ${this.membarship}%0A%0A` +

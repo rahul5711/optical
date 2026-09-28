@@ -62,6 +62,7 @@ export class SmsSettingComponent implements OnInit {
     {MessageName1: 'Customer_Credit Note', MessageText1: '',Images:''},
     {MessageName1: 'Customer_Comfort Feedback', MessageText1: '',Images:''},
     {MessageName1: 'Customer_Service', MessageText1: '',Images:''},
+    {MessageName1: 'Customer_Membership_Card', MessageText1: '',Images:''},
   ];
 
   EmailSettingList:any = [

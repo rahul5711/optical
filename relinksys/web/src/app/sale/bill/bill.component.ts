@@ -4956,6 +4956,12 @@ paidSendWhatsapp(mode:any) {
             }
   
           } else {
+           Swal.fire({
+            position: 'center',
+            icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          })
             this.as.errorToast(res.message)
           }
           this.sp.hide()
@@ -5068,7 +5074,7 @@ paidSendWhatsapp(mode:any) {
   }
 
 
-   applyInsuranceQuotation() {
+   applyInsuranceQuotation(content1:any) {
     Swal.fire({
       title: 'Are you sure ?',
       text: "Apply paid amount",
@@ -5098,11 +5104,15 @@ paidSendWhatsapp(mode:any) {
           // this.paymentHistoryByMasterID(this.id, this.id2)
           // this.billByCustomer(this.id, this.id2)
           
-          this.getInsuranceByBillMasterID()
+          
           this.Insurance = {
             ID: null, CompanyID: null, ShopID: null, BillMasterID: null, InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
           }
-          this.router.navigate(['/sale/billing', this.id, this.id2]);
+          this.approved = false
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['/sale/billing', this.id, this.id2]);
+          });
+          //  this.openModal1(content1)
           //  this.getList()
         } else {
             Swal.fire({

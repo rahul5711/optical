@@ -1326,6 +1326,13 @@ export class BillListComponent implements OnInit {
 
         } else {
           this.as.errorToast(res.message)
+            Swal.fire({
+            position: 'center',
+             icon: 'warning',
+            title: res.message,
+            showConfirmButton: true,
+          
+          })
         }
         this.sp.hide()
       },
@@ -1434,6 +1441,7 @@ export class BillListComponent implements OnInit {
           this.Insurance = {
             ID: null, CompanyID: null, ShopID: null,  InsuranceCompanyName: '', PolicyNumber: '', Remark: '', Other: '', ClaimAmount: '', ApprovedAmount: '', PaidAmount: '', RemainingAmount: '', PaymentStatus: '', RequestDate: '', ApproveDate: ''
           }
+          this.approved = false
            this.getList()
         } else {
             Swal.fire({
