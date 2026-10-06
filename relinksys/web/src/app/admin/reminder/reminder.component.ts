@@ -355,13 +355,8 @@ export class ReminderComponent implements OnInit {
       WhatsappMsg = this.getWhatsAppMessage(temp, 'Customer_Service');
     }
 
-    let p = ''
-    if (mode === 'Service' || mode === 'Comfort' || mode === 'OrderPending') {
-      p = '*Please give your valuable Review for us !*'
-    } else {
-      p = ''
-    }
-
+    let p = '*Please give your valuable Review for us !*'
+    
     let Titles = ''
     if (mode === 'SupplierBday' || mode === 'EmployeeBday' || mode === 'FitterBday' || mode === 'DoctorBday' || mode === 'SupplierAnniversary' || mode === 'EmployeeAnniversary' || mode === 'FitterAnniversary' || mode === 'DoctorAnniversary' || mode === 'SupplierContactlens' || mode === 'SupplierSolution') {
       Titles = ' '
