@@ -2396,11 +2396,17 @@ module.exports = {
 
     try {
       if (!CompanyID) {
-        return { success: false, message: "Invalid CompanyID Data" };
+        return {
+          success: false,
+          message: "Invalid CompanyID Data"
+        };
       }
 
       if (!CustomerID) {
-        return { success: false, message: "Invalid CustomerID Data" };
+        return {
+          success: false,
+          message: "Invalid CustomerID Data"
+        };
       }
 
       const db = await dbConnection(CompanyID);
@@ -2413,19 +2419,35 @@ module.exports = {
 
       const [result] = await connection.query(
         `SELECT
-        COALESCE(SUM(CASE WHEN Credit = 'Credit' THEN Amount ELSE 0 END), 0) AS CreditAmount,
-        COALESCE(SUM(CASE WHEN Credit = 'Debit' THEN Amount ELSE 0 END), 0) AS DebitAmount
-       FROM paymentdetail
-       WHERE CompanyID = ?
-         AND PaymentType = 'Customer Credit'
-         AND CustomerID = ?`,
+        COALESCE(
+          SUM(
+            CASE
+              WHEN Credit = 'Credit' THEN Amount
+              ELSE 0
+            END
+          ),
+          0
+        ) AS CreditAmount,
+        COALESCE(
+          SUM(
+            CASE
+              WHEN Credit = 'Debit' THEN Amount
+              ELSE 0
+            END
+          ),
+          0
+        ) AS DebitAmount
+      FROM paymentdetail
+      WHERE CompanyID = ?
+        AND PaymentType = 'Customer Credit'
+        AND CustomerID = ?`,
         [CompanyID, CustomerID]
       );
 
       const CreditAmount = Number(result[0]?.CreditAmount || 0);
       const DebitAmount = Number(result[0]?.DebitAmount || 0);
 
-      const Balance = CreditAmount - DebitAmount;
+      const Balance = Math.max(CreditAmount - DebitAmount, 0);
 
       return Balance.toFixed(2);
     } catch (error) {
