@@ -2391,6 +2391,56 @@ module.exports = {
       }
     }
   },
+  getCustomerCreditBalance: async (CustomerID, CompanyID) => {
+    let connection;
+
+    try {
+      if (!CompanyID) {
+        return { success: false, message: "Invalid CompanyID Data" };
+      }
+
+      if (!CustomerID) {
+        return { success: false, message: "Invalid CustomerID Data" };
+      }
+
+      const db = await dbConnection(CompanyID);
+
+      if (db.success === false) {
+        return db;
+      }
+
+      connection = await db.getConnection();
+
+      const [result] = await connection.query(
+        `SELECT
+        COALESCE(SUM(CASE WHEN Credit = 'Credit' THEN Amount ELSE 0 END), 0) AS CreditAmount,
+        COALESCE(SUM(CASE WHEN Credit = 'Debit' THEN Amount ELSE 0 END), 0) AS DebitAmount
+       FROM paymentdetail
+       WHERE CompanyID = ?
+         AND PaymentType = 'Customer Credit'
+         AND CustomerID = ?`,
+        [CompanyID, CustomerID]
+      );
+
+      const CreditAmount = Number(result[0]?.CreditAmount || 0);
+      const DebitAmount = Number(result[0]?.DebitAmount || 0);
+
+      const Balance = CreditAmount - DebitAmount;
+
+      return Balance.toFixed(2);
+    } catch (error) {
+      console.error("getCustomerCreditBalance Error:", error);
+
+      return {
+        success: false,
+        message: error.message || "Something went wrong"
+      };
+    } finally {
+      if (connection) {
+        connection.release();
+      }
+    }
+  },
   generateOtp: (len) => {
     const length = len;
     const charset = '0123456789';

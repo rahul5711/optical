@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const { Idd, generateVisitNo, shopID, getCustomerRewardBalance } = require('../helpers/helper_function')
+const { Idd, generateVisitNo, shopID, getCustomerRewardBalance, getCustomerCreditBalance } = require('../helpers/helper_function')
 const _ = require("lodash")
 const { now } = require('lodash')
 const chalk = require('chalk');
@@ -519,6 +519,7 @@ module.exports = {
             response.other_rx = other_rx
             response.spectacle_rx = spectacle_rx
             response.rewardBalance = await getCustomerRewardBalance(CustomerID, CompanyID)
+            response.creditBalance = await getCustomerCreditBalance(CustomerID, CompanyID)
             response.message = 'data fetch successfully'
             return res.send(response);
         } catch (err) {
