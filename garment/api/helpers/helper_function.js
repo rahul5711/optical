@@ -2417,37 +2417,32 @@ module.exports = {
 
       connection = await db.getConnection();
 
-      const [result] = await connection.query(
+      const [credit] = await connection.query(
         `SELECT
-        COALESCE(
-          SUM(
-            CASE
-              WHEN Credit = 'Credit' THEN Amount
-              ELSE 0
-            END
-          ),
-          0
-        ) AS CreditAmount,
-        COALESCE(
-          SUM(
-            CASE
-              WHEN Credit = 'Debit' THEN Amount
-              ELSE 0
-            END
-          ),
-          0
-        ) AS DebitAmount
-      FROM paymentdetail
-      WHERE CompanyID = ?
-        AND PaymentType = 'Customer Credit'
-        AND CustomerID = ?`,
+        COALESCE(SUM(Amount), 0) AS CreditAmount
+       FROM paymentdetail
+       WHERE CompanyID = ?
+         AND PaymentType = 'Customer Credit'
+         AND Credit = 'Credit'
+         AND CustomerID = ?`,
         [CompanyID, CustomerID]
       );
 
-      const CreditAmount = Number(result[0]?.CreditAmount || 0);
-      const DebitAmount = Number(result[0]?.DebitAmount || 0);
+      const [debit] = await connection.query(
+        `SELECT
+        COALESCE(SUM(Amount), 0) AS DebitAmount
+       FROM paymentdetail
+       WHERE CompanyID = ?
+         AND PaymentType = 'Customer Credit'
+         AND Credit = 'Debit'
+         AND CustomerID = ?`,
+        [CompanyID, CustomerID]
+      );
 
-      const Balance = Math.max(CreditAmount - DebitAmount, 0);
+      const CreditAmount = Number(credit[0]?.CreditAmount || 0);
+      const DebitAmount = Number(debit[0]?.DebitAmount || 0);
+
+      const Balance = DebitAmount - CreditAmount;
 
       return Balance.toFixed(2);
     } catch (error) {
