@@ -146,7 +146,8 @@ export class PurchaseComponent implements OnInit {
   specList1:any
   disableAddButtons1 = false;
   PublishedCheck = false;
-  liveImage:any = ''
+  liveImage:any = '';
+ loginShop:any
 
   ngOnInit(): void {
 
@@ -195,8 +196,9 @@ export class PurchaseComponent implements OnInit {
       
     }
 
-    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' })
+    this.currentTime = new Date().toLocaleTimeString('en-US', { hourCycle: 'h23' });
 
+    [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
 
   }
 

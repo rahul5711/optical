@@ -7,9 +7,7 @@
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
                 <div class="card">
                     <div class="header ms-auto">
-                        <ul class="header-dropdown ">
-                           
-                        </ul>
+                        <ul class="header-dropdown "> </ul>
                     </div>
                     <div class="body ">
                         <form #f="ngForm" autocomplete="off" >
@@ -57,16 +55,14 @@
                                                 <div class="col-xl-1 col-lg-1 col-md-6 col-6">
                                                      <mat-form-field class="example-full-width mb-0">
                                                         <mat-label>Customer Age </mat-label>
-                                                        <input matInput name="Age"
-                                                            [(ngModel)]="customerDate.Age"
-                                                            #Agecontrol disabled />
+                                                        <input matInput name="Age"  [(ngModel)]="customerDate.Age"  #Agecontrol disabled />
                                                     </mat-form-field>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-xl-3 col-lg-3 col-md-6 col-6">
                                                     <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>Reason for visit</mat-label>
+                                                        <mat-label>Referred By</mat-label>
                                                         <input matInput name="Reasonforvisit"
                                                             [(ngModel)]="masterObject.Comprehensive.Reasonforvisit"
                                                             #Reasonforvisitcontrol />
@@ -1347,7 +1343,7 @@
                                                             <th>LID/LASHES</th>
                                                             <td> <input class="inputW" type="text" name="LIDLASHES_R"
                                                                     [(ngModel)]="masterObject.Comprehensive.SlitLamp.LIDLASHES_R"
-                                                                    #LIDLASHES_Rcontrol  style="text-transform: uppercase;"/>
+                                                                    #LIDLASHES_Rcontrol   style="text-transform: uppercase;"/>
                                                             </td>
                                                             <td>
                                                                 <input class="inputW" type="text" name="LIDLASHES_L"
@@ -1976,7 +1972,7 @@
                                                     <table style="width:100%">
 
                                                         <tr>
-                                                            <th colspan="3" class="OEx-h4">OCULAR MOTILITY</th>
+                                                            <th colspan="4" class="OEx-h4">OCULAR MOTILITY</th>
                                                             <th>Smooth <input type="checkbox" id="Smooth" name="Smooth"
                                                                     value="Smooth"
                                                                     [(ngModel)]="masterObject2.Binocular.Smooth"></th>
@@ -1989,6 +1985,10 @@
                                                             <th> Extensive <input type="checkbox" id="Extensive"
                                                                     name="Extensive" value="Extensive"
                                                                     [(ngModel)]="masterObject2.Binocular.Extensive">
+                                                            </th>
+                                                            <th><input class="inputW" name="OCULARMOTILITY OcularMotilityText"
+                                                                    [(ngModel)]="masterObject2.Binocular.OcularMotilityText"
+                                                                    #OcularMotilityTextrcontrol />
                                                             </th>
                                                         </tr>
                                                     </table>
@@ -2901,10 +2901,25 @@
                                         aria-labelledby="ex1-tab-4">
 
                                         <form #f4="ngForm" autocomplete="off">
-                                            <div class="row">
+                                             <div class="row">
+                                                <div class="col-xl-2 col-lg-3 col-md-6 col-6">
+                                                     <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Examination Date</mat-label>
+                                                        <input matInput name="ExaminationDate"
+                                                           type="date" [(ngModel)]="masterObject4.lowVision.ExaminationDate"
+                                                            #ExaminationDatecontrol />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-1 col-lg-1 col-md-6 col-6">
+                                                     <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Customer Age </mat-label>
+                                                        <input matInput name="Age"  [(ngModel)]="customerDate.Age"  #Agecontrol disabled />
+                                                    </mat-form-field>
+                                                </div>
+                                            
                                                 <div class="col-xl-2 col-lg-3 col-md-3 col-6">
                                                     <mat-form-field class="example-full-width mb-0">
-                                                        <mat-label>Reason for visit</mat-label>
+                                                        <mat-label>Referred By</mat-label>
                                                         <input matInput name="Reasonforvisit"
                                                             [(ngModel)]="masterObject4.lowVision.Reasonforvisit"
                                                             #Reasonforvisitcontrol />

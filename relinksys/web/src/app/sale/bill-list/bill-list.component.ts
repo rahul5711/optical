@@ -121,6 +121,8 @@ export class BillListComponent implements OnInit {
   deleteBillingSearch = false
   currentTime = ''
   roleName: any = ''
+  loginShop:any;
+  
   ngOnInit(): void {
     this.permission.forEach((element: any) => {
       if (element.ModuleName === 'BillingSearch') {
@@ -143,6 +145,8 @@ export class BillListComponent implements OnInit {
     this.bill.paymentModes$.subscribe((list: any) => {
       this.PaymentModesList = list.filter((p: { Name: string }) => p.Name !== 'AMOUNT RETURN').sort((a: { Name: string; }, b: { Name: any; }) => a.Name.localeCompare(b.Name));
     });
+
+    [this.loginShop] = this.shop.filter((s: any) => s.ID === Number(this.selectedShop[0]));
   }
 
   changePagesize(num: number): void {

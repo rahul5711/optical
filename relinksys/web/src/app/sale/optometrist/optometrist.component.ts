@@ -13,6 +13,7 @@ import { CustomerService } from 'src/app/service/customer.service';
 import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-optometrist',
@@ -43,13 +44,15 @@ export class OptometristComponent implements OnInit {
     public calculation: CustomerPowerCalculationService,
     private cs: CustomerService,
     private fu: FileUploadService,
-    private compressImage: CompressImageService
+    private compressImage: CompressImageService,
+     private cdr: ChangeDetectorRef,
   ) {
     this.id = this.route.snapshot.params['customerid'];
     this.env = environment
   }
-
+currentPowerID: number | null = null;
   filteredPVAList: any = []
+   spectacleLists: any
   inputError: boolean = false;
    pdfLink:any = '';
      loginShop:any
@@ -118,8 +121,9 @@ export class OptometristComponent implements OnInit {
   fitment: any = { FITASSESSMENT: '', FITASSESSMENTText: '', Eye:''}
 
   masterObject2: any = {
-    ID: null, CustomerID: 0, CompanyID: 0,
+    ID: null, CustomerID: 0, CompanyID: 0, 
     Binocular: {
+      ExaminationDate:'',
       Interpretation: '',
       W4DTDistance: '',
       W4DTNear: '',
@@ -130,7 +134,7 @@ export class OptometristComponent implements OnInit {
       POSITIVE_Near: '',
       NEGATIVE_DISTANCE: '',
       NEGATIVE_Near: '',
-      TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '',PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
+      TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, OcularMotilityText:'', Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '',PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
       states: {
         red1: false,
         red2: false,
@@ -144,6 +148,7 @@ export class OptometristComponent implements OnInit {
   masterObject3: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     Contact: {
+      ExaminationDate:'',
       FIRSTTIMECLUSERyes: false,
       FIRSTTIMECLUSERNo: false,
       PREVIOUSLYWEARING_TEXT: '',
@@ -174,7 +179,7 @@ export class OptometristComponent implements OnInit {
   masterObject4: any = {
     ID: null, CustomerID: 0, CompanyID: 0,
     lowVision: {
-      Reasonforvisit: '', Occupation: '',
+     ExaminationDate:'', Reasonforvisit: '', Occupation: '',
       coListLow: [],
       ocularHistoryList: [],
       systemicHistoryList: [],
@@ -1412,7 +1417,7 @@ export class OptometristComponent implements OnInit {
           POSITIVE_Near: '',
           NEGATIVE_DISTANCE: '',
           NEGATIVE_Near: '',
-          TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '',PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
+          TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, OcularMotilityText:'', Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '',PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
           states: {
             red1: false,
             red2: false,
@@ -1580,6 +1585,7 @@ export class OptometristComponent implements OnInit {
     if (Type === 'Comprehensive') {
       selectedObject = this.masterObject
       this.masterObject.Comprehensive.ADVICE = this.masterObject.Comprehensive.ADVICE.replace(/\n/g, '<br>');
+      this.syncPower('Comprehensive');
 
     }
     else if (Type === 'Binocular') {
@@ -1612,6 +1618,8 @@ export class OptometristComponent implements OnInit {
             timer: 1200
           });
           this.PatientRecordList(Type)
+          this.spectacle.ID = null;
+         this.updateCustomer(false, true);
         } else {
           this.as.errorToast(res.message);
         }
@@ -1744,7 +1752,7 @@ export class OptometristComponent implements OnInit {
                   POSITIVE_Near: '',
                   NEGATIVE_DISTANCE: '',
                   NEGATIVE_Near: '',
-                  TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
+                  TypeDistance: '', TypeIntermediate: '', TypeNear: '', DeviationDistance: '', DeviationIntermediate: '', DeviationNear: '', EyeDistance: '', EyeIntermediate: '', EyeNear: '', PrismDioptreDistance: '', PrismDioptreIntermediate: '', PrismDioptreNear: '', RecoveryDistance: '', RecoveryIntermediate: '', RecoveryNear: '', NPCBreak: '', NPCRecovery: '', NPCBlurrRE: '', NPCRecoveryRE: '', NPCBlurrLE: '', NPCRecoveryLE: '', NPCBlurrBE: '', NPCRecoveryBE: '', Smooth: false, Accurate: false, Full: false, Extensive: false, OcularMotilityText:'', Flipper: '', FlipperRE: '', FlipperLE: '', FlipperBE: '', Stereopsis: '', PRISM_PRESCRIBED:'',IMPRESSION:'', Advice: '',
                   states: {
                     red1: false,
                     red2: false,
@@ -2053,6 +2061,7 @@ export class OptometristComponent implements OnInit {
             timer: 1200
           });
           this.PatientRecordList(Type)
+          this.updateCustomer(false, false);
         } else {
           this.as.errorToast(res.message);
         }
@@ -2090,25 +2099,197 @@ export class OptometristComponent implements OnInit {
     });
   }
 
+  
+syncPower(source: 'spectacle' | 'Comprehensive') {
+
+  const powerFields = [
+    'REDPSPH',
+    'REDPCYL',
+    'REDPAxis',
+    'REDPVA',
+
+    'LEDPSPH',
+    'LEDPCYL',
+    'LEDPAxis',
+    'LEDPVA',
+
+    'RENPSPH',
+    'RENPCYL',
+    'RENPAxis',
+    'RENPVA',
+
+    'LENPSPH',
+    'LENPCYL',
+    'LENPAxis',
+    'LENPVA',
+
+    'R_Addition',
+    'L_Addition'
+  ];
+
+  // Examination -> Customer
+  if (source === 'Comprehensive') {
+
+    if (!this.masterObject.Comprehensive) {
+      this.masterObject.Comprehensive = {};
+    }
+
+    if (!this.masterObject.Comprehensive.SubjectivePWR) {
+      this.masterObject.Comprehensive.SubjectivePWR = {};
+    }
+
+    powerFields.forEach(field => {
+
+      if (this.masterObject.Comprehensive.SubjectivePWR[field] !== undefined) {
+
+        this.spectacle[field] =
+          this.masterObject.Comprehensive.SubjectivePWR[field];
+
+      }
+
+    });
+  }
+
+
+  // Customer -> Examination
+  if (source === 'spectacle') {
+
+    if (!this.masterObject.Comprehensive) {
+      this.masterObject.Comprehensive = {};
+    }
+
+    if (!this.masterObject.Comprehensive.SubjectivePWR) {
+      this.masterObject.Comprehensive.SubjectivePWR = {};
+    }
+
+    powerFields.forEach(field => {
+
+      if (this.spectacle[field] !== undefined) {
+
+        this.masterObject.Comprehensive.SubjectivePWR[field] =
+          this.spectacle[field];
+
+      }
+
+    });
+  }
+}
+  
   getCustomerById() {
-  this.sp.show();
-  const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
-    next: (res: any) => {
-      if (res.success) {
-        this.customerDate = res.data[0];
-        this.as.successToast(res.message);
+    this.sp.show();
+    const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
+      next: (res: any) => {
+        if (res.success) {
+          this.customerDate = res?.data?.[0] || {};
+          this.customerDate.Age = this.customerDate?.Age || 0
+          
+             if (res.spectacle_rx?.length > 0) {
+
+          this.spectacle = {
+            ...this.spectacle,
+            ...res.spectacle_rx[0]
+          };
+
+          // ⭐ Existing Power ID
+          this.currentPowerID = Number(res.spectacle_rx[0].ID);
+
+          console.log('Current Power ID:', this.currentPowerID);
+
+        } else {
+
+          // Customer ki koi power visit nahi hai
+          this.currentPowerID = null;
+
+          this.spectacle = {
+            ...this.spectacle,
+            ID: null,
+            CustomerID: Number(this.id)
+          };
         }
-       else {
+
+        this.spectacleLists = res.spectacle_rx?.length
+          ? res.spectacle_rx.slice(0, 10)
+          : [];
+
+          // if (res.spectacle_rx?.length) {
+          //   this.masterObject.Exam.SubjectivePWR = res.spectacle_rx[0];
+
+          //   const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
+          //   PLANOCheck.forEach((prop) => {
+          //     if (this.masterObject.Exam.SubjectivePWR[prop] === '+0.00' || this.masterObject.Exam.SubjectivePWR[prop] === "0") {
+          //       this.masterObject.Exam.SubjectivePWR[prop] = 'PLANO';
+          //     }
+          //   });
+          // }
+          this.as.successToast(res.message);
+        }
+        else {
+          this.as.errorToast(res.message);
+          this.sp.hide();
+        }
+        this.sp.hide();
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => {
+        console.log(err.message);
+        this.sp.hide();
+      },
+      complete: () => subs.unsubscribe(),
+    });
+  }
+
+  updateCustomer(showSpinner: boolean = true, isNewVisit: boolean = false) {
+
+  if (showSpinner) {
+    this.sp.show();
+  }
+
+  this.syncPower('Comprehensive');
+
+  this.customerDate.tablename = 'spectacle_rx';
+
+  this.spectacle.CustomerID = Number(this.id);
+
+  // ⭐ VERY IMPORTANT
+  if (isNewVisit) {
+    this.spectacle.ID = null;
+  } else {
+    this.spectacle.ID = this.currentPowerID;
+  }
+
+  this.customerDate.spectacle_rx = {
+    ...this.spectacle
+  };
+
+  console.log('POWER ID:', this.customerDate.spectacle_rx.ID);
+
+  this.cs.updateCustomer(this.customerDate).subscribe({
+
+    next: (res: any) => {
+
+      if (res.success) {
+
+        console.log('Power updated successfully');
+
+      } else {
+
         this.as.errorToast(res.message);
+      }
+
+      if (showSpinner) {
         this.sp.hide();
       }
-      this.sp.hide();
     },
+
     error: (err: any) => {
-      console.log(err.message);
-      this.sp.hide();
-    },
-    complete: () => subs.unsubscribe(),
+
+      console.log(err);
+
+      if (showSpinner) {
+        this.sp.hide();
+      }
+    }
+
   });
 }
 

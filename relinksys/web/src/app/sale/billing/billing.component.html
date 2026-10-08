@@ -22,7 +22,7 @@
                                         <label style="font-size: 14px; margin-right:10px">VisitDate </label>
                                         <input style="border-bottom: 1px solid;width: 105px;" matInput name="VisitDate"
                                             type="date" [(ngModel)]="data.VisitDate" [disabled]="!optometristDisabled">
-                                        <button class="extra" (click)="openModal(customer)"
+                                        <button *ngIf="this.shop.Status == 1" class="extra" (click)="openModal(customer)"
                                             [disabled]="!optometristDisabled">EXTRA</button>
                                     </div>
                                 </div>
@@ -265,7 +265,7 @@
                                                 </mat-form-field>
                                             </div>
 
-                                            <div *ngIf="this.shop.RoleName != 'optometrist' "
+                                            <div *ngIf="this.shop.RoleName != 'optometrist' && this.shop.Status == 1"
                                                 class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton"
                                                 style="text-align:right;">
 
@@ -322,7 +322,7 @@
                                             </button> -->
                                             </div>
 
-                                            <div *ngIf="this.shop.RoleName == 'optometrist'"
+                                            <div *ngIf="this.shop.RoleName == 'optometrist' && this.shop.Status == 1"
                                                 class="col-xl-8 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0 ms-auto mobButton"
                                                 style="text-align:right;">
                                                 <button *ngIf="id != 0" (click)="updateCustomer()"
@@ -3031,7 +3031,7 @@
                                                     </mat-error>
                                                 </mat-form-field>
                                             </div>
-                                            <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  ">
+                                            <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " *ngIf="this.shop.Status == 1">
                                                 <button
                                                     *ngIf="id != 0 && this.shop.RoleName != 'RECEPTION' && company.OldBill == 'true'"
                                                     class="me-2 " mat-raised-button color="primary"
@@ -3848,7 +3848,7 @@
                                                 </mat-error>
                                             </mat-form-field>
                                         </div>
-                                        <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  ">
+                                        <div class="col-xl-5 col-lg-9 col-md-9 col-12 mb-0 mb-4 mb-md-0  " *ngIf="this.shop.Status == 1">
                                             <button *ngIf="id != 0 && company.OldBill == 'true'" class="me-2 "
                                                 mat-raised-button color="primary" style="padding: 5px 10px;"
                                                 [routerLink]="['/sale/oldBilllist/',data.ID]"><span
