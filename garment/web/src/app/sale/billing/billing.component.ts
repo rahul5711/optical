@@ -1177,56 +1177,58 @@ export class BillingComponent implements OnInit {
           this.data = res.data[0]
           this.data.Idd = res.data[0].Idd;
           this.rewardBalance = res.rewardBalance;
-          this.getScoList()
+          // this.getScoList()
           this.data.VisitDate = moment(res.data[0].VisitDate).format('YYYY-MM-DD');
-          if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
-            this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
-          } else {
-            this.customerImage = "/assets/images/userEmpty.png"
-          }
+       
+          // if (res.data[0].PhotoURL !== "null" && res.data[0].PhotoURL !== '') {
+          //   this.customerImage = this.env.apiUrl + res.data[0].PhotoURL;
+          // } else {
+          //   this.customerImage = "/assets/images/userEmpty.png"
+          // }
 
-          if (res.spectacle_rx.length !== 0) {
-            this.spectacle = res.spectacle_rx[0]
-            this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
+          // if (res.spectacle_rx.length !== 0) {
+          //   this.spectacle = res.spectacle_rx[0]
+          //   this.spectacle.VisitDate = moment(this.spectacle.VisitDate).format('YYYY-MM-DD');
 
-            const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
-            for (const prop of PLANOCheck) {
-              if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
-                this.spectacle[prop] = 'PLANO';
-              }
-            }
+          //   const PLANOCheck = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL'];
+          //   for (const prop of PLANOCheck) {
+          //     if (this.spectacle[prop] === '+0.00' || this.spectacle[prop] === "0") {
+          //       this.spectacle[prop] = 'PLANO';
+          //     }
+          //   }
 
-            if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
-              this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
-            } else {
-              this.spectacleImage = "/assets/images/userEmpty.png"
-            }
-          }
+          //   if (res.spectacle_rx[0].PhotoURL !== "null" && res.spectacle_rx[0].PhotoURL !== '') {
+          //     this.spectacleImage = this.env.apiUrl + res.spectacle_rx[0].PhotoURL;
+          //   } else {
+          //     this.spectacleImage = "/assets/images/userEmpty.png"
+          //   }
+          // }
 
-          if (res.contact_lens_rx.length !== 0) {
-            this.clens = res.contact_lens_rx[0]
-            this.clens.VisitDate = moment(this.clens.VisitDate).format('YYYY-MM-DD');
-            const PLANOCheck1 = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
-            for (const prop1 of PLANOCheck1) {
-              if (this.clens[prop1] === '+0.00' || this.spectacle[prop1] === "0") {
-                this.clens[prop1] = 'PLANO';
-              }
-            }
+          // if (res.contact_lens_rx.length !== 0) {
+          //   this.clens = res.contact_lens_rx[0]
+          //   this.clens.VisitDate = moment(this.clens.VisitDate).format('YYYY-MM-DD');
+          //   const PLANOCheck1 = ['REDPSPH', 'REDPCYL', 'RENPSPH', 'RENPCYL', 'LEDPSPH', 'LEDPCYL', 'LENPSPH', 'LENPCYL']
+          //   for (const prop1 of PLANOCheck1) {
+          //     if (this.clens[prop1] === '+0.00' || this.spectacle[prop1] === "0") {
+          //       this.clens[prop1] = 'PLANO';
+          //     }
+          //   }
 
-            if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
-              this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
-            } else {
-              this.clensImage = "/assets/images/userEmpty.png"
-            }
+          //   if (res.contact_lens_rx[0].PhotoURL !== "null" && res.contact_lens_rx[0].PhotoURL !== '') {
+          //     this.clensImage = this.env.apiUrl + res.contact_lens_rx[0].PhotoURL;
+          //   } else {
+          //     this.clensImage = "/assets/images/userEmpty.png"
+          //   }
 
 
-          }
+          // }
 
-          if (res.other_rx.length !== 0) {
-            this.other = res.other_rx[0]
-            this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
-          }
+          // if (res.other_rx.length !== 0) {
+          //   this.other = res.other_rx[0]
+          //   this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
+          // }
 
+       
           this.as.successToast(res.message)
 
         } else {
@@ -1532,6 +1534,7 @@ export class BillingComponent implements OnInit {
   CustomerSelection(mode: any, ID: any) {
     if (mode === 'Value') {
       this.getCustomerSearchId(ID)
+      
     }
     this.getCustomerCategory()
   }
@@ -1606,7 +1609,10 @@ export class BillingComponent implements OnInit {
     this.filteredOptions = []
     this.id = ID;
     this.cs.setCustomerId(this.id);
-    this.router.navigate(['/sale/billing', ID, 0]);
+         this.router.navigateByUrl('', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/sale/billing', this.id, 0]);
+    });
+    
     if (this.company.ID == 241 || this.company.ID == 300) {
       if (this.shop.RoleName == 'optometrist') {
         this.optometristDisabled = false
@@ -1637,7 +1643,7 @@ export class BillingComponent implements OnInit {
       })
     }
     this.ngOnInit();
-    if (this.id !== 0) {
+    if (this.id != 0) {
       this.sp.show()
       const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
         next: (res: any) => {
@@ -1673,7 +1679,7 @@ export class BillingComponent implements OnInit {
             if (res.other_rx.length !== 0) {
               this.other = res.other_rx[0]
             }
-
+            
 
 
             this.as.successToast(res.message)

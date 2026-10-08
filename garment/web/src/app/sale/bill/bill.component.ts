@@ -283,7 +283,7 @@ export class BillComponent implements OnInit {
   lensList: any = []
   rateCardList: any = []
 
-  PaymentModesList: any = []
+  PaymentModesList: any
   disbaleupdate = false
 
   totalpaid = 0
@@ -397,7 +397,6 @@ export class BillComponent implements OnInit {
     }
 
     if (this.id2 != 0) {
-      this.getPaymentModesList()
       this.billByCustomer(this.id, this.id2)
       this.paymentHistoryByMasterID(this.id, this.id2)
     } else {
@@ -427,6 +426,14 @@ export class BillComponent implements OnInit {
     }
   
   }
+
+
+  paidAmountChange(amount: number) {
+  if (Number(amount) === 0) {
+    this.applyPayment.PaymentMode = null;
+  }
+
+}
 
   dropdownShoplist() {
     this.sp.show()
@@ -472,6 +479,7 @@ export class BillComponent implements OnInit {
         next: (res: any) => {
           if (res.success) {
             this.customer = res.data[0]
+            this.applyPayment.CustomerCredit = res.creditBalance
             this.customerPower = res
             this.BillMaster.CustomerID = this.customer.ID
             this.BillMaster.GSTNo = this.customer.GSTNo
@@ -2280,6 +2288,8 @@ export class BillComponent implements OnInit {
               next: (res: any) => {
                 if (res.success) {
                   this.getBillById(res.data[0].BillMasterID);
+                  this.billByCustomer(this.id, this.id2)
+                  this.paymentHistoryByMasterID(this.id, this.id2)
                 }
                 else if (res.apiStatusCode === 'OrderRequest001') {
                   this.as.errorToast(res.message)
