@@ -10,6 +10,24 @@ export class AboutComponent implements OnInit {
   constructor() { }
 
   data: any = [
+      {
+      "parentName": "10-10-2026 - 10 Updates",
+      "childProperties":
+        [
+ 
+          { "propertyName": `1. Bulk WhatsApp Launch. Complete WhatsApp automation with Auto WhatsApp Send facility. Filters available: * Brand-wise * Customer Category-wise Note: This feature is available in the Paid Version.` },
+          { "propertyName": "2. Membership Card Launch => Three membership cards are now available with Terms & Conditions on the back side: *Platinum *Silver *Gold, Path: Customer → Extra Button"},
+          { "propertyName": "3. Referral Card Report Launch. The Referral Card can also be used as a Family Card. Path: Report → Customer → New Member Card Report" },
+          { "propertyName": "4. Customer Performance Report View customer performance based on higher purchasing and identify your valuable customers. Path: Report → Customer → Customer Performance" },
+          { "propertyName": "5. Profit Report Calculate profit based on: Sale − Purchase − Expenses = Profit Path: Report → Customer → Sale Profit" },
+        
+          { "propertyName": "6. OpticalGuru and E-Guru Integration Integration between OpticalGuru and E-Guru for a more connected and efficient workflow." },
+          { "propertyName": "7. Emoji Support in WhatsApp Messages Emojis can now be used in WhatsApp messages." },
+          { "propertyName": "8. Deleted Shop Data Record Deleted shop data will be maintained as a future reference record." },
+          { "propertyName": "9. Optometrist Version – Prescription Update *Once the customer’s prescription is saved in the Optometry section, it should automatically reflect on the Main Page." },
+            { "propertyName": "10. Software UI Changes Improved and updated software user interface for a better user experience. (coming soon)" },
+        ]
+    },
      {
       "parentName": "01-04-2026 - 6 Updates",
       "childProperties":
