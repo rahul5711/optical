@@ -13217,36 +13217,38 @@ module.exports = {
                         response.data.DiscountValue = rangeObj.discountValue
                     }
                 }
-            } else if (fetchDiscount.length) {
-                if (fetchDiscount[0].DiscountType === 'range') {
-                    const srv = fetchDiscount[0].DiscountValue.split('/');
-                    for (let i = 0; i < srv.length; i += 1) {
-                        const elem = srv[i];
+            } else {
+                if (fetchDiscount.length) {
+                    if (fetchDiscount[0].DiscountType === 'range') {
+                        const srv = fetchDiscount[0].DiscountValue.split('/');
+                        for (let i = 0; i < srv.length; i += 1) {
+                            const elem = srv[i];
+                            const rangeDet = {
+                                qty: Number(elem.split('_')[0]),
+                                type: elem.split('_')[1],
+                                discountValue: Number(elem.split('_')[2]),
+                            };
+                            rangeDetails.push(rangeDet);
+                        }
+                        const rangeObj = getRangeObject(rangeDetails, Quantity);
+                        if (rangeObj) {
+                            response.data.DiscountType = rangeObj.type
+                            response.data.DiscountValue = rangeObj.discountValue
+                        }
+                    }
+
+                    if (fetchDiscount[0].DiscountType !== 'range') {
                         const rangeDet = {
-                            qty: Number(elem.split('_')[0]),
-                            type: elem.split('_')[1],
-                            discountValue: Number(elem.split('_')[2]),
+                            qty: Quantity,
+                            type: fetchDiscount[0].DiscountType,
+                            discountValue: Number(fetchDiscount[0].DiscountValue) || 0,
                         };
                         rangeDetails.push(rangeDet);
-                    }
-                    const rangeObj = getRangeObject(rangeDetails, Quantity);
-                    if (rangeObj) {
-                        response.data.DiscountType = rangeObj.type
-                        response.data.DiscountValue = rangeObj.discountValue
-                    }
-                }
-
-                if (fetchDiscount[0].DiscountType !== 'range') {
-                    const rangeDet = {
-                        qty: Quantity,
-                        type: fetchDiscount[0].DiscountType,
-                        discountValue: Number(fetchDiscount[0].DiscountValue) || 0,
-                    };
-                    rangeDetails.push(rangeDet);
-                    const rangeObj = getRangeObject(rangeDetails, Quantity);
-                    if (rangeObj) {
-                        response.data.DiscountType = rangeObj.type
-                        response.data.DiscountValue = rangeObj.discountValue
+                        const rangeObj = getRangeObject(rangeDetails, Quantity);
+                        if (rangeObj) {
+                            response.data.DiscountType = rangeObj.type
+                            response.data.DiscountValue = rangeObj.discountValue
+                        }
                     }
                 }
             }
