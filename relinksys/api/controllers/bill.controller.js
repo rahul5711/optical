@@ -3212,8 +3212,8 @@ module.exports = {
             });
             console.log(printdata.gstSlabList, 'printdata.gstSlabList');
 
-                console.log( printdata.billItemList,' printdata.billItemList');
-                
+            console.log(printdata.billItemList, ' printdata.billItemList');
+
             // printdata.billItemList = printdata.billItemList.map((element) => {
             //     if (element.Status === 1) {
             //         printdata.GSTTypes = element.GSTType;
@@ -3232,10 +3232,10 @@ module.exports = {
             printdata.GSTTypes = 'NONE';
             printdata.billItemList = printdata.billItemList.map((element) => {
                 if (element.Status === 1) {
-                    if ( element.GSTType && element.GSTType.toUpperCase() !== 'NONE') {
+                    if (element.GSTType && element.GSTType.toUpperCase() !== 'NONE') {
                         printdata.GSTTypes = element.GSTType;
                     }
-                
+
                     if (element.GSTType?.toUpperCase().includes("CGST-SGST")) {
                         return {
                             ...element,
@@ -3249,10 +3249,10 @@ module.exports = {
 
             printdata.serviceList = printdata.serviceList.map((element) => {
                 if (element.Status === 1) {
-                    if ( element.GSTType && element.GSTType.toUpperCase() !== 'NONE') {
+                    if (element.GSTType && element.GSTType.toUpperCase() !== 'NONE') {
                         printdata.GSTTypes = element.GSTType;
                     }
-                
+
                     if (element.GSTType?.toUpperCase().includes("CGST-SGST")) {
                         return {
                             ...element,
@@ -13142,6 +13142,11 @@ module.exports = {
                 [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} and ProductName LIKE '${searchString}%' order by ID desc limit 1`);
             }
 
+            if (!fetchDiscount.length) {
+
+                [fetchDiscount] = await connection.query(`select * from discountsetting where Status = 1 and CompanyID = ${CompanyID} and ShopID = ${ShopID} and ProductTypeID = ${ProductTypeID} order by ID desc limit 1`);
+            }
+
             // console.log(fetchDiscount);
 
 
@@ -13180,8 +13185,39 @@ module.exports = {
                         response.data.DiscountValue = rangeObj.discountValue
                     }
                 }
-            }
-            if (fetchDiscount.length && searchString.trim().toLowerCase() === fetchDiscount[0].ProductName.trim().toLowerCase()) {
+            } else if (fetchDiscount.length && searchString.trim().toLowerCase() === fetchDiscount[0].ProductName.trim().toLowerCase()) {
+                if (fetchDiscount[0].DiscountType === 'range') {
+                    const srv = fetchDiscount[0].DiscountValue.split('/');
+                    for (let i = 0; i < srv.length; i += 1) {
+                        const elem = srv[i];
+                        const rangeDet = {
+                            qty: Number(elem.split('_')[0]),
+                            type: elem.split('_')[1],
+                            discountValue: Number(elem.split('_')[2]),
+                        };
+                        rangeDetails.push(rangeDet);
+                    }
+                    const rangeObj = getRangeObject(rangeDetails, Quantity);
+                    if (rangeObj) {
+                        response.data.DiscountType = rangeObj.type
+                        response.data.DiscountValue = rangeObj.discountValue
+                    }
+                }
+
+                if (fetchDiscount[0].DiscountType !== 'range') {
+                    const rangeDet = {
+                        qty: Quantity,
+                        type: fetchDiscount[0].DiscountType,
+                        discountValue: Number(fetchDiscount[0].DiscountValue) || 0,
+                    };
+                    rangeDetails.push(rangeDet);
+                    const rangeObj = getRangeObject(rangeDetails, Quantity);
+                    if (rangeObj) {
+                        response.data.DiscountType = rangeObj.type
+                        response.data.DiscountValue = rangeObj.discountValue
+                    }
+                }
+            } else if (fetchDiscount.length) {
                 if (fetchDiscount[0].DiscountType === 'range') {
                     const srv = fetchDiscount[0].DiscountValue.split('/');
                     for (let i = 0; i < srv.length; i += 1) {
@@ -13434,7 +13470,7 @@ module.exports = {
                 shopId = `and discountsetting.ShopID = ${shopid}`
             }
 
-            let qry = `SELECT discountsetting.*, shop.Name AS ShopName, shop.AreaName AS AreaName FROM discountsetting LEFT JOIN shop ON shop.ID = discountsetting.ShopID WHERE  discountsetting.CompanyID = ${CompanyID} and discountsetting.Status = 1  ${shopId}  Order By discountsetting.ID Desc `
+            let qry = `SELECT discountsetting.*, shop.Name AS ShopName, shop.AreaName AS AreaName, product.Name as ProductTypeName FROM discountsetting LEFT JOIN product on product.ID = discountsetting.ProductTypeID  LEFT JOIN shop ON shop.ID = discountsetting.ShopID WHERE  discountsetting.CompanyID = ${CompanyID} and discountsetting.Status = 1  ${shopId}  Order By discountsetting.ID Desc `
 
             let skipQuery = ` LIMIT  ${limit} OFFSET ${skip}`
             let finalQuery = qry + skipQuery;
