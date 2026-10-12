@@ -210,7 +210,7 @@
 
                                     <td style="white-space: nowrap;">
                                         <mat-slide-toggle *ngIf="data.ID == null" name="manualRow{{i}}"
-                                            (click)="manualRow( i)" color="primary" [(ngModel)]="data.manualRow"
+                                            (change)="manualRow( i)" color="primary" [(ngModel)]="data.manualRow"
                                             class="example-margin" #Manualcontrol  
                                             style="color:#ff651e;"></mat-slide-toggle>
                                         <ng-container *ngIf="data.ID != null">

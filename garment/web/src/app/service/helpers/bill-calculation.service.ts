@@ -17,12 +17,25 @@ export class BillCalculationService {
     return Number(Math.round(parseFloat(num + 'e' + x)) + 'e-' + x);
   }
 
- validateAndSetToZero(BillItem:any, property:any) {
-    if (isNaN(Number(BillItem[property])) || BillItem[property] < 0) {
-      alert("Please fill up a valid non-negative integer value for " + property);
-      BillItem[property] = 0;
-    }
+//  validateAndSetToZero(BillItem:any, property:any) {
+//     if (isNaN(Number(BillItem[property])) || BillItem[property] < 0) {
+//       alert("Please fill up a valid non-negative integer value for " + property);
+//       BillItem[property] = 0;
+//     }
+//   }
+
+validateAndSetToZero(BillItem: any, property: any) {
+  const value = BillItem[property];
+
+  if (Number(value) === 0 && value !== '' && value !== null && value !== undefined) {
+    return;
   }
+
+  if ( value === null || value === undefined || value === '' || isNaN(Number(value)) || Number(value) < 0) {
+      alert("Please enter a valid non-negative value for " + property);
+      BillItem[property] = 0;
+  }
+}
 
   calculations(fieldName: any, mode: any, BillItem: any, Service: any) {
 

@@ -428,11 +428,16 @@ export class BillComponent implements OnInit {
   }
 
 
-  paidAmountChange(amount: number) {
+paidAmountChange(amount: number) {
+
+  if (Number(amount) > Number(this.BillMaster.DueAmount)) {
+    this.applyPayment.PaidAmount = Number(this.BillMaster.DueAmount);
+    amount = Number(this.BillMaster.DueAmount);
+  }
+
   if (Number(amount) === 0) {
     this.applyPayment.PaymentMode = null;
   }
-
 }
 
   dropdownShoplist() {
@@ -2088,9 +2093,14 @@ export class BillComponent implements OnInit {
     this.BillMaster.DeliveryDate = this.BillMaster.DeliveryDate + ' ' + this.currentTime;
 
     this.data.billMaseterData = this.BillMaster;
-    this.data.billDetailData = this.billItemList.filter((e: any) =>
-      e.Barcode && e.ProductName
-    );
+    
+    this.billItemList.forEach((r: any, i: number) => {
+  if (r.manualRow == true) {
+    this.manualRow(i);
+  }
+});
+
+    this.data.billDetailData = this.billItemList.filter((e: any) => e.Barcode && e.ProductName );
 
     this.data.service = this.serviceLists;
 
@@ -3450,16 +3460,26 @@ export class BillComponent implements OnInit {
       this.billItemList[i].ProductName = searchString.slice(0, -1);
       this.myControls = this.billItemList.map((item: any) => new FormControl(item.ProductName));
 
+      if( this.billItemList[i].UnitPrice != 0){
+
+      
       this.calculateFields1('Quantity', 'subTotal', this.billItemList[i]);
       this.calculateFields1('DiscountAmount', 'discount', this.billItemList[i]);
       this.calculateFields1('GSTPercentage', 'gst', this.billItemList[i]);
       this.calculateFields1('TotalAmount', 'total', this.billItemList[i])
       this.calculateGrandTotal()
+      }
     } else {
       this.BillItem = {
-        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null, manualRow: true, specList: [], selectedProduct: '',
+        ID: null, CompanyID: null, ProductName: null, ProductTypeID: null, ProductTypeName: null, HSNCode: null, UnitPrice: 0.00, Quantity: 0, SubTotal: 0.00, DiscountPercentage: 0, DiscountAmount: 0.00, GSTPercentage: 0, GSTAmount: 0.00, GSTType: 'None', TotalAmount: 0.00, WholeSale: false, Manual: false, PreOrder: false, BarCodeCount: null, Barcode: null, BaseBarCode: null, Status: 1, MeasurementID: null, Family: 'Self', Option: null, SupplierID: null, ProductExpDate: '0000-00-00', Remark: '', Warranty: '', RetailPrice: 0.00, WholeSalePrice: 0.00, DuaCal: 'yes', PurchasePrice: 0, UpdateProduct: false, fixwithmanualHS: false, Order: false, OrderShop: null, manualRow: false, specList: [], selectedProduct: '',
       }
       this.billItemList[i] = this.BillItem
+       
+      this.calculateFields1('Quantity', 'subTotal', this.billItemList[i]);
+      this.calculateFields1('DiscountAmount', 'discount', this.billItemList[i]);
+      this.calculateFields1('GSTPercentage', 'gst', this.billItemList[i]);
+      this.calculateFields1('TotalAmount', 'total', this.billItemList[i])
+      this.calculateGrandTotal()
     }
   }
 }
