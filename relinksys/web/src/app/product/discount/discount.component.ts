@@ -176,25 +176,24 @@ export class DiscountComponent implements OnInit {
   }
 
   save() {
-    this.specList.forEach((element: any) => {
-      this.prodList.forEach((elements: any) => {
-        if (elements.Name === element.ProductName) {
-          this.data1.ProductTypeID = elements.ID
-          this.data1.ProductTypeName = elements.Name
-        }
-      });
+   this.data1.ProductName = ' ';
 
-      if (element.SelectedValue !== "") {
-          let valueToAdd = element.SelectedValue;
-          valueToAdd = valueToAdd.replace(/^\d+_/, "");
-          this.data1.ProductName = this.data1.ProductName + valueToAdd + "/";
-        }
+this.specList.forEach((element: any) => {
 
+  this.prodList.forEach((elements: any) => {
+    if (elements.Name === element.ProductName) {
+      this.data1.ProductTypeID = elements.ID;
+      this.data1.ProductTypeName = elements.Name;
+    }
+  });
 
-      // if (element.SelectedValue !== "") {
-      //   this.data1.ProductName = this.data1.ProductName + element.SelectedValue + "/";
-      // }
-    });
+  if (element.SelectedValue !== '' && element.SelectedValue != null) {
+    let valueToAdd = element.SelectedValue;
+    valueToAdd = valueToAdd.replace(/^\d+_/, '');
+    this.data1.ProductName += valueToAdd + '/';
+  }
+
+});
 
     let dtm = {
       ProductTypeID: this.data1.ProductTypeID,

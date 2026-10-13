@@ -45,7 +45,7 @@
                                                 <mat-select name="{{spec.FieldName+'0'}}"
                                                     [(ngModel)]="spec.SelectedValue"
                                                     (selectionChange)="getFieldSupportData(i)" editable="true"
-                                                    [required]="spec.Required === 1" #singleSelect>
+                                                     #singleSelect>
                                                     <mat-option>
                                                         <ngx-mat-select-search matInput [(ngModel)]="spec.EnteredValue" (ngModelChange)="spec.EnteredValue = onChange($event)" [ngModelOptions]="{standalone: true}">
                                                         </ngx-mat-select-search>
@@ -66,7 +66,7 @@
                                                 <input matInput name="{{spec.FieldName+'2'}}"
                                                     [(ngModel)]="spec.SelectedValue"
                                                     (ngModelChange)="spec.SelectedValue = onChange($event)"
-                                                    [required]="spec.Required === 1" (blur)="getFieldSupportData(i)">
+                                                     (blur)="getFieldSupportData(i)">
                                                 <mat-error>
                                                     {{spec.FieldName}} is Required
                                                 </mat-error>
@@ -78,7 +78,7 @@
                                                 <input type="date" matInput name="{{spec.FieldName+'3'}}"
                                                     [(ngModel)]="spec.SelectedValue"
                                                     (ngModelChange)="spec.SelectedValue = onChange($event)"
-                                                    editable="true" [required]="spec.Required === 1">
+                                                    editable="true" >
                                                 <mat-error>
                                                     {{spec.FieldName}} is Required
                                                 </mat-error>
@@ -187,7 +187,9 @@
                                                         </button>
                                                     </td>
                                                     <td>{{i+1}}</td>
-                                                    <td>{{data.ProductName}}</td>
+                                                    <td>
+                                                      {{ data.ProductName?.trim() ? data.ProductName : data.ProductTypeName }}
+</td>
                                                     <td>{{data.DiscountType}}</td>
                                                     <td>{{data.DiscountValue}}</td>
                                                     <td>{{data.CreatedByUser}}</td>
