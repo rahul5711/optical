@@ -13112,7 +13112,179 @@ module.exports = {
         }
 
     },
+
+
+
     getDiscountSetting: async (req, res, next) => {
+        let connection;
+
+        try {
+            const response = {
+                data: {
+                    DiscountType: "percentage",
+                    DiscountValue: 0
+                },
+                success: true,
+                message: ""
+            };
+
+            const {
+                Quantity,
+                ProductTypeID,
+                ProductName = "",
+                searchString = ""
+            } = req.body;
+
+            const CompanyID = req.user.CompanyID || 0;
+            const ShopID = await shopID(req.headers) || 0;
+
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+
+            const productName = String(ProductName || "").trim();
+            const search = String(searchString || "").trim();
+
+            const baseQuery = `
+            SELECT *
+            FROM discountsetting
+            WHERE Status = 1
+              AND CompanyID = ?
+              AND ShopID = ?
+              AND ProductTypeID = ?
+        `;
+
+            const baseParams = [
+                CompanyID,
+                ShopID,
+                ProductTypeID
+            ];
+
+            let fetchDiscount = [];
+
+            // 1. Exact ProductName match.
+            if (productName) {
+                [fetchDiscount] = await connection.query(
+                    `${baseQuery}
+                 AND TRIM(ProductName) <> ''
+                 AND LOWER(TRIM(ProductName)) = LOWER(?)
+                 ORDER BY ID DESC
+                 LIMIT 1`,
+                    [...baseParams, productName]
+                );
+            }
+
+            // 2. Match the longest configured ProductName prefix.
+            // Example: RIMLESS/FASTRACK matches
+            //          RIMLESS/FASTRACK/03.
+            if (!fetchDiscount.length && productName) {
+                [fetchDiscount] = await connection.query(
+                    `${baseQuery}
+                 AND TRIM(ProductName) <> ''
+                 AND ? LIKE CONCAT(TRIM(ProductName), '%')
+                 ORDER BY LENGTH(TRIM(ProductName)) DESC, ID DESC
+                 LIMIT 1`,
+                    [...baseParams, productName]
+                );
+            }
+
+            // 3. Exact searchString match.
+            if (!fetchDiscount.length && search) {
+                [fetchDiscount] = await connection.query(
+                    `${baseQuery}
+                 AND TRIM(ProductName) <> ''
+                 AND LOWER(TRIM(ProductName)) = LOWER(?)
+                 ORDER BY ID DESC
+                 LIMIT 1`,
+                    [...baseParams, search]
+                );
+            }
+
+            // 4. Prefix search using searchString.
+            if (!fetchDiscount.length && search) {
+                [fetchDiscount] = await connection.query(
+                    `${baseQuery}
+                 AND TRIM(ProductName) <> ''
+                 AND ProductName LIKE ?
+                 ORDER BY LENGTH(TRIM(ProductName)) DESC, ID DESC
+                 LIMIT 1`,
+                    [...baseParams, `${search}%`]
+                );
+            }
+
+            // 5. Fallback: latest active setting for this product type.
+            // This can return a blank ProductName discount.
+            if (!fetchDiscount.length) {
+                [fetchDiscount] = await connection.query(
+                    `${baseQuery}
+                 ORDER BY ID DESC
+                 LIMIT 1`,
+                    baseParams
+                );
+            }
+
+            // 6. Apply the selected discount.
+            if (fetchDiscount.length) {
+                const discount = fetchDiscount[0];
+                const rangeDetails = [];
+
+                if (discount.DiscountType === "range") {
+                    const ranges = String(
+                        discount.DiscountValue || ""
+                    ).split("/");
+
+                    for (const elem of ranges) {
+                        const parts = elem.split("_");
+
+                        if (parts.length >= 3) {
+                            rangeDetails.push({
+                                qty: Number(parts[0]),
+                                type: parts[1],
+                                discountValue: Number(parts[2])
+                            });
+                        }
+                    }
+                } else {
+                    rangeDetails.push({
+                        qty: Number(Quantity),
+                        type: discount.DiscountType,
+                        discountValue:
+                            Number(discount.DiscountValue) || 0
+                    });
+                }
+
+                const rangeObj = getRangeObject(
+                    rangeDetails,
+                    Quantity
+                );
+
+                if (rangeObj) {
+                    response.data.DiscountType = rangeObj.type;
+                    response.data.DiscountValue =
+                        rangeObj.discountValue;
+                }
+            }
+
+            response.message = "data fetch successfully";
+
+            return res.send(response);
+
+        } catch (err) {
+            console.log(err);
+            return next(err);
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
+
+
+    getDiscountSetting2: async (req, res, next) => {
         let connection;
         try {
             const response = {
