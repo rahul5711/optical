@@ -37,7 +37,7 @@ export class EcomSettingComponent implements OnInit {
   ) { }
   images: any[] = ['', '', '', ''];
   data: any = {
-    SilderImage:[],
+    SilderImage:[],  CompanyCurrency: '',
     CouponTagLine: '',  CouponCode: '', CouponDiscount: '', FacebookLink: '', InstagramLink: '', YoutubeLink: '', TwitterLink: '', complimentaryImage:'',
     EcomName:'', EcomAddress:'', EcomMoblieNo1:'', EcomMoblieNo:'', EcomPhoneNo:'', EcomEmail:'', EcomLogo:'',
     PolicyNote :'[{"Content":""},{"Content":""},{"Content":""},{"Content":""},{"Content":""}]',

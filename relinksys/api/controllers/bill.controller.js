@@ -13454,7 +13454,7 @@ module.exports = {
             // console.log(req.body);
 
             if (ProductTypeID == null || ProductTypeID === undefined || ProductTypeID === 0) return res.send({ message: "Invalid Query ProductTypeID" })
-            if (ProductName == null || ProductName === undefined || ProductName === "") return res.send({ message: "Invalid Query ProductName Data" })
+            if (ProductName == null || ProductName === undefined ) return res.send({ message: "Invalid Query ProductName Data" })
             if (DiscountType == null || DiscountType === undefined) return res.send({ message: "Invalid Query DiscountType" })
             if (DiscountValue == null || DiscountValue === undefined) return res.send({ message: "Invalid Query DiscountValue" })
 
