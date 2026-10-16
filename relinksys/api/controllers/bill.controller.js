@@ -3432,7 +3432,7 @@ module.exports = {
         }
     },
 
-    orderFormPrint: async (req, res, next) => {
+  orderFormPrint: async (req, res, next) => {
         let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -3472,6 +3472,7 @@ module.exports = {
             const UnpaidList = req.body.unpaidList;
 
             const [billformate] = await connection.query(`select * from billformate where CompanyID = ${CompanyID}`)
+            const [Employee] = await connection.query(`select * from user where CompanyID = ${CompanyID} and ID = ${BillMaster.Employee}`)
             printdata.billformate = billformate[0]
             printdata.BillHeader = `${Number(printdata.billformate.BillHeader)}`;
             printdata.Color = printdata.billformate.Color;
@@ -3506,6 +3507,7 @@ module.exports = {
             printdata.paidlist = PaidList
             printdata.unpaidlist = UnpaidList
             printdata.Measurement = MeasurementID[0]
+            printdata.employee = Employee[0].Name
             printdata.LogoURL = clientConfig.appURL + printdata.shopdetails.LogoURL;
 
             var recivePayment = 0;
@@ -3515,7 +3517,21 @@ module.exports = {
                 }
             }
             printdata.recivePayment = recivePayment;
-            console.log(printdata);
+           
+             printdata.CurrentInvoiceBalance = printdata.unpaidlist.reduce((total, em) => {
+                if (printdata.billMaster.InvoiceNo === em.InvoiceNo) {
+                    return total + em.DueAmount;
+                }
+                return total;
+            }, 0);
+
+            
+    let subtotals = 0;
+          req.body.billItemList.forEach((element) => {
+                subtotals += element.UnitPrice * element.Quantity
+            });
+
+            printdata.subtotals = subtotals
 
             let fileName = "";
             let file = "";
@@ -3523,7 +3539,12 @@ module.exports = {
             if (printdata.company.ID == 20) {
                 file = "billOrder_form.ejs" + ".pdf";
                 formatName = "billOrder_form.ejs";
-            } else {
+            }
+            else if (printdata.company.ID == 473) {
+                file = "ampm.ejs" + ".pdf";
+                formatName = "ampm.ejs";
+            }
+            else {
                 file = "OrderForm.ejs" + ".pdf";
                 formatName = "OrderForm.ejs";
             }
@@ -3541,6 +3562,12 @@ module.exports = {
                             "width": "88mm",
                             timeout: 600000,
                         };
+                    }
+                    else if(printdata.company.ID == 473) {
+                        options = {
+                            "height": "150mm",
+                            "width": "105mm",
+                        }
                     }
                     else {
                         options = {
