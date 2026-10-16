@@ -15,7 +15,7 @@ const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 
 async function checkIPExist(ips, ipToCheck) {
-  return ips.some(item => item.ip === ipToCheck);
+    return ips.some(item => item.ip === ipToCheck);
 }
 
 module.exports = {
@@ -44,8 +44,8 @@ module.exports = {
                 return res.send({ success: false, message: "Password doesnot matched" })
             }
             User[0].is_direct = false
-            console.log("User Login UserGroup" , User[0]?.UserGroup);
-            
+            console.log("User Login UserGroup", User[0]?.UserGroup);
+
             if (User.length && User[0].UserGroup === 'SuperAdmin') {
 
                 const accessToken = await signAccessTokenAdmin(`'${User[0].ID}'`)
@@ -89,7 +89,7 @@ module.exports = {
                         `Insert into loginhistory (CompanyID, UserName, UserID, LoginTime, IpAddress, Comment) values (${User[0].CompanyID}, '${User[0].Name}', ${User[0].ID}, now(), '${ip}', '${comment}')`
 
                     );
-                    const [shop] = await connection.query(`select * from shop where  CompanyID = '${User[0].CompanyID}'`)
+                    const [shop] = await connection.query(`select * from shop where CompanyID = '${User[0].CompanyID}' and (Status = 1 OR IsShowDeleteShop = "true")`)
                     return res.send({ message: "User Login sucessfully", data: User[0], Company: company[0], CompanySetting: setting[0], shop: shop, success: true, accessToken: accessToken, refreshToken: refreshToken, loginCode: loginCode })
                 } else {
 
@@ -109,8 +109,8 @@ module.exports = {
                         comment = "User can not login during this time window";
                         loginCode = 0;
                     }
-                    console.log("Setting IsIpCheck ====>",setting[0]?.IsIpCheck);
-                    
+                    console.log("Setting IsIpCheck ====>", setting[0]?.IsIpCheck);
+
                     if (setting[0]?.IsIpCheck === "true") {
                         const [fetchIps] = await connection.query(
                             `SELECT Remark, ip FROM ipaddress WHERE Status = 1 AND CompanyID = ${User[0].CompanyID}`
