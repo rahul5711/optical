@@ -193,7 +193,7 @@ module.exports = {
             }
 
 
-            const [deleteShop] = await connection.query(`update shop set Status=0, UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
+            const [deleteShop] = await connection.query(`update shop set Status=0, IsShowDeleteShop = "false", UpdatedBy= ${LoggedOnUser}, UpdatedOn=now() where ID = ${Body.ID} and CompanyID = ${CompanyID}`)
 
             console.log("Shop Delete SuccessFUlly !!!");
 
@@ -245,6 +245,106 @@ module.exports = {
             if (connection) {
                 connection.release(); // Always release the connection
                 connection.destroy();
+            }
+        }
+    },
+    showDeleteShop: async (req, res, next) => {
+        let connection;
+
+        try {
+            const Body = req.body;
+            const CompanyID = req.user?.CompanyID ?? 0;
+            const LoggedOnUserGroup = req.user?.UserGroup ?? "Employee";
+            const LoggedOnUser = req.user?.ID ?? 0;
+            const db = req.db;
+
+            // Check database connection
+            if (!db || db.success === false) {
+                return res.status(200).json(
+                    db || {
+                        success: false,
+                        message: "Database connection failed"
+                    }
+                );
+            }
+
+            // Validate request body
+            if (_.isEmpty(Body) || !Body.ID) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Shop ID is required"
+                });
+            }
+
+            // Check user permission
+            // if (LoggedOnUserGroup !== "SuperAdmin") {
+            //     return res.status(403).json({
+            //         success: false,
+            //         message: "You are not authorized to perform this action"
+            //     });
+            // }
+
+            connection = await db.getConnection();
+
+            // Check whether the deleted shop exists
+            const [doesExist] = await connection.query(
+                `SELECT ID, IsShowDeleteShop
+             FROM shop
+             WHERE Status = 0
+               AND CompanyID = ?
+               AND ID = ?`,
+                [CompanyID, Body.ID]
+            );
+
+            if (!doesExist.length) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Deleted shop not found"
+                });
+            }
+
+            // Toggle the visibility of the deleted shop
+            const currentValue = String(
+                doesExist[0].IsShowDeleteShop ?? "false"
+            ).toLowerCase();
+
+            const isShowDeleteShop =
+                currentValue === "true" || currentValue === "1"
+                    ? "false"
+                    : "true";
+
+            // Update shop visibility
+            await connection.query(
+                `UPDATE shop
+             SET IsShowDeleteShop = ?,
+                 UpdatedBy = ?,
+                 UpdatedOn = NOW()
+             WHERE ID = ?
+               AND CompanyID = ?
+               AND Status = 0`,
+                [isShowDeleteShop, LoggedOnUser, Body.ID, CompanyID]
+            );
+
+            // Return message according to the updated value
+            const message =
+                isShowDeleteShop === "true"
+                    ? "Deleted shop is now visible"
+                    : "Deleted shop is now hidden";
+
+            return res.status(200).json({
+                success: true,
+                message,
+                data: {
+                    ID: doesExist[0].ID,
+                    IsShowDeleteShop: isShowDeleteShop
+                }
+            });
+
+        } catch (err) {
+            next(err);
+        } finally {
+            if (connection) {
+                connection.release();
             }
         }
     },

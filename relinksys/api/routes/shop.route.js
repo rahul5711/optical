@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Controller = require('../controllers/shop.controller')
-const Controller2 = require('../controllers/wp.controller')
+// const Controller2 = require('../controllers/wp.controller')
 const { verifyAccessTokenAdmin } = require('../helpers/jwt_helper');
 const { dbConnection } = require('../helpers/helper_function')
 
@@ -37,6 +37,7 @@ router.post('/list', verifyAccessTokenAdmin, dbConnection, Controller.list)
 router.post('/dropdownlist', verifyAccessTokenAdmin, dbConnection, Controller.dropdownlist)
 router.post('/delete', verifyAccessTokenAdmin, dbConnection, Controller.delete)
 router.post('/restore', verifyAccessTokenAdmin, dbConnection, Controller.restore)
+router.post('/showDeleteShop', verifyAccessTokenAdmin, dbConnection, Controller.showDeleteShop)
 router.post('/getShopById', verifyAccessTokenAdmin, dbConnection, Controller.getShopById)
 router.post('/update', verifyAccessTokenAdmin, dbConnection, Controller.update)
 
