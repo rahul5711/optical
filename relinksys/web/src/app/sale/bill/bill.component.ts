@@ -601,7 +601,7 @@ paymentOTP:any = ''
   
             this.billItemList = res.result.billDetail
             this.serviceLists = res.result.service
-        if (this.company.ID == 84 && this.user.ID == 1161) {
+        if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
             this.isDisableds()
           }
           } else {
@@ -2547,7 +2547,7 @@ let dtm
   
             this.billItemList = res.data.getBillById.result.billDetail
             this.serviceLists = res.data.getBillById.result.service
-            if (this.company.ID == 84 && this.user.ID == 1161) {
+            if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
                this.isDisableds()
             }
               // this.billByCustomer(this.id, this.id2);
@@ -2680,7 +2680,7 @@ let dtm
           
             this.billItemList = res.data.getBillById.result.billDetail
             this.serviceLists = res.data.getBillById.result.service
-            if (this.company.ID == 84 && this.user.ID == 1161) {
+            if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
                this.isDisableds()
             }
             
@@ -3357,7 +3357,7 @@ let dtm
   
             this.billItemList = res.data.getBillById.result.billDetail
             this.serviceLists = res.data.getBillById.result.service
-            if (this.company.ID == 84 && this.user.ID == 1161) {
+            if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
                this.isDisableds()
             }
           
@@ -4709,7 +4709,7 @@ paidSendWhatsapp(mode:any) {
 
 
   isDisableds() {
-    if (this.company.ID == 84 && this.user.ID != 1161) {
+    if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID != 1161) {
       const minimumPayment = this.BillMaster.TotalAmount * 0.4;
 
       if (this.paidList?.[1]) {

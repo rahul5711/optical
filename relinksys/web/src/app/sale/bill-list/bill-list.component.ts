@@ -1203,7 +1203,7 @@ export class BillListComponent implements OnInit {
   }
 
   isDisableds() {
-    if (this.company.ID == 84) {
+    if (this.company.ID == 84 || this.company.ID == 430) {
       const minimumPayment = this.applyPayment.PayableAmount * 0.4;
 
       if (this.paidList?.[1]) {
