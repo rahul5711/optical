@@ -140,7 +140,7 @@ export class ShopListComponent implements OnInit {
           this.collectionSize = res.count;
           this.dataList = res.data
           this.dataList.forEach((element:any) => {
-            
+            element.IsShowDeleteShop =  String(element.IsShowDeleteShop).toLowerCase() === 'true';
             element.WaterMark = (element.WaterMark);
             element.Signature = (element.Signature);
             if (element.LogoURL !== "null" && element.LogoURL !== '') {
@@ -671,4 +671,34 @@ getCategoryLists(){
   });
  }
 
+
+  showDeleteShop(data: any) {
+    
+        this.sp.show();
+         let dtm = {
+          ID : data.ID
+         }
+        const subs: Subscription = this.ss.showDeleteShop(dtm).subscribe({
+          next: (res: any) => {
+            if (res.success) {
+              this.getList()
+              this.as.successToast(res.message)
+              Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Your file has been deleted.',
+                showConfirmButton: false,
+                timer: 1000
+              })
+            } else {
+              this.as.errorToast(res.message)
+            }
+            this.sp.hide();
+          },
+          error: (err: any) => console.log(err.message),
+          complete: () => subs.unsubscribe(),
+        });
+      }
+
+  
 }

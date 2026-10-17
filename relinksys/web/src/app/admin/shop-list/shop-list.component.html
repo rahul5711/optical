@@ -120,7 +120,12 @@
                                             <tbody>
                                                 <tr class="text-center" *ngFor="let data of dataList let i = index;"
                                                     style="white-space: nowrap;">
-                                                    <td style="width: 7%;">
+                                                    <td >
+                                                        <mat-slide-toggle *ngIf="user.is_direct == true" type="ratio"  name="data{{i}}" color="primary" [(ngModel)]="data.IsShowDeleteShop"
+                                                            (change)="showDeleteShop(data)"  #name="ngModel" [ngModelOptions]="{standalone: true}"  class="example-margin" style="min-width: 0% !important;">  </mat-slide-toggle>
+
+                                                          
+
                                                         <button *ngIf="editShopList === true" class="bg-none"
                                                             (click)="openModalEdit(content,data)">
                                                             <mat-icon class="edit_icon ms-1" data-mdb-toggle="modal"
