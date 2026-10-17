@@ -7,8 +7,9 @@
                         <div class="header p-2 py-0 pt-1">
                             <div class="row">
                                 <div class="col-lg-1 col-md-2 col-5 p-0 ms-3">
-                                    <h2>Shop List <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o" title="ExportAsXLSX" aria-hidden="true"
-                                            type="button" (click)="exportAsXLSX()"></i> </h2>
+                                    <h2>Shop List <i *ngIf="user.ExcelPermission == 'false'" class="fa fa-file-excel-o"
+                                            title="ExportAsXLSX" aria-hidden="true" type="button"
+                                            (click)="exportAsXLSX()"></i> </h2>
                                 </div>
                                 <div class="col-md-2 col-4 ps-md-0 ps-1 order-1 order-md-1">
                                     <select class="form-control" id="itemsPerPage" name="itemsPerPage"
@@ -120,11 +121,16 @@
                                             <tbody>
                                                 <tr class="text-center" *ngFor="let data of dataList let i = index;"
                                                     style="white-space: nowrap;">
-                                                    <td >
-                                                        <mat-slide-toggle *ngIf="user.is_direct == true" type="ratio"  name="data{{i}}" color="primary" [(ngModel)]="data.IsShowDeleteShop"
-                                                            (change)="showDeleteShop(data)"  #name="ngModel" [ngModelOptions]="{standalone: true}"  class="example-margin" style="min-width: 0% !important;">  </mat-slide-toggle>
+                                                    <td>
+                                                        <mat-slide-toggle
+                                                            *ngIf="user.is_direct == true && data.Status === 0"
+                                                            type="ratio" name="data{{i}}" color="primary"
+                                                            [(ngModel)]="data.IsShowDeleteShop"
+                                                            (change)="showDeleteShop(data)" #name="ngModel"
+                                                            [ngModelOptions]="{standalone: true}" class="example-margin"
+                                                            style="min-width: 0% !important;"> </mat-slide-toggle>
 
-                                                          
+
 
                                                         <button *ngIf="editShopList === true" class="bg-none"
                                                             (click)="openModalEdit(content,data)">
@@ -464,18 +470,19 @@
                         </div>
                     </div>
 
-                     <div class="row mt-4" >
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
-                    <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
-                        *ngIf="suBtn == false">Save</button>
-                    <button class="me-3" type="button" mat-raised-button color="primary"
-                        [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true" (click)="updateShop()">Update</button>
-                    <button type="button" mat-raised-button (click)="formReset()">Clear</button>
-                </div>
-            </div>
+                    <div class="row mt-4">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                            <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
+                                *ngIf="suBtn == false">Save</button>
+                            <button class="me-3" type="button" mat-raised-button color="primary"
+                                [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true"
+                                (click)="updateShop()">Update</button>
+                            <button type="button" mat-raised-button (click)="formReset()">Clear</button>
+                        </div>
+                    </div>
                 </div>
 
-            <!-- Software hide show  -->
+                <!-- Software hide show  -->
                 <div class="tab-pane fade " id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
                     <div class="row ps-3">
                         <div class="col-md-2 col-sm-6 col-6 p-0" *ngIf="this.company.WholeSale === 'true'">
@@ -609,138 +616,138 @@
 
                     </div>
 
-                     <div class="row mt-4" >
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
-                    <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
-                        *ngIf="suBtn == false">Save</button>
-                    <button class="me-3" type="button" mat-raised-button color="primary"
-                        [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true" (click)="updateShop()">Update</button>
-                    <button type="button" mat-raised-button (click)="formReset()">Clear</button>
-                </div>
-            </div>
-                </div>
-
-                  
-
-              <div class="tab-pane fade " id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-                    <div class="row">
-                        <form  #f1="ngForm">
-                            <div class="row">
-                                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
-                                     <mat-slide-toggle type="ratio" name="isWhatsappPaidService" color="primary"
-                                [(ngModel)]="whatsappApi.isWhatsappPaidService" class="example-margin">WhatsappPaidService
-                            </mat-slide-toggle>
-                                                
-                                            </div>
-                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>Msg APIKey</mat-label>
-                                                    <input style=" border: none; height: auto;" matInput
-                                                        name="ApiKey" [(ngModel)]="whatsappApi.ApiKey"
-                                                        required #NewProductTypecontrol appAutoFoucsDirectives>
-                                                </mat-form-field>
-                                            </div>            
-                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label>NameSpace</mat-label>
-                                                    <input style=" border: none; height: auto;" matInput
-                                                        name="NameSpace" [(ngModel)]="whatsappApi.NameSpace"
-                                                        required #NewProductTypecontrol appAutoFoucsDirectives>
-                                                </mat-form-field>
-                                            </div>            
-                                            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
-                                                <mat-form-field class="example-full-width mb-0">
-                                                    <mat-label> WhatsappNumber</mat-label>
-                                                    <input style=" border: none; height: auto;" matInput
-                                                        name="WhatsappNumber" [(ngModel)]="whatsappApi.WhatsappNumber"
-                                                        required #NewProductTypecontrol appAutoFoucsDirectives>
-                                                </mat-form-field>
-                                            </div>            
-                            </div>             
-                                    <div class="row">
-                                        <div class="col-sm-12 whatsapp" style="overflow:auto;height:570px;">
-                                            <table class="table" style="width: 100%;">
-                                                <thead class="thead-light">
-                                                    <tr>
-                                                        <th style="text-align: left; padding-left: 10px; width: 5%;" >
-                                                            Bluk </th>
-                                                        <th style="text-align: left; padding-left: 10px; width: 10%;" >
-                                                            TemplateName</th>
-                                                        <th style="text-align: left; padding-left: 10px; width: 15%;" >
-                                                            TemplateValue</th>
-
-                                                        <th style="text-align: left; padding-left: 0%;" >
-                                                            Message Text (%26 = &)</th>
-                                                        <th >
-                                                            uploadImg
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="mt-2"
-                                                        *ngFor="let whatsSetting of whatsappSettingList ; let i = index;" style="white-space: nowrap;">
-                                                        <td>
-                                                            <mat-slide-toggle type="ratio"  name="BlukWhatsapp{{i}}" color="primary"
-                                [(ngModel)]="whatsSetting.BlukWhatsapp" class="example-margin">
-                            </mat-slide-toggle>
-                                                        </td>
-                                                        <td>{{ whatsSetting.TemplateName }}</td>
-
-                                                        <td style="padding: 0; padding-top: 8px;">
-                                                            <input matInput [(ngModel)]="whatsSetting.TemplateValue"
-                                                                class="example-margin"
-                                                                [ngModelOptions]="{standalone: true}" autocomplete="off"
-                                                                required>
-                                                        </td>
-                                                        <td style="padding: 0; padding-top: 8px;">
-                                                            <input matInput [(ngModel)]="whatsSetting.MessageText"
-                                                                class="example-margin"
-                                                                [ngModelOptions]="{standalone: true}" autocomplete="off"
-                                                                required>
-                                                        </td>
-                                                        <td  style="width:1%">
-                                                            <div class="row">
-                                                                <div class="col-12  ">
-                                                                    <img class="fit-picture" width="70" height="70"
-                                                                        [src]="this.env.apiUrl + whatsSetting.Url"
-                                                                        style="object-fit: contain; border: 1px solid;">
-                                                                </div>
-                                                                <div class="col-xl-12 col-lg-10 col-md-10 col-11 mb-0 "
-                                                                    (click)="fileInput2.click()"
-                                                                    style="cursor: pointer;">
-                                                                    <i class="fa-solid fa-cloud-arrow-up upload_icon1">
-                                                                    </i> 
-                                                                    <input #fileInput2 id="my-input" name='signature'
-                                                                        type="file"
-                                                                     (change)="uploadImageUrl($event, 'signature', i)"
-                                                                        style="display:none;">
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                                
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                         
-                                                    <button [disabled]="!f1.valid" type="button" class="ml-2 mt-3"
-                                                        mat-raised-button color="primary" (click)="updateWhatsappConfig()"
-                                                        > Save/Update</button>
-                                              
-                                        </div>
-                                    </div>
-                                </form>
+                    <div class="row mt-4">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-0">
+                            <button type="submit" class="me-3" mat-raised-button color="primary" [disabled]="!f.valid"
+                                *ngIf="suBtn == false">Save</button>
+                            <button class="me-3" type="button" mat-raised-button color="primary"
+                                [disabled]="id == 0 || !f.valid" *ngIf="suBtn == true"
+                                (click)="updateShop()">Update</button>
+                            <button type="button" mat-raised-button (click)="formReset()">Clear</button>
+                        </div>
                     </div>
-              </div>
+                </div>
+
+
+
+                <div class="tab-pane fade " id="ex1-tabs-3" role="tabpanel" aria-labelledby="ex1-tab-3">
+                    <div class="row">
+                        <form #f1="ngForm">
+                            <div class="row">
+                                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-12 mb-0">
+                                    <mat-slide-toggle type="ratio" name="isWhatsappPaidService" color="primary"
+                                        [(ngModel)]="whatsappApi.isWhatsappPaidService"
+                                        class="example-margin">WhatsappPaidService
+                                    </mat-slide-toggle>
+
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>Msg APIKey</mat-label>
+                                        <input style=" border: none; height: auto;" matInput name="ApiKey"
+                                            [(ngModel)]="whatsappApi.ApiKey" required #NewProductTypecontrol
+                                            appAutoFoucsDirectives>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label>NameSpace</mat-label>
+                                        <input style=" border: none; height: auto;" matInput name="NameSpace"
+                                            [(ngModel)]="whatsappApi.NameSpace" required #NewProductTypecontrol
+                                            appAutoFoucsDirectives>
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 mb-0">
+                                    <mat-form-field class="example-full-width mb-0">
+                                        <mat-label> WhatsappNumber</mat-label>
+                                        <input style=" border: none; height: auto;" matInput name="WhatsappNumber"
+                                            [(ngModel)]="whatsappApi.WhatsappNumber" required #NewProductTypecontrol
+                                            appAutoFoucsDirectives>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 whatsapp" style="overflow:auto;height:570px;">
+                                    <table class="table" style="width: 100%;">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th style="text-align: left; padding-left: 10px; width: 5%;">
+                                                    Bluk </th>
+                                                <th style="text-align: left; padding-left: 10px; width: 10%;">
+                                                    TemplateName</th>
+                                                <th style="text-align: left; padding-left: 10px; width: 15%;">
+                                                    TemplateValue</th>
+
+                                                <th style="text-align: left; padding-left: 0%;">
+                                                    Message Text (%26 = &)</th>
+                                                <th>
+                                                    uploadImg
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="mt-2"
+                                                *ngFor="let whatsSetting of whatsappSettingList ; let i = index;"
+                                                style="white-space: nowrap;">
+                                                <td>
+                                                    <mat-slide-toggle type="ratio" name="BlukWhatsapp{{i}}"
+                                                        color="primary" [(ngModel)]="whatsSetting.BlukWhatsapp"
+                                                        class="example-margin">
+                                                    </mat-slide-toggle>
+                                                </td>
+                                                <td>{{ whatsSetting.TemplateName }}</td>
+
+                                                <td style="padding: 0; padding-top: 8px;">
+                                                    <input matInput [(ngModel)]="whatsSetting.TemplateValue"
+                                                        class="example-margin" [ngModelOptions]="{standalone: true}"
+                                                        autocomplete="off" required>
+                                                </td>
+                                                <td style="padding: 0; padding-top: 8px;">
+                                                    <input matInput [(ngModel)]="whatsSetting.MessageText"
+                                                        class="example-margin" [ngModelOptions]="{standalone: true}"
+                                                        autocomplete="off" required>
+                                                </td>
+                                                <td style="width:1%">
+                                                    <div class="row">
+                                                        <div class="col-12  ">
+                                                            <img class="fit-picture" width="70" height="70"
+                                                                [src]="this.env.apiUrl + whatsSetting.Url"
+                                                                style="object-fit: contain; border: 1px solid;">
+                                                        </div>
+                                                        <div class="col-xl-12 col-lg-10 col-md-10 col-11 mb-0 "
+                                                            (click)="fileInput2.click()" style="cursor: pointer;">
+                                                            <i class="fa-solid fa-cloud-arrow-up upload_icon1">
+                                                            </i>
+                                                            <input #fileInput2 id="my-input" name='signature'
+                                                                type="file"
+                                                                (change)="uploadImageUrl($event, 'signature', i)"
+                                                                style="display:none;">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+
+                                    <button [disabled]="!f1.valid" type="button" class="ml-2 mt-3" mat-raised-button
+                                        color="primary" (click)="updateWhatsappConfig()"> Save/Update</button>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
             </div>
 
             <!-- Save/Cancel -->
-         
-            
+
+
         </form>
     </div>
 </ng-template>
