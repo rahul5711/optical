@@ -601,7 +601,7 @@ paymentOTP:any = ''
   
             this.billItemList = res.result.billDetail
             this.serviceLists = res.result.service
-        if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
+        if ((this.company.ID == 84 || this.company.ID == 430) && (this.user.ID == 1161 || this.user.ID == 1912)) {
             this.isDisableds()
           }
           } else {
@@ -2547,7 +2547,7 @@ let dtm
   
             this.billItemList = res.data.getBillById.result.billDetail
             this.serviceLists = res.data.getBillById.result.service
-            if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
+           if ((this.company.ID == 84 || this.company.ID == 430) && (this.user.ID == 1161 || this.user.ID == 1912))  {
                this.isDisableds()
             }
               // this.billByCustomer(this.id, this.id2);
@@ -2680,7 +2680,7 @@ let dtm
           
             this.billItemList = res.data.getBillById.result.billDetail
             this.serviceLists = res.data.getBillById.result.service
-            if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
+            if ((this.company.ID == 84 || this.company.ID == 430) && (this.user.ID == 1161 || this.user.ID == 1912))  {
                this.isDisableds()
             }
             
@@ -3357,7 +3357,7 @@ let dtm
   
             this.billItemList = res.data.getBillById.result.billDetail
             this.serviceLists = res.data.getBillById.result.service
-            if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID == 1161) {
+            if ((this.company.ID == 84 || this.company.ID == 430) && (this.user.ID == 1161 || this.user.ID == 1912))  {
                this.isDisableds()
             }
           
@@ -3395,7 +3395,7 @@ let dtm
             
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
 
-            if (this.company.ID == 84 || this.company.ID == 430 && this.loginShop.ID != 542 && this.loginShop.ID != 552) {
+            if (this.company.ID == 84 && this.loginShop.ID != 542 && this.loginShop.ID != 552) {
               this.sp.hide()
               let mode: any = 'Invoice'
               this.body.customer = this.customer;
@@ -4709,7 +4709,7 @@ paidSendWhatsapp(mode:any) {
 
 
   isDisableds() {
-    if (this.company.ID == 84 || this.company.ID == 430 && this.user.ID != 1161) {
+    if ((this.company.ID == 84 || this.company.ID == 430) && (this.user.ID != 1161 && this.user.ID != 1912)) {
       const minimumPayment = this.BillMaster.TotalAmount * 0.4;
 
       if (this.paidList?.[1]) {
