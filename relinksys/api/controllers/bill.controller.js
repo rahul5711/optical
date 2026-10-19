@@ -4151,7 +4151,7 @@ module.exports = {
 
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, doctor.Name as DoctorName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID left join doctor on doctor.ID = billmaster.Doctor WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` + Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
             let [data] = await connection.query(qry);
 
@@ -4469,7 +4469,7 @@ module.exports = {
             connection = await db.getConnection();
             if (Parem === "" || Parem === undefined || Parem === null) return res.send({ message: "Invalid Query Data" })
 
-            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
+            qry = `SELECT billmaster.*, shop.Name AS ShopName, shop.AreaName AS AreaName, customer.Title AS Title , customer.Name AS CustomerName , customer.MobileNo1,customer.GSTNo AS GSTNo, customer.Age, customer.Gender,  billmaster.DeliveryDate AS DeliveryDate, user.Name as EmployeeName, doctor.Name as DoctorName FROM billmaster LEFT JOIN customer ON customer.ID = billmaster.CustomerID left join user on user.ID = billmaster.Employee LEFT JOIN shop ON shop.ID = billmaster.ShopID left join doctor on doctor.ID = billmaster.Doctor  WHERE billmaster.CompanyID = ${CompanyID} and billmaster.Status = 1 ` +
                 Parem + " GROUP BY billmaster.ID ORDER BY billmaster.ID DESC"
 
             let [data] = await connection.query(qry);
@@ -4654,6 +4654,7 @@ module.exports = {
                 { header: 'InvoiceDate', key: 'InvoiceDate', width: 15 },
                 { header: 'InvoiceNo', key: 'InvoiceNo', width: 20 },
                 { header: 'CustomerName', key: 'CustomerName', width: 25 },
+                { header: 'DoctorName', key: 'DoctorName', width: 25 },
                 { header: 'MobileNo', key: 'MobileNo1', width: 15 },
                 { header: 'Age', key: 'Age', width: 5 },
                 { header: 'Gender', key: 'Gender', width: 10 },
@@ -4706,6 +4707,7 @@ module.exports = {
                 "InvoiceDate": '',
                 "InvoiceNo": '',
                 "CustomerName": '',
+                "DoctorName": '',
                 "MobileNo": '',
                 "Age": '',
                 "Gender": '',
