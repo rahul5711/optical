@@ -16347,7 +16347,7 @@ module.exports = {
             }
 
 
-            let [dataDoc] = await connection.query(`select ID, Name, MobileNo1 from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
+            let [dataDoc] = await connection.query(`select ID, Name, MobileNo1, DoctorType from doctor where Status = 1 ${shop} and CompanyID = ${CompanyID}`);
 
             let shop2 = ``
 

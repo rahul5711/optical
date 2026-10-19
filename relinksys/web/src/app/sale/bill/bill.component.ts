@@ -256,6 +256,7 @@ export class BillComponent implements OnInit {
   sgst = 0;
   familyList: any;
   doctorList: any
+  DiscountReferral: any
   trayNoList: any
   prodList: any
   specList: any;
@@ -415,16 +416,27 @@ paymentOTP:any = ''
     this.bill.employee$.subscribe((list:any) => {
       this.employeeList = list
     });
-    this.bill.doctor$.subscribe((list:any) => {
-      this.doctorList = list
-    });
+  
+    
+ if(this.company.ID == 341){
+      this.bill.doctor$.subscribe((list: any) => {
+          this.DiscountReferral = list.filter(
+          (item: any) => item.DoctorType.toLowerCase() === 'discount'
+        );
+      });
+    }else{
+        this.bill.doctor$.subscribe((list:any) => {
+        this.doctorList = list
+      });
+    }
+
     this.bill.productLists$.subscribe((list:any) => {
       this.prodList = list
     });
     this.bill.serviceList$.subscribe((list:any) => {
       this.serviceType = list
     });
-    
+   
 
     this.bill.taxLists$.subscribe((list:any) => {
       this.gstList = list

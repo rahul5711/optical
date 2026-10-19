@@ -595,7 +595,10 @@ selectedValues: any = {
     }
 
      this.bill.doctor$.subscribe((list:any) => {
-      this.docList = list
+       this.docList = list.filter(
+      (item: any) => item.DoctorType.toLowerCase() != 'discount'
+     );
+
     });
     this.bill.referenceByList$.subscribe((list:any) => {
       this.ReferenceList = list

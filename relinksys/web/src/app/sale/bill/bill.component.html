@@ -81,7 +81,7 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 ">
+                <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 " *ngIf="company.ID != 341">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Doctor</mat-label>
                         <mat-select name="Doctor" [(ngModel)]="BillMaster.Doctor" [disabled]="BillMaster.ID !== null"
@@ -1265,7 +1265,21 @@
                         </mat-error>
                     </mat-form-field>
                 </div>
-          
+                 <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 " *ngIf="company.ID == 341">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount Referral </mat-label>
+                        <mat-select name="Doctor" [(ngModel)]="BillMaster.Doctor" 
+                            #Doctorcontrol required>
+                            <mat-option [value]=0></mat-option>
+                            <mat-option *ngFor="let doc of DiscountReferral let i = index;" [value]="doc.ID">
+                                {{doc.Name}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error>
+                            Select Referral
+                        </mat-error>
+                    </mat-form-field>
+                </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-4 mb-0 col-1ModifyB">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label class="cus-label">Grand Amount</mat-label>
