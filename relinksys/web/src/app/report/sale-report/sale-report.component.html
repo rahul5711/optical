@@ -165,6 +165,19 @@
                                                     </mat-select>
                                                 </mat-form-field>
                                             </div>
+                                            <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 " *ngIf="company.ID == 557">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount Referral </mat-label>
+                        <mat-select name="Doctor" [(ngModel)]="BillMaster.DoctorID" 
+                            #Doctorcontrol >
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option *ngFor="let doc of DiscountReferral let i = index;" [value]="doc.ID">
+                                {{doc.Name}}
+                            </mat-option>
+                        </mat-select>
+                      
+                    </mat-form-field>
+                </div>
                                             <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0">
                                                 <button type="submit" class="me-3" mat-raised-button color="primary">
                                                     Search
@@ -875,7 +888,19 @@
                             Barcode required
                           </mat-error>
                         </mat-form-field>
-                      </div>
+                      </div> <div class="col-xl-1 col-lg-1 col-md-3 col-4 mb-0 " *ngIf="company.ID == 557">
+                    <mat-form-field class="example-full-width mb-0">
+                        <mat-label>Discount Referral </mat-label>
+                        <mat-select name="Doctor" [(ngModel)]="Billdetail.DoctorID" 
+                            #Doctorcontrol >
+                            <mat-option [value]=0>All</mat-option>
+                            <mat-option *ngFor="let doc of DiscountReferral let i = index;" [value]="doc.ID">
+                                {{doc.Name}}
+                            </mat-option>
+                        </mat-select>
+                      
+                    </mat-form-field>
+                </div>
                                             <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-0 ">
                                                 <button class="me-3" type="submit" mat-raised-button color="primary">
                                                     Search

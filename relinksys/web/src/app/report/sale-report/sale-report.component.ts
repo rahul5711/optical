@@ -106,6 +106,8 @@ export class SaleReportComponent implements OnInit {
   prodList: any;
   specList: any = [];
   gstList: any;
+  doctorList: any;
+  DiscountReferral: any;
   BillDetailList: any = [];
   DetailtotalQty: any;
   DetailtotalDiscount: any;
@@ -140,11 +142,11 @@ export class SaleReportComponent implements OnInit {
   totalBalanceM: any;
 
   BillMaster: any = {
-    FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
+    FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All',DoctorID:0
   };
 
   Billdetail: any = {
-    FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,Barcode:''
+    FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,Barcode:'',DoctorID:0
   };
 
   service: any = {
@@ -527,6 +529,19 @@ export class SaleReportComponent implements OnInit {
       this.customerListGST = list
     });
 
+      
+ if(this.company.ID == 557){
+      this.bill.doctor$.subscribe((list: any) => {
+          this.DiscountReferral = list.filter(
+          (item: any) => item.DoctorType.toLowerCase() === 'discount'
+        );
+      });
+    }else{
+        this.bill.doctor$.subscribe((list:any) => {
+        this.doctorList = list
+      });
+    }
+
     this.bill.taxList$.subscribe((list:any) => {
      this.gstList = list
     });
@@ -765,6 +780,10 @@ isHoveredRow(row: any): boolean {
       Parem = Parem + ' and billmaster.Employee = ' + this.BillMaster.EmployeeID;
     }
 
+    if (this.BillMaster.DoctorID !== 0) {
+      Parem = Parem + ' and billmaster.Doctor = ' + this.BillMaster.DoctorID;
+    }
+
     if (this.BillMaster.CustomerID != 0) {
       Parem = Parem + ' and billmaster.CustomerID = ' + this.BillMaster.CustomerID;
     }
@@ -842,6 +861,10 @@ isHoveredRow(row: any): boolean {
 
     if (this.BillMaster.CustomerID != 0) {
       Parem = Parem + ' and billmaster.CustomerID = ' + this.BillMaster.CustomerID;
+    }
+
+      if (this.BillMaster.DoctorID !== 0) {
+      Parem = Parem + ' and billmaster.Doctor = ' + this.BillMaster.DoctorID;
     }
 
     if (this.BillMaster.CustomerGSTNo !== 0) {
@@ -957,6 +980,10 @@ isHoveredRow(row: any): boolean {
       Parem = Parem + ' and billmaster.Employee = ' + this.BillMaster.EmployeeID;
     }
 
+      if (this.BillMaster.DoctorID !== 0) {
+      Parem = Parem + ' and billmaster.Doctor = ' + this.BillMaster.DoctorID;
+    }
+
     if (this.BillMaster.CustomerID != 0) {
       Parem = Parem + ' and billmaster.CustomerID = ' + this.BillMaster.CustomerID;
     }
@@ -1030,11 +1057,11 @@ isHoveredRow(row: any): boolean {
   billMasterFromReset() {
     if(this.user.UserGroup == 'CompanyAdmin'){
         this.BillMaster = {
-      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All',DoctorID:0
     };
     }else{
     this.BillMaster = {
-      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All'
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, EmployeeID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', BillType: 'All',DoctorID:0
     };
     }
 
@@ -1203,6 +1230,10 @@ isHoveredRow(row: any): boolean {
       Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.Billdetail.ShopID})`;
     }
 
+      if (this.Billdetail.DoctorID !== 0) {
+      Parem = Parem + ' and billmaster.Doctor = ' + this.Billdetail.DoctorID;
+    }
+
     if (this.Billdetail.CustomerID !== 0) {
       Parem = Parem + ' and billmaster.CustomerID = ' + this.Billdetail.CustomerID;
     }
@@ -1338,6 +1369,10 @@ isHoveredRow(row: any): boolean {
       Parem = Parem + ' and billmaster.ShopID IN ' + `(${this.Billdetail.ShopID})`;
     }
 
+      if (this.Billdetail.DoctorID !== 0) {
+      Parem = Parem + ' and billmaster.Doctor = ' + this.Billdetail.DoctorID;
+    }
+
     if (this.Billdetail.CustomerID !== 0) {
       Parem = Parem + ' and billmaster.CustomerID = ' + this.Billdetail.CustomerID;
     }
@@ -1427,11 +1462,11 @@ isHoveredRow(row: any): boolean {
 
     if(this.user.UserGroup == 'CompanyAdmin'){
       this.Billdetail = {
-      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: 0, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,DoctorID:0
     };
     }else{
       this.Billdetail = {
-      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,
+      FilterTypes: 'BillDate', FromDate: moment().startOf('day').format('YYYY-MM-DD'), ToDate: moment().format('YYYY-MM-DD'), ShopID: this.shopList[0].ShopID, CustomerID: 0, CustomerGSTNo: 0, PaymentStatus: 0, ProductStatus: 'All', ProductCategory: 0, ProductName: '', GSTType: 0, GSTPercentage: 0, Status: 0, Option: 0,DoctorID:0
       };
     }
 

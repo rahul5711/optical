@@ -418,7 +418,7 @@ paymentOTP:any = ''
     });
   
     
- if(this.company.ID == 341){
+ if(this.company.ID == 557){
       this.bill.doctor$.subscribe((list: any) => {
           this.DiscountReferral = list.filter(
           (item: any) => item.DoctorType.toLowerCase() === 'discount'
@@ -668,6 +668,28 @@ paymentOTP:any = ''
         UserID: this.BillMaster.Employee
       }
       const subs: Subscription = this.bill.changeEmployee(dtm).subscribe({
+        next: (res: any) => {
+          if (res.success) {
+            this.as.successToast(res.message)
+          } else {
+            this.as.errorToast(res.message)
+          }
+          this.sp.hide();
+        },
+        error: (err: any) => console.log(err.message),
+        complete: () => subs.unsubscribe(),
+      });
+    }
+  }
+
+  changeDoctor() {
+    if (this.id2 != 0) {
+      this.sp.show();
+      const dtm = {
+        BillMasterID: Number(this.id2),
+        Doctor : this.BillMaster.Doctor
+      }
+      const subs: Subscription = this.bill.changeDoctor(dtm).subscribe({
         next: (res: any) => {
           if (res.success) {
             this.as.successToast(res.message)

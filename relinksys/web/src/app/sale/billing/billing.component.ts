@@ -598,8 +598,8 @@ selectedValues: any = {
        this.docList = list.filter(
       (item: any) => item.DoctorType.toLowerCase() != 'discount'
      );
-
     });
+    
     this.bill.referenceByList$.subscribe((list:any) => {
       this.ReferenceList = list
     });

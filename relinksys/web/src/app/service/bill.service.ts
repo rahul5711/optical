@@ -351,6 +351,11 @@ export class BillService {
     return this.httpClient.post<any>(this.url + '/changeEmployee', Body, httpOptions)
       .pipe(catchError(this.handleError));
   }
+  
+  changeDoctor(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/changeDoctor', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
 
   changeProductStatus(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/changeProductStatus', Body, httpOptions)
