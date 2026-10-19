@@ -122,6 +122,7 @@ router.post('/saveBill', verifyAccessTokenAdmin, dbConnection, txMiddleware, che
 // router.post('/updateBill', verifyAccessTokenAdmin,dbConnection, Controller.updateBill)
 router.post('/updateBillCustomer', verifyAccessTokenAdmin, dbConnection, txMiddleware, checkCron, Controller.updateBillCustomer)
 router.post('/changeEmployee', verifyAccessTokenAdmin, dbConnection, Controller.changeEmployee)
+router.post('/changeDoctor', verifyAccessTokenAdmin, dbConnection, Controller.changeDoctor)
 router.post('/changeProductStatus', verifyAccessTokenAdmin, dbConnection, Controller.changeProductStatus)
 router.post('/list', verifyAccessTokenAdmin, dbConnection, Controller.list)
 router.post('/searchByFeild', verifyAccessTokenAdmin, dbConnection, Controller.searchByFeild)

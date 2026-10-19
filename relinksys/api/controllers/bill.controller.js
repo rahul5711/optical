@@ -1513,6 +1513,67 @@ module.exports = {
             }
         }
     },
+    changeDoctor: async (req, res, next) => {
+        let connection;
+        try {
+            const response = { data: null, success: true, message: "" }
+            const LoggedOnUser = req.user.ID ? req.user.ID : 0
+            const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
+            const shopid = await shopID(req.headers) || 0;
+            // const db = await dbConfig.dbByCompanyID(CompanyID);
+            const db = req.db;
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+            connection = await db.getConnection();
+            const { BillMasterID, Doctor } = req.body
+
+            if (!BillMasterID) return res.send({ message: "Invalid BillMasterID Data" })
+            if (!Doctor) return res.send({ message: "Invalid Doctor Data" })
+
+            const [fetch] = await connection.query(`select ID, CommissionMasterID from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Doctor'`)
+
+
+            if (fetch && fetch.length && fetch[0]?.CommissionMasterID !== 0) {
+                return res.send({ success: false, message: "You Have Already Create Invoice, You Can Not Change Doctor" })
+            }
+
+            if (fetch && fetch.length) {
+
+                const [DelData] = await connection.query(`delete from commissiondetail where BillMasterID = ${BillMasterID} and CompanyID = ${CompanyID} and UserType = 'Doctor' and CommissionMasterID = 0 `)
+
+                const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
+
+                if (billMaseterData) {
+                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', Doctor, BillMasterID, billMaseterData[0], LoggedOnUser, connection)
+                }
+
+
+
+            } else {
+
+                const [billMaseterData] = await connection.query(`select * from billmaster where CompanyID = ${CompanyID} and Status = 1 and ID = ${BillMasterID}`);
+
+                if (billMaseterData) {
+                    const saveDocCommission = await generateCommission(CompanyID, 'Doctor', Doctor, BillMasterID, billMaseterData[0], LoggedOnUser, connection)
+                }
+
+            }
+
+            const [updateMaster] = await connection.query(`update billmaster set Doctor = ${Doctor} where ID = ${BillMasterID} and CompanyID = ${CompanyID}`)
+
+            response.message = "data update sucessfully"
+            return res.send(response);
+
+        } catch (error) {
+            next(error)
+        } finally {
+            if (connection) {
+                connection.release(); // Always release the connection
+                connection.destroy();
+            }
+        }
+    },
     changeProductStatus: async (req, res, next) => {
         let connection;
         try {
@@ -3432,7 +3493,7 @@ module.exports = {
         }
     },
 
-  orderFormPrint: async (req, res, next) => {
+    orderFormPrint: async (req, res, next) => {
         let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -3517,17 +3578,17 @@ module.exports = {
                 }
             }
             printdata.recivePayment = recivePayment;
-           
-             printdata.CurrentInvoiceBalance = printdata.unpaidlist.reduce((total, em) => {
+
+            printdata.CurrentInvoiceBalance = printdata.unpaidlist.reduce((total, em) => {
                 if (printdata.billMaster.InvoiceNo === em.InvoiceNo) {
                     return total + em.DueAmount;
                 }
                 return total;
             }, 0);
 
-            
-    let subtotals = 0;
-          req.body.billItemList.forEach((element) => {
+
+            let subtotals = 0;
+            req.body.billItemList.forEach((element) => {
                 subtotals += element.UnitPrice * element.Quantity
             });
 
@@ -3563,7 +3624,7 @@ module.exports = {
                             timeout: 600000,
                         };
                     }
-                    else if(printdata.company.ID == 473) {
+                    else if (printdata.company.ID == 473) {
                         options = {
                             "height": "150mm",
                             "width": "105mm",
