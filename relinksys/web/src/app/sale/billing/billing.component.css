@@ -513,6 +513,13 @@ color: #fff;
     transition:transform .8s;
     transform-style:preserve-3d;
 }
+.membership-card-inner1{
+    width:100%;
+    height:100%;
+    position:relative;
+    transition:transform .8s;
+    transform-style:preserve-3d;
+}
 
 .membership-card:hover .membership-card-inner{
     transform:rotateY(180deg);

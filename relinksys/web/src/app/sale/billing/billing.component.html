@@ -2130,7 +2130,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
+                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true' && company.ID != 430">
                                                 <div class="membership-card col-4"
                                                     [class.disabled]=" memberCard.MemberType != (company.ID == 541 ? 'GOLD MAX' : 'GOLD')">
                                                     <div class="membership-card-inner">
@@ -2449,6 +2449,8 @@
                                                             </div>
                                                         </form>
                                                     </div>
+
+
                                                    <div *ngIf="company.PrimeMembership == 'true'" class="col-md-7 col-12 mt-3" style="height: 150px;overflow: auto; padding: 0;
                                                     margin: 0px;">
                                                         <div class="table-responsive">
@@ -2487,6 +2489,142 @@
                                                     </div>
 
                                             </div>
+ <div class="row mt-2" *ngIf="company.PrimeMembership == 'true' && company.ID == 430">
+ <div class="membership-card col-4" >
+                                                    <div class="membership-card-inner1" >
+
+                                                        <!-- Front -->
+                                                        <div class="membership-card-front">
+                                                            <div
+                                                                style="background-image:url('../../../assets/images/eyeveramemberbg.png'); background-size: 100% 100%;  padding-left: 3%; zoom: 95%;">
+
+                                                                <!-- Member -->
+                                                                <div class="member-section">
+                                                                    <div class="member-name" style="text-align: left;">
+                                                                         <img src="../../../assets/images/eyeveralogo-removebg-preview.png" alt="uk" width="30%">
+                                                                    </div>
+                                                                    <div class="member-name" style="text-align: left; color:#000; font-weight: 500; text-shadow:none;  padding-top: 10px ;">
+                                                                        {{this.data.Title}} {{this.data.Name}}
+                                                                    </div>
+
+                                                                    <div class="member-mobile" style="text-align: left; font-weight: 400; color:#000; text-shadow:none">
+                                                                        {{this.data.MobileNo1}}
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Membership -->
+                                                                <div class="membership-title" style="text-align: left;  font-size:28px; padding-top: 15px;">
+                                                                    <b style="color:#eaeaea;text-transform: uppercase; font-weight: 500;">Prime Membership</b>
+                                                                </div>
+
+                                                                <!-- Card -->
+                                                                
+                                                                <div class="card-number" style="color:#000; font-weight: 400; letter-spacing: 1.7px; text-shadow:none;padding-top: 2px;">
+                                                                  Card No. {{ getMaskedId(data.Idd) }}
+                                                                </div>
+
+                                                                <!-- Shop -->
+                                                                <div class="shop-name" style=" font-weight: 400; padding-left: 0 !important; color:#000; text-shadow:none;font-size: 16px;">
+                                                                    {{this.shop.Name}}
+                                                                </div>
+
+                                                                <div class="bottom-section" style="padding-left: 0 !important">
+
+                                                                    <div class="shop-mobile" style=" font-weight: 400; padding-left: 0 !important; color:#000; text-shadow:none;font-size: 16px;">
+                                                                        {{this.shop.MobileNo1}}
+                                                                    </div>
+
+                                                                    <div class="valid-date" style="background: none;">
+
+                                                                        <span *ngIf="ActiveDeactive" class="valid" style="color: #000; text-shadow:none;background: none;">
+                                                                            VALID {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                        <span *ngIf="!ActiveDeactive" class="expired" style="color: #000; text-shadow:none;background: none;">
+                                                                            Expiry {{this.ExpiryDateFormember}}
+                                                                        </span>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+    </div>
+    </div>
+ <div class="col-md-5 col-12 mt-3">
+                                                <form #fmc="ngForm">
+                                                            <div class="row">
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>IssueDate</mat-label>
+                                                                        <input matInput name="IssueDate" type="date"
+                                                                            [(ngModel)]="memberCard.IssueDate" required
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-0">
+                                                                    <mat-form-field class="example-full-width mb-0">
+                                                                        <mat-label>ExpiryDate</mat-label>
+                                                                        <input matInput name="ExpiryDate" type="date"
+                                                                            required [(ngModel)]="memberCard.ExpiryDate"
+                                                                            autocomplete="false">
+                                                                    </mat-form-field>
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <button (click)="membarshipSave()" mat-raised-button
+                                                                        type="submit" [disabled]="!fmc.valid"
+                                                                        color="primary">Save
+                                                                    </button>
+                                                                    <button class="ms-2" (click)="shareOnWhatsApp()"
+                                                                        mat-raised-button type="button" color="primary"
+                                                                        [disabled]="this.membarshipList.length == 0"><i
+                                                                            class="fa-brands fa-whatsapp "
+                                                                            style="color:greenyellow"></i>
+                                                                    </button>
+                                                                </div>
+                                                                
+                                                                <div class="col-12">
+                                                                    <div class="table-responsive">
+                                                            <table
+                                                                class="table table-striped table-hover table-sm table-bordered "
+                                                                style="border: 1px solid #cfcfcf !important;  ">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Action</th>
+                                                                        <th>S.No</th>
+                                                                        <th>MemberType</th>
+                                                                        <th>IssueDate</th>
+                                                                        <th>ExpiryDate</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="text-center"
+                                                                        *ngFor="let data of membarshipList let i = index;"
+                                                                        style="white-space: nowrap;">
+                                                                        <td style="width: 5%;">
+                                                                            <button type="button" class="bg-btn"
+                                                                                (click)="MembershipcardBydelete(data.ID)">
+                                                                                <mat-icon
+                                                                                    class="delete_iconms ms-1">delete_forever</mat-icon>
+                                                                            </button>
+                                                                        </td>
+                                                                        <td>{{membarshipList.length - i }}</td>
+                                                                        <td>{{data.MemberType || '-'}}</td>
+                                                                        <td>{{dateFormat(data.IssueDate)}}</td>
+                                                                        <td>{{dateFormat(data.ExpiryDate)}}</td>
+
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+    
+ </div>
+
                                         </div>
                                     </div>
                                 </ng-template>
@@ -3231,7 +3369,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
+                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true' && company.ID != 430">
                                                 <div class="membership-card col-4"
                                                     [class.disabled]="memberCard.MemberType != 'GOLD' || memberCard.MemberType != 'GOLD MAX'">
                                                     <div class="membership-card-inner">
@@ -4045,7 +4183,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true'">
+                                            <div class="row mt-2" *ngIf="company.PrimeMembership == 'true' && company.ID != 430">
                                                 <div class="membership-card col-4"
                                                     [class.disabled]="memberCard.MemberType != 'GOLD'">
                                                     <div class="membership-card-inner">
