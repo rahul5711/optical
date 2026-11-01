@@ -12,7 +12,7 @@ const clientConfig = require("../helpers/constants");
 const mysql2 = require('../database')
 const dbConfig = require('../helpers/db_config');
 var moment = require("moment");
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer');
 const fs = require('fs');
 function rearrangeString(str) {
     // Split the input string into an array of words
@@ -207,10 +207,15 @@ module.exports = {
                     Family: other.Family ? other.Family : '',
                     RefferedByDoc: other.RefferedByDoc ? other.RefferedByDoc : '',
                     FileURL: other.FileURL ? other.FileURL : '',
-                    VisitDate: moment(vDate).format("YYYY-MM-DD")
+                    VisitDate: moment(vDate).format("YYYY-MM-DD"),
+                    DiabetesCheck: other.DiabetesCheck ? other.DiabetesCheck : 'false',
+                    HypertensionCheck: other.HypertensionCheck ? other.HypertensionCheck : 'false',
+                    IHDCheck: other.IHDCheck ? other.IHDCheck : 'false',
+                    AsthmaCheck: other.AsthmaCheck ? other.AsthmaCheck : 'false',
+                    OthersCheck: other.OthersCheck ? other.OthersCheck : 'false'
                 }
 
-                const [saveOther] = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn, VisitDate) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(), '${otherDatum.VisitDate}')`)
+                const [saveOther] = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn, VisitDate, DiabetesCheck, HypertensionCheck, IHDCheck, AsthmaCheck, OthersCheck) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(), '${otherDatum.VisitDate}', '${otherDatum.DiabetesCheck}', '${otherDatum.HypertensionCheck}', '${otherDatum.IHDCheck}', '${otherDatum.AsthmaCheck}', '${otherDatum.OthersCheck}')`)
 
                 console.log(connected("Customer Other Added SuccessFUlly !!!"));
 
@@ -778,18 +783,23 @@ module.exports = {
                     Family: other.Family ? other.Family : '',
                     RefferedByDoc: other.RefferedByDoc ? other.RefferedByDoc : '',
                     FileURL: other.FileURL ? other.FileURL : '',
-                    VisitDate: moment(vDate).format("YYYY-MM-DD")
+                    VisitDate: moment(vDate).format("YYYY-MM-DD"),
+                    DiabetesCheck: other.DiabetesCheck ? other.DiabetesCheck : 'false',
+                    HypertensionCheck: other.HypertensionCheck ? other.HypertensionCheck : 'false',
+                    IHDCheck: other.IHDCheck ? other.IHDCheck : 'false',
+                    AsthmaCheck: other.AsthmaCheck ? other.AsthmaCheck : 'false',
+                    OthersCheck: other.OthersCheck ? other.OthersCheck : 'false'
                 }
                 if (other_rx.ID === null || other_rx.ID === 'null' || other_rx.ID.toString().trim() === '') {
 
-                    const [saveOther] = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn,VisitDate) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(),'${otherDatum.VisitDate}')`)
+                    const [saveOther] = await connection.query(`insert into other_rx(CustomerID,CompanyID,VisitNo,BP,Sugar,IOL_Power,Operation,R_VN,L_VN,R_TN,L_TN,R_KR,L_KR,Treatment,Diagnosis,Family,RefferedByDoc,FileURL,Status,CreatedBy,CreatedOn,VisitDate,DiabetesCheck,HypertensionCheck,IHDCheck,AsthmaCheck,OthersCheck) values (${otherDatum.CustomerID},${CompanyID},${otherDatum.VisitNo},'${otherDatum.BP}','${otherDatum.Sugar}','${otherDatum.IOL_Power}','${otherDatum.Operation}','${otherDatum.R_VN}','${otherDatum.L_VN}','${otherDatum.R_TN}','${otherDatum.L_TN}','${otherDatum.R_KR}','${otherDatum.L_KR}','${otherDatum.Treatment}','${otherDatum.Diagnosis}','${otherDatum.Family}','${otherDatum.RefferedByDoc}','${otherDatum.FileURL}',1,${LoggedOnUser}, now(),'${otherDatum.VisitDate}','${otherDatum.DiabetesCheck}','${otherDatum.HypertensionCheck}','${otherDatum.IHDCheck}','${otherDatum.AsthmaCheck}','${otherDatum.OthersCheck}')`)
 
                     console.log(connected("Customer Other Added SuccessFUlly !!!"));
 
 
                 } else if (other_rx.ID !== null || other_rx.ID !== 'null' || other_rx.ID !== undefined) {
                     //  update
-                    const [updateSpec] = await connection.query(`update other_rx set BP='${otherDatum.BP}', Sugar='${otherDatum.Sugar}', IOL_Power='${otherDatum.IOL_Power}', Operation='${otherDatum.Operation}', R_VN='${otherDatum.R_VN}', L_VN='${otherDatum.L_VN}', R_TN='${otherDatum.R_TN}', L_TN='${otherDatum.L_TN}', R_KR='${otherDatum.R_KR}', L_KR='${otherDatum.L_KR}', Treatment='${otherDatum.Treatment}', Diagnosis='${otherDatum.Diagnosis}', Family='${otherDatum.Family}', RefferedByDoc='${otherDatum.RefferedByDoc}', FileURL='${otherDatum.FileURL}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), VisitDate='${otherDatum.VisitDate}' where ID=${other_rx.ID} and CustomerID =${ID} and CompanyID=${CompanyID}`)
+                    const [updateSpec] = await connection.query(`update other_rx set BP='${otherDatum.BP}', Sugar='${otherDatum.Sugar}', IOL_Power='${otherDatum.IOL_Power}', Operation='${otherDatum.Operation}', R_VN='${otherDatum.R_VN}', L_VN='${otherDatum.L_VN}', R_TN='${otherDatum.R_TN}', L_TN='${otherDatum.L_TN}', R_KR='${otherDatum.R_KR}', L_KR='${otherDatum.L_KR}', Treatment='${otherDatum.Treatment}', Diagnosis='${otherDatum.Diagnosis}', Family='${otherDatum.Family}', RefferedByDoc='${otherDatum.RefferedByDoc}', FileURL='${otherDatum.FileURL}', UpdatedBy=${LoggedOnUser}, UpdatedOn=now(), VisitDate='${otherDatum.VisitDate}', DiabetesCheck = '${otherDatum.DiabetesCheck}', HypertensionCheck = '${otherDatum.HypertensionCheck}',IHDCheck = '${otherDatum.IHDCheck}',AsthmaCheck = '${otherDatum.AsthmaCheck}',OthersCheck = '${otherDatum.OthersCheck}' where ID=${other_rx.ID} and CustomerID =${ID} and CompanyID=${CompanyID}`)
 
                     console.log(connected("Customer Spec Update SuccessFUlly !!!"));
 
@@ -1192,9 +1202,9 @@ module.exports = {
             connection = await db.getConnection();
             const [shopdetails] = await connection.query(`select * from shop where ID = ${shopid}`)
             printdata.shopdetails = shopdetails[0]
-            
+
             let note = JSON.parse(printdata.shopdetails.WelcomeNote);
-            
+
             printdata.NoteMemberCardGold = note.filter(
                 (ele) => ele.NoteType === "MemberCardGold"
             );
@@ -2351,7 +2361,7 @@ module.exports = {
                     now()
                 )`;
 
-            }else if (Type === 'Examination' ) {
+            } else if (Type === 'Examination') {
                 if (!Examination || Object.keys(Examination).length === 0) {
                     return res.status(200).json({ message: 'Examination data is required.' });
                 }
@@ -2371,7 +2381,7 @@ module.exports = {
                 )`;
 
             }
-             else {
+            else {
                 return res.status(200).json({ message: 'Invalid Type specified.' });
             }
 
@@ -2480,7 +2490,7 @@ module.exports = {
                 UpdatedOn = now()
                 WHERE ID = ${ID} AND CompanyID = ${CompanyID}`;
 
-            } 
+            }
             else if (Type === 'Examination') {
                 if (!Examination || Object.keys(Examination).length === 0) {
                     return res.status(200).json({ success: false, message: 'Examination data is required.' });
@@ -2695,7 +2705,7 @@ module.exports = {
             ExmP = ''
             PdfPrint = ''
             console.log(masterdata.mode);
-            
+
             if (masterdata && masterdata.Comprehensive) {
                 titleName = "Comprehensive Eye Exam"
                 PdfPrint = 'Comprehensive'
@@ -2729,11 +2739,11 @@ module.exports = {
                 ConP = ''
                 ExmP = ''
             }
-             else if (masterdata && masterdata.Examination) {
+            else if (masterdata && masterdata.Examination) {
                 titleName = "Eye Examination"
                 PdfPrint = 'Exam'
                 ExmP = masterdata.Examination
-                LowP= ''
+                LowP = ''
                 ComP = ''
                 BinP = ''
                 ConP = ''
@@ -2792,9 +2802,9 @@ module.exports = {
             var formatName;
             if (printdata.customerdetails.CompanyID == 394) {
                 formatName = "DivineOpto.ejs";
-            }else if ( masterdata.mode == 'Examination') {
+            } else if (masterdata.mode == 'Examination') {
                 formatName = "optoExaminationPDF.ejs";
-            }else {
+            } else {
                 formatName = "optometristPDF.ejs";
             }
 

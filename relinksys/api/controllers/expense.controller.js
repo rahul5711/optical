@@ -426,7 +426,7 @@ module.exports = {
     getExpenseReport: async (req, res, next) => {
         let connection;
         try {
-            const response = { data: null, success: true, message: "" }
+            const response = { data: null, success: true, message: "", totalExpense: 0 }
 
             const { Parem } = req.body;
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -442,8 +442,14 @@ module.exports = {
             let qry = `select expense.*, shop.Name as ShopName, shop.AreaName as AreaName, users1.Name as CreatedPerson, users.Name as UpdatedPerson from expense left join user as users1 on users1.ID = expense.CreatedBy left join user as users on users.ID = expense.UpdatedBy left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = ${CompanyID} ${Parem}  order by expense.ID desc`
 
             let [data] = await connection.query(qry);
+
+            let [ExpenseData] = await connection.query(`select SUM(Amount) as TotalExpense from expense left join shop on shop.ID = expense.ShopID where expense.Status = 1 and expense.CompanyID = ${CompanyID} ${Parem}  order by expense.ID desc`)
+
+            // console.log(ExpenseData);
+
             response.message = "data fetch sucessfully"
             response.data = data
+            response.totalExpense = ExpenseData[0]?.TotalExpense || 0;
             return res.send(response);
 
         } catch (err) {
