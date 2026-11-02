@@ -256,7 +256,7 @@ selectedValues: any = {
   };
 
   other: any = {
-    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '', DiabetesCheck:'false', HypertensionCheck:'false', IHDCheck:'false', AsthmaCheck:'false', OthersCheck:'false',
+    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '', DiabetesCheck:false, HypertensionCheck:false, IHDCheck:false, AsthmaCheck:false, OthersCheck:false,
   };
 
   note: any = {
