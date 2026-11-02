@@ -256,7 +256,7 @@ selectedValues: any = {
   };
 
   other: any = {
-    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '',
+    ID: 'null', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: '', DiabetesCheck:'false', HypertensionCheck:'false', IHDCheck:'false', AsthmaCheck:'false', OthersCheck:'false',
   };
 
   note: any = {
@@ -1297,6 +1297,7 @@ openModal(content: any) {
       this.data.tablename = 'other_rx'
       this.data.other_rx = this.other
       this.other.VisitDate = this.other.VisitDate;
+
     }
 
 
@@ -1465,6 +1466,11 @@ openModal(content: any) {
         if (res.other_rx?.length) {
           this.other = res.other_rx[0];
           this.other.VisitDate = moment(this.other.VisitDate).format('YYYY-MM-DD');
+          this.other.HypertensionCheck =  String(this.other.HypertensionCheck).toLowerCase() === 'true';
+          this.other.IHDCheck =  String(this.other.IHDCheck).toLowerCase() === 'true';
+          this.other.AsthmaCheck =  String(this.other.AsthmaCheck).toLowerCase() === 'true';
+          this.other.OthersCheck =  String(this.other.OthersCheck).toLowerCase() === 'true';
+          this.other.DiabetesCheck =  String(this.other.DiabetesCheck).toLowerCase() === 'true';
         }
 
         // Optometrist Button Check
@@ -1651,7 +1657,7 @@ openModal(content: any) {
 
     this.other = {
       ID: '', CustomerID: '', BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '',
-      R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.other.VisitDate,
+      R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.other.VisitDate,  DiabetesCheck:false, HypertensionCheck:false, IHDCheck:false, AsthmaCheck:false, OthersCheck:false,
     };
 
     this.sp.show();
@@ -1695,7 +1701,7 @@ openModal(content: any) {
 
     if (mode === 'other') {
       this.other = {
-        ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.other.VisitDate = moment().format('YYYY-MM-DD'),
+        ID: 'null', CustomerID: this.id, BP: '', Sugar: '', IOL_Power: '', RefferedByDoc: 'Self', Operation: '', R_VN: '', L_VN: '', R_TN: '', L_TN: '', R_KR: '', L_KR: '', Treatment: '', Diagnosis: '', Family: 'Self', FileURL: null, Status: 1, CreatedBy: 0, CreatedOn: '', UpdatedBy: 0, UpdatedOn: '', VisitDate: this.other.VisitDate = moment().format('YYYY-MM-DD'),  DiabetesCheck:false, HypertensionCheck:false, IHDCheck:false, AsthmaCheck:false, OthersCheck:false,
       }
     };
   }
