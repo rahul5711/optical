@@ -3429,7 +3429,7 @@ let dtm
             
             this.applyPayment.PaidAmount = 0; this.applyPayment.PaymentMode = ''; this.applyPayment.ApplyReturn = false;
 
-            if (this.company.ID == 84 && this.loginShop.ID != 542 && this.loginShop.ID != 552) {
+            if ((this.company.ID == 84 || this.company.ID == 430) && this.loginShop.ID != 542 && this.loginShop.ID != 552) {
               this.sp.hide()
               let mode: any = 'Invoice'
               this.body.customer = this.customer;
