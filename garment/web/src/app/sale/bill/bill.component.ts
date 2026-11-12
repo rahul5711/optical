@@ -182,6 +182,7 @@ export class BillComponent implements OnInit {
       this.barcodeInput?.nativeElement.focus();
     }
   }
+  tempAddToNotDeleteProduct = false;
   onSubmitFrom = false;
   BillMaster: any = {
     ID: null, CustomerID: null, CompanyID: null, ShopID: null, Sno: "", RegNo: '', BillDate: null, DeliveryDate: null, PaymentStatus: null, InvoiceNo: null, OrderNo: null, GSTNo: '', Doctor: null, Employee: null, TrayNo: null, ProductStatus: 'Pending', Balance: 0, Quantity: 0, SubTotal: 0, DiscountAmount: 0, GSTAmount: 0, AddlDiscount: 0, AddlDiscountPercentage: 0, TotalAmount: 0.00, RoundOff: 0.00, DueAmount: 0.00, Invoice: null, Receipt: null, Status: 1, CreatedBy: null, OrderDate: null, IsConvertInvoice: 0
@@ -332,6 +333,7 @@ export class BillComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.tempAddToNotDeleteProduct = false
     this.cs.customerId$.subscribe((id: any) => {
       if (id && id != 0) {
       this.id = id;
@@ -2217,6 +2219,7 @@ paidAmountChange(amount: number) {
           this.billItemList = []
           this.serviceLists = []
           this.id2 = res.data.ID;
+          this.tempAddToNotDeleteProduct = false
           this.billByCustomer(this.id, this.id2)
           this.getCustomerById1();
           // this.getBillById(this.id2)
@@ -2272,6 +2275,7 @@ paidAmountChange(amount: number) {
                 ele.Status = 0;
                 ele.DuaCal = 'delete2';
               }
+              
             })
             this.serviceLists.forEach((ele: any) => {
               if (ele.Status === 2) {
@@ -3388,6 +3392,11 @@ paidAmountChange(amount: number) {
   }
 
   addRow(): void {
+    if(this.BillMaster.ID != null){
+      this.tempAddToNotDeleteProduct = true
+    } else{
+      this.tempAddToNotDeleteProduct = false
+    }
     const lastIndex = this.billItemList.length - 1;
 
     this.calculateGrandTotal()

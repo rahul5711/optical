@@ -215,7 +215,7 @@
                                             style="color:#ff651e;"></mat-slide-toggle>
                                         <ng-container *ngIf="data.ID != null">
                                             <button class="bgRemove p-0" type="button" *ngIf="deleteCustomerBill   "
-                                                [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
+                                                [disabled]="data.Status === 0 || tempAddToNotDeleteProduct" (click)="deleteItem('Product', i)">
                                                 <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
                                             </button>
 
@@ -1365,11 +1365,11 @@
                                             <button class="bgRemove p-0" type="button"
                                                 *ngIf="deleteCustomerBill  &&  data.ID !== null"
                                                 [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
-                                                <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
+                                                <mat-icon class="deletes_icon " title="Deletev">delete_forever</mat-icon>
                                             </button>
                                             <button class="bgRemove p-0" type="button" *ngIf=" data.ID == null "
                                                 [disabled]="data.Status === 0 " (click)="deleteItem('Product', i)">
-                                                <mat-icon class="deletes_icon " title="Delete">delete_forever</mat-icon>
+                                                <mat-icon class="deletes_icon " title="Deletef">delete_forever</mat-icon>
                                             </button>
 
                                             <!-- <button *ngIf="data.ID != null" class="bgRemove p-0 ms-1"  type="button"
