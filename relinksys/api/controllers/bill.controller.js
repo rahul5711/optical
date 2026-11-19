@@ -1423,6 +1423,29 @@ module.exports = {
 
             console.log(connected("Payment Update SuccessFUlly !!!"));
 
+
+            // 
+
+
+            let inv = ``
+            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+            if (fetchInvoiceMaster && fetchInvoiceMaster.length && fetchInvoiceMaster[0].PaymentStatus === "Paid") {
+                if (fetchInvoiceMaster[0].BillType === 1) {
+                    const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} limit 1 `);
+                    inv = await generateInvoiceNo(CompanyID, fetchInvoiceMaster[0].ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                }
+
+                if (fetchInvoiceMaster[0].BillType === 0) {
+                    inv = await generateInvoiceNoForService(CompanyID, fetchInvoiceMaster[0].ShopID, [], { ID: null })
+                }
+
+
+                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${bMasterID} and CompanyID = ${CompanyID} and PaymentType = 'Customer'`);
+            }
+
             // ✅ COMMIT
             await connection.commit();
 
@@ -2663,6 +2686,27 @@ module.exports = {
 
             }
 
+
+            let inv = ``
+            let bMasterID = bMaster.ID;
+            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+            if (fetchInvoiceMaster && fetchInvoiceMaster.length && fetchInvoiceMaster[0].PaymentStatus === "Paid") {
+                if (fetchInvoiceMaster[0].BillType === 1) {
+                    const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} limit 1 `);
+                    inv = await generateInvoiceNo(CompanyID, fetchInvoiceMaster[0].ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                }
+
+                if (fetchInvoiceMaster[0].BillType === 0) {
+                    inv = await generateInvoiceNoForService(CompanyID, fetchInvoiceMaster[0].ShopID, [], { ID: null })
+                }
+
+
+                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${bMasterID} and CompanyID = ${CompanyID} and PaymentType = 'Customer'`);
+            }
+
             response.data = [{
                 "CustomerID": bMaster.CustomerID,
                 "BillMasterID": bMaster.ID,
@@ -2918,6 +2962,27 @@ module.exports = {
 
             }
 
+
+            let inv = ``
+            let bMasterID = bMaster.ID;
+            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+            if (fetchInvoiceMaster && fetchInvoiceMaster.length && fetchInvoiceMaster[0].PaymentStatus === "Paid") {
+                if (fetchInvoiceMaster[0].BillType === 1) {
+                    const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} limit 1 `);
+                    inv = await generateInvoiceNo(CompanyID, fetchInvoiceMaster[0].ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                }
+
+                if (fetchInvoiceMaster[0].BillType === 0) {
+                    inv = await generateInvoiceNoForService(CompanyID, fetchInvoiceMaster[0].ShopID, [], { ID: null })
+                }
+
+
+                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${bMasterID} and CompanyID = ${CompanyID} and PaymentType = 'Customer'`);
+            }
+
             response.data = [{
                 "CustomerID": bMaster.CustomerID,
                 "BillMasterID": bMaster.ID
@@ -3011,6 +3076,26 @@ module.exports = {
 
             if (billMaseterData.Doctor !== 0 && billMaseterData.Doctor !== undefined && billMaseterData.Doctor !== null) {
                 const saveDocCommission = await updateCommission(CompanyID, 'Doctor', billMaseterData.Doctor, billMaseterData.ID, billMaseterData, LoggedOnUser, connection)
+            }
+
+
+            let inv = ``
+            const [fetchInvoiceMaster] = await connection.query(`select * from billmaster where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+            if (fetchInvoiceMaster && fetchInvoiceMaster.length && fetchInvoiceMaster[0].PaymentStatus === "Paid") {
+                if (fetchInvoiceMaster[0].BillType === 1) {
+                    const [fetchInvoiceDetail] = await connection.query(`select * from billdetail where BillID = ${bMasterID} and CompanyID = ${CompanyID} limit 1 `);
+                    inv = await generateInvoiceNo(CompanyID, fetchInvoiceMaster[0].ShopID, [{ WholeSale: fetchInvoiceDetail[0].WholeSale }], { ID: null })
+                }
+
+                if (fetchInvoiceMaster[0].BillType === 0) {
+                    inv = await generateInvoiceNoForService(CompanyID, fetchInvoiceMaster[0].ShopID, [], { ID: null })
+                }
+
+
+                const [updateInvoiceMaster] = await connection.query(`Update billmaster SET InvoiceNo='${inv}', IsConvertInvoice=1, BillDate = '${req.headers.currenttime}' where ID = ${bMasterID} and CompanyID = ${CompanyID} and IsConvertInvoice = 0 and BillingFlow = 2`);
+
+                const [updatePay] = await connection.query(`Update paymentdetail SET BillID='${inv}' where BillMasterID = ${bMasterID} and CompanyID = ${CompanyID} and PaymentType = 'Customer'`);
             }
 
             console.log(connected("BillDetail Update SuccessFUlly !!!"));
