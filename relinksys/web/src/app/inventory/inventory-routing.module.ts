@@ -24,6 +24,7 @@ import { OrderFormComponent } from './order-form/order-form.component';
 import { RecycleBinComponent } from './recycle-bin/recycle-bin.component';
 import { IpAddressComponent } from './ip-address/ip-address.component';
 import { StocklimitAlertComponent } from './stocklimit-alert/stocklimit-alert.component';
+import { PurchaseImgComponent } from './purchase-img/purchase-img.component';
 
 
 const routes: Routes = [
@@ -31,6 +32,7 @@ const routes: Routes = [
   children: [
     { path: 'supplier', component: SupplierComponent },  
     { path: 'purchase/:id', component: PurchaseComponent },  
+    { path: 'purchaseImg/:id', component: PurchaseImgComponent },  
     { path: 'purchaseList/:id', component: PurchaseListComponent },  
     { path: 'fitter/:id', component: FitterComponent },  
     { path: 'fitterList', component: FitterListComponent },  

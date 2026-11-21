@@ -48,6 +48,7 @@ import { OrderFormComponent } from './order-form/order-form.component';
 import { RecycleBinComponent } from './recycle-bin/recycle-bin.component';
 import { IpAddressComponent } from './ip-address/ip-address.component';
 import { StocklimitAlertComponent } from './stocklimit-alert/stocklimit-alert.component';
+import { PurchaseImgComponent } from './purchase-img/purchase-img.component';
 
 
 
@@ -78,7 +79,8 @@ import { StocklimitAlertComponent } from './stocklimit-alert/stocklimit-alert.co
     OrderFormComponent,
     RecycleBinComponent,
     IpAddressComponent,
-    StocklimitAlertComponent
+    StocklimitAlertComponent,
+    PurchaseImgComponent
   ],
   imports: [
     CommonModule,
