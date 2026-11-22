@@ -425,6 +425,110 @@ module.exports = {
             if (connection) connection.release();
         }
     },
+    updateProductImage: async (req, res, next) => {
+        let connection;
+
+        try {
+            const response = {
+                data: null,
+                success: true,
+                message: ""
+            };
+
+            const CompanyID = req.user.CompanyID || 0;
+            const shopid = await shopID(req.headers) || 0;
+            const db = req.db;
+
+            if (db.success === false) {
+                return res.status(200).json(db);
+            }
+
+            connection = await db.getConnection();
+            await connection.beginTransaction();
+
+            const { PurchaseMaster, PurchaseDetail } = req.body;
+
+            // Validations
+            if (!PurchaseMaster || !PurchaseMaster.ID) {
+                return res.send({
+                    success: false,
+                    message: "Invalid PurchaseMaster Data"
+                });
+            }
+
+            if (!PurchaseDetail) {
+                return res.send({
+                    success: false,
+                    message: "Invalid PurchaseDetail Data"
+                });
+            }
+
+            // Parse PurchaseDetail
+            let purchaseDetail;
+
+            try {
+                purchaseDetail = typeof PurchaseDetail === "string"
+                    ? JSON.parse(PurchaseDetail)
+                    : PurchaseDetail;
+            } catch (error) {
+                return res.send({
+                    success: false,
+                    message: "Invalid PurchaseDetail JSON Data"
+                });
+            }
+
+            if (!Array.isArray(purchaseDetail)) {
+                return res.send({
+                    success: false,
+                    message: "PurchaseDetail must be an array"
+                });
+            }
+
+            // Update Existing Product Images
+            for (const item of purchaseDetail) {
+
+                if (!item.ID) continue;
+
+                const productImg = JSON.stringify(item.productImg || []);
+
+                await connection.query(
+                    `UPDATE purchasedetailnew
+                 SET productImg = ?
+                 WHERE ID = ?
+                 AND PurchaseID = ?
+                 AND CompanyID = ?`,
+                    [
+                        productImg,
+                        item.ID,
+                        PurchaseMaster.ID,
+                        CompanyID
+                    ]
+                );
+            }
+
+            await connection.commit();
+
+            response.message = "Product images updated successfully";
+            response.data = PurchaseMaster.ID;
+
+            return res.send(response);
+
+        } catch (err) {
+
+            if (connection) {
+                await connection.rollback();
+            }
+
+            console.log(err);
+            next(err);
+
+        } finally {
+
+            if (connection) {
+                connection.release();
+            }
+        }
+    },
     create: async (req, res, next) => {
         let connection;
         try {
@@ -1811,20 +1915,20 @@ module.exports = {
                             }
 
                             else if (printdata.CompanyBarcode == 7) {
-                                if(printdata.CompanyID == 507){
-                                     options = {
-                                    "height": "35mm",
-                                    "width": "90mm",
-                                    timeout: 600000,
-                                };
-                                }else{
+                                if (printdata.CompanyID == 507) {
                                     options = {
-                                    "height": "27mm",
-                                    "width": "38mm",
-                                    timeout: 600000,
-                                };
+                                        "height": "35mm",
+                                        "width": "90mm",
+                                        timeout: 600000,
+                                    };
+                                } else {
+                                    options = {
+                                        "height": "27mm",
+                                        "width": "38mm",
+                                        timeout: 600000,
+                                    };
                                 }
-                               
+
                             }
                             else if (printdata.CompanyBarcode == 12) {
                                 options = {
@@ -1848,29 +1952,29 @@ module.exports = {
                                 };
                             }
                             else if (printdata.CompanyBarcode == 10) {
-                              const options = {
- format: "A4",
-                            orientation: "portrait",
+                                const options = {
+                                    format: "A4",
+                                    orientation: "portrait",
 
-    border: {
-        top: "15mm",
-        right: "0mm",
-        bottom: "1mm",
-        left: "0mm"
-    },
+                                    border: {
+                                        top: "15mm",
+                                        right: "0mm",
+                                        bottom: "1mm",
+                                        left: "0mm"
+                                    },
 
-    header: {
-        height: "0mm",
-        contents: ""
-    },
+                                    header: {
+                                        height: "0mm",
+                                        contents: ""
+                                    },
 
-    footer: {
-        height: "0mm",
-        contents: ""
-    },
+                                    footer: {
+                                        height: "0mm",
+                                        contents: ""
+                                    },
 
-    timeout: 600000
-};
+                                    timeout: 600000
+                                };
                             }
 
                             pdf.create(data, options).toFile(fileName, function (err, data) {
