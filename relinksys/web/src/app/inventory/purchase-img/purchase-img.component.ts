@@ -869,8 +869,11 @@ selectedItem:any
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
     this.data = {}
-    this.data.PurchaseMaster = this.selectedPurchaseMaster;
-    this.data.UpdateProduct = true
+    // this.data.PurchaseMaster = this.selectedPurchaseMaster
+    this.data.PurchaseMaster = {
+     ID : this.selectedPurchaseMaster.ID
+    };
+    // this.data.UpdateProduct = true
     this.data.Charge = this.chargeList;
     let items: any = [];
     this.selectAllChecked = false;
@@ -881,7 +884,15 @@ selectedItem:any
         items.push(ele);
       }
     })
-    this.data.PurchaseDetail = JSON.stringify(items);
+    // this.data.PurchaseDetail = JSON.stringify(items);
+    this.data.PurchaseDetail = JSON.stringify(
+    items.map((item: any) => ({
+        ID: item.ID,
+        productImg: item.productImg
+    }))
+);
+console.log(this.data);
+
     const subs: Subscription = this.purchaseService.updatePurchase(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
