@@ -250,6 +250,9 @@
                         <button type="button" class="me-2" mat-raised-button color="primary" (click)="getInventoryExport()">
                           Quick Download
                         </button>
+
+                         <button *ngIf="company?.productImg == 'true'" type="button" class="me-2"  (click)="openModalPM(contentPi)" mat-raised-button color="primary" >Product Grid</button>
+
                         <span *ngIf="this.selectedProduct == 'LENS SEMI-FINISHED'">
                           <button *ngIf="company.ID == 241 || company.ID == 300 "  type="button"   (click)="openModalS1(content01)" mat-raised-button color="primary" [disabled]="inventoryList.length == 0">Semi-Finished</button>
                       </span>
@@ -257,6 +260,7 @@
                        <button  type="button" (click)="openModalGrid(content001,this.inventoryList)" mat-raised-button color="primary" [disabled]="this.inventoryList.length == 0 ">Lens Grid</button>
                       </ng-container>
                       </div>
+                      
                       <div class="col-xl-2 col-lg-2 col-md-6 col-12 mb-0 " *ngIf="this.selectedProduct == 'LENS'">
                         <button *ngIf="company.ID == 241 || company.ID == 1 " type="button"   (click)="openModalS(content0000)" mat-raised-button color="primary" >Base Grid</button>
                       </div>
@@ -271,7 +275,10 @@
 
                   </form>
                   <!--  list -->
-                  <div class="body p-2">
+
+                
+
+                  <div class="body p-2" >
                     <div id="Inventory-content" class="col-sm-12" style="overflow: auto; height: 450px;">
 
                       <table class="table table-striped table-hover table-sm table-bordered"
@@ -2043,6 +2050,42 @@
              
         </div>
     </div>
+</ng-template>
+
+
+<!-- Modal -->
+<ng-template #contentPi role="document" let-modal>
+  <div class="modal-header" style="height: 50px;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel">Product List</h3>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form #f="ngForm">
+      <div class="modal-body">
+          <!-- Grid View start -->
+            <div class="row " *ngIf="inventoryList?.length !== 0 && gridview"
+              style="overflow:auto;height:700px; ">
+              <div class="col-lg-3 col-md-3" *ngFor="let data of inventoryList let i = index;" style="padding: 1rem;">
+                <div class="course-card" >
+                  <div class="course-card-body" style="height: 20rem ; width: 15rem">
+                    <div class="course-card-top-overflow text-white">
+                      <img [src]="env.apiUrl + data.productImg[0]" alt="Image" class="mx-auto d-block cardImg" style="width: 200px;
+    height: 200px;
+    object-fit: contain;" />
+                    </div>
+                    <h2 class="text-center m-0" style="font-weight: 400; font-size: 16px; line-height:normal">{{data.ProductTypeName}} {{data.ProductName}}</h2>
+                    <br>
+                    <p class="text-center m-0" style="font-weight: 600; font-size: 18px;">{{data.RetailPrice }}</p>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Grid View end -->
+      </div>
+     
+    </form>
+  </div>
 </ng-template>
 
 

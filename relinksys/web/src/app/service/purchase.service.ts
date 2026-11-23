@@ -25,6 +25,11 @@ export class PurchaseService {
       .pipe(catchError(this.handleError));
   }
 
+  updateProductImage(Body: any): Observable<any> {
+    return this.httpClient.post<any>(this.url + '/updateProductImage', Body, httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
   getList(Body: any): Observable<any> {
     return this.httpClient.post<any>(this.url + '/list', Body, httpOptions)
       .pipe(catchError(this.handleError));

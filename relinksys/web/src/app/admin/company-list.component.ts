@@ -184,6 +184,7 @@ export class CompanyListComponent implements OnInit {
     EcomPaymentGateWay : false,
     EcomSignup : false,
     EcomLiveImage: false,
+    productImg: false,
   }
 
   updatadata:any
@@ -506,6 +507,7 @@ export class CompanyListComponent implements OnInit {
     this.planData.AllExcelImport = stringToBoolean(data.AllExcelImport.toString()); 
     this.planData.OldBill = stringToBoolean(data.OldBill.toString()); 
     this.planData.InsuranceModule = stringToBoolean(data.InsuranceModule.toString()); 
+    this.planData.productImg = stringToBoolean(data.productImg.toString()); 
     this.planData.EcomBilling  = stringToBoolean(data.EcomBilling.toString()); 
     this.planData.EcomSetting  = stringToBoolean(data.EcomSetting.toString()); 
     this.planData.EcomPower = stringToBoolean(data.EcomPower.toString()); 
@@ -573,6 +575,7 @@ export class CompanyListComponent implements OnInit {
       this.updatadata.OldBill = this.planData.OldBill; 
       this.updatadata.InsuranceModule = this.planData.InsuranceModule; 
       this.updatadata.OrderRequest = this.planData.OrderRequest; 
+      this.updatadata.productImg = this.planData.productImg; 
       this.updatadata.EcomShop = this.planData.EcomShop;
       this.updatadata.EcomBilling = this.planData.EcomBilling;
       this.updatadata.EcomSetting = this.planData.EcomSetting;

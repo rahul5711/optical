@@ -52,7 +52,7 @@ export class PurchaseImgComponent implements OnInit {
     }
     if(this.id != 0){
       if (event.altKey && event.key === 'u' || event.altKey && event.key === 'U'  ) {
-        this.updatedPurchase();
+        // this.updatedPurchase();
         event.preventDefault();
       }
     }
@@ -213,7 +213,11 @@ selectedItem:any
         if (res.success === true) {
           this.selectedPurchaseMaster = res.result.PurchaseMaster[0]
           this.selectedPurchaseMaster.PurchaseDate = moment(res.result.PurchaseMaster[0].PurchaseDate).format('YYYY-MM-DD')
-          this.itemList = res.result.PurchaseDetail
+          // this.itemList = res.result.PurchaseDetail
+          this.itemList = res.result.PurchaseDetail.map((item: any) => ({
+            ...item,
+             productImg: JSON.parse(item.productImg || '[]')
+          }));
           this.chargeList = res.result.Charge
           this.gst_detail = this.selectedPurchaseMaster.gst_detail
           this.calculateGrandTotal();
@@ -864,7 +868,7 @@ selectedItem:any
   //   this.selectedProduct = "";
   // }
 
-  updatedPurchase() {
+  updateProductImage() {
     this.sp.show()
     this.selectedPurchaseMaster.ShopID = this.shop[0].ShopID;
     this.selectedPurchaseMaster.PurchaseDate = this.selectedPurchaseMaster.PurchaseDate + ' ' + this.currentTime;
@@ -893,7 +897,7 @@ selectedItem:any
 );
 console.log(this.data);
 
-    const subs: Subscription = this.purchaseService.updatePurchase(this.data).subscribe({
+    const subs: Subscription = this.purchaseService.updateProductImage(this.data).subscribe({
       next: (res: any) => {
         if (res.success) {
           if (res.data !== 0) {

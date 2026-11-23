@@ -806,10 +806,16 @@
                                     </button>
                                 </div>
                                 <div *ngIf="selectedPurchaseMaster.ID !== null && this.loginShop.Status != 0"
-                                    class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 mr-2">
+                                    class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 ">
                                     <button type="button"
                                         [disabled]="itemList.length == 0 && chargeList.length == 0 || this.disbaleupdate === true"
                                         (click)="updatedPurchase()" mat-raised-button color="primary"><span class="first-letter">U</span>pdate</button>
+                                </div>
+                                <div *ngIf="selectedPurchaseMaster.ID !== null && this.loginShop.Status != 0 && this.company.productImg == 'true'"
+                                    class="col-xl-1 col-lg-1 col-md-2 col-sm-12 col-4  mb-0 ">
+                                    <button type="button"
+                                        [disabled]="itemList.length == 0 && chargeList.length == 0 || this.disbaleupdate === true"
+                                       [routerLink]="['/inventory/purchaseImg',selectedPurchaseMaster.ID]" mat-raised-button color="primary">Upload Image</button>
                                 </div>
                             </div>
                             <!-- Total calculcation end -->
