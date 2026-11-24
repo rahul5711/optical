@@ -65,7 +65,7 @@ export class InventoryReportComponent implements OnInit {
   ) { }
 
   UpdatePriceEdit = false;
-
+    gridview = true;
   myControl = new FormControl('All');
   filteredOptions: any;
   searchValue: any = '';
@@ -609,6 +609,10 @@ export class InventoryReportComponent implements OnInit {
         if (res.success) {
           this.as.successToast(res.message)
           this.inventoryList = res.data
+          this.inventoryList = res.data.map((item: any) => ({
+           ...item,
+            productImg: JSON.parse(item.productImg || '[]')
+          }));
           this.inventoryList.forEach((element: any) => {
             this.TtlR = + this.TtlR + element.RetailPrice * element.Count
             this.TtlW = + this.TtlW + element.WholeSalePrice * element.Count
@@ -795,6 +799,12 @@ export class InventoryReportComponent implements OnInit {
       error: (err: any) => console.log(err.message),
       complete: () => subs.unsubscribe(),
     });
+  }
+
+    openModalPM(contentPi: any) {
+    this.modalService.open(contentPi, { centered: true, backdrop: 'static', keyboard: false, size: 'xxl' });
+      this.gridview = true
+
   }
 
   exportAsXLSXDetail(): void {
