@@ -2802,12 +2802,17 @@ module.exports = {
             var formatName;
             if (printdata.customerdetails.CompanyID == 394) {
                 formatName = "DivineOpto.ejs";
-            } else if (masterdata.mode == 'Examination') {
+            } 
+            else if (printdata.customerdetails.CompanyID == 566) {
+                formatName = "RajEyeOpto.ejs";
+            }
+            else if (masterdata.mode == 'Examination') {
                 formatName = "optoExaminationPDF.ejs";
             } else {
                 formatName = "optometristPDF.ejs";
             }
-
+            console.log(formatName);
+            
             var file = 'optometristPDF' + "_" + printdata.customerdetails.ID + "_" + PdfPrint + ".pdf";
             fileName = "uploads/" + file;
 
@@ -2817,7 +2822,7 @@ module.exports = {
                     res.send(err);
                 } else {
                     let options
-                    if (printdata.customerdetails.CompanyID == 394) {
+                    if (printdata.customerdetails.CompanyID == 394 || printdata.customerdetails.CompanyID == 566) {
                         options = {
                             format: 'A4',
                             orientation: 'portrait',

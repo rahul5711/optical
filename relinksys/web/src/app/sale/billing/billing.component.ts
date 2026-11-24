@@ -30,6 +30,7 @@ import { switchMap } from 'rxjs/operators';
 import { ReminderService } from 'src/app/service/reminder.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { ShopService } from 'src/app/service/shop.service';
+import {  NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-billing',
@@ -80,6 +81,9 @@ export class BillingComponent implements OnInit {
   @ViewChild('Csearching') Csearching: ElementRef | any;
   @ViewChild('UserNamecontrol') UserNamecontrol: ElementRef | any;
 
+  cameraOpen: boolean = false;
+stream: MediaStream | null = null;
+webcamModalRef!: NgbModalRef;
   company = JSON.parse(localStorage.getItem('company') || '');
   user = JSON.parse(localStorage.getItem('user') || '');
   companySetting = JSON.parse(localStorage.getItem('companysetting') || '');
@@ -3116,8 +3120,167 @@ selectValueAdd(value: any, eye: 'RE' | 'LE') {
 }
 
 
+openModalWeb(content: any) {
+
+    this.webcamModalRef = this.modalService.open(content, {
+        centered: true,
+        backdrop: 'static',
+        keyboard: false,
+        size: 'lg'
+    });
+
+    this.openCamera();
+}
 
 
+
+async openCamera() {
+
+    try {
+
+        this.cameraOpen = true;
+
+        // Wait for Angular to render video
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        const video = document.getElementById(
+            'customerVideo'
+        ) as HTMLVideoElement;
+
+        if (!video) {
+            throw new Error('Video element not found');
+        }
+
+        // Start Webcam
+        this.stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: 'user',
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            },
+            audio: false
+        });
+
+        video.srcObject = this.stream;
+
+        await video.play();
+
+    }
+    catch (error) {
+
+        console.error('Camera Error:', error);
+
+        this.closeCamera();
+
+        alert('Camera permission denied or camera not available');
+
+    }
+
+}
+
+
+// CAPTURE PHOTO
+capturePhoto() {
+
+    const video = document.getElementById(
+        'customerVideo'
+    ) as HTMLVideoElement;
+
+    const canvas = document.getElementById(
+        'customerCanvas'
+    ) as HTMLCanvasElement;
+
+    if (!video || !canvas || video.videoWidth === 0) {
+
+        alert('Camera is not ready');
+
+        return;
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext('2d');
+
+    if (!context) return;
+
+    // Draw Webcam Image
+    context.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    // Convert Canvas to File
+    canvas.toBlob((blob) => {
+
+        if (!blob) return;
+
+        const file = new File(
+            [blob],
+            'customer-photo.jpg',
+            {
+                type: 'image/jpeg'
+            }
+        );
+
+        // Show Captured Image
+        this.customerImage = URL.createObjectURL(file);
+
+        // Send to Existing Upload Function
+        const event = {
+            target: {
+                files: [file]
+            }
+        };
+
+        this.uploadImage(event, 'User');
+
+        // Stop Camera
+        this.closeCamera();
+
+    }, 'image/jpeg', 0.9);
+
+}
+
+
+// CLOSE CAMERA
+closeCamera() {
+
+    if (this.stream) {
+
+        this.stream.getTracks().forEach(track => {
+            track.stop();
+        });
+
+        this.stream = null;
+    }
+
+    const video = document.getElementById(
+        'customerVideo'
+    ) as HTMLVideoElement;
+
+    if (video) {
+        video.srcObject = null;
+    }
+
+    this.cameraOpen = false;
+     if (this.webcamModalRef) {
+        this.webcamModalRef.close();
+        this.webcamModalRef = undefined as any;
+    }
+
+}
+
+
+// COMPONENT DESTROY
+ngOnDestroy() {
+
+    this.closeCamera();
+
+}
 }
 
 

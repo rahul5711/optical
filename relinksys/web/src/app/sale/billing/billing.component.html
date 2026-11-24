@@ -2131,25 +2131,44 @@
 
                                             <div class="col-md-2 col-12">
                                                 <div class="row ">
-                                                    <div class="col-md-12 col-12 ms-md-auto">
-                                                        <div *ngIf="company.PhotoClick == 'true'" class="row ">
-                                                            <div class="col-10 mt-md-0 ">
-                                                                <img class="fit-picture" width="170" height="130"
-                                                                    [src]="customerImage">
-                                                            </div>
-                                                            <div class="col-xl-10 col-lg-10 col-md-10 col-11 mb-0 "
-                                                                (click)="fileInput.click()" style="cursor: pointer;">
-                                                                <i class="fa-solid fa-cloud-arrow-up upload_icon">
-                                                                    <span style="font-size: 10px;letter-spacing: 2px;">
-                                                                        Image
-                                                                    </span>
-                                                                </i>
-                                                                <input #fileInput id="my-input" name='PhotoURL'
-                                                                    type="file" (change)="uploadImage($event, 'User')"
-                                                                    style="display:none;">
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                   
+<div class="col-md-12 col-12 ms-md-auto">
+
+    <div *ngIf="company.PhotoClick == 'true' && !cameraOpen" class="row">
+        <!-- Customer Image -->
+        <div class="col-10 mt-md-0">
+            <img class="fit-picture" width="170" height="130" [src]="customerImage">
+        </div>
+
+        <!-- Upload Image -->
+        <div class="col-6 mb-2" (click)="fileInput.click()"  style="cursor:pointer;">
+            <i class="fa-solid fa-cloud-arrow-up upload_icon">
+                <span style="font-size:10px;letter-spacing:2px;">
+                    Image
+                </span>
+            </i>
+
+            <input #fileInput  type="file" accept="image/*"  (change)="uploadImage($event, 'User')"  style="display:none;">
+        </div>
+
+        <!-- Webcam Button -->
+        <div class="col-6 mb-2"
+             (click)="openModalWeb(contentWeb)"
+             style="cursor:pointer; text-align: right; font-size: 23px; color: #fff;">
+
+            <i class="fa-solid fa-camera ">
+                <span style="font-size:10px;letter-spacing:2px;"></span>
+            </i>
+
+        </div>
+
+    </div>
+
+    
+  
+
+</div>
+
                                                 </div>
                                             </div>
 
@@ -5147,4 +5166,54 @@
         </div>
 
     </div>
+</ng-template>
+
+
+
+<!-- Modal -->
+<ng-template #contentWeb role="document" let-modal>
+  <div class="modal-header" style="height: 50px;">
+    <h3 class="modal-title header pt-2" id="exampleModalLabel">Camare</h3>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form #f="ngForm">
+      <div class="modal-body">
+        <div class="row">
+            
+           <div *ngIf="cameraOpen" class="camera-box">
+
+        <video id="customerVideo"
+               autoplay
+               playsinline
+               muted
+               class="camera-video">
+        </video>
+
+        <canvas id="customerCanvas" hidden></canvas>
+
+        <div class="mt-2">
+
+            <button type="button"
+                    class="btn btn-success"
+                    (click)="capturePhoto()">
+                <i class="fa-solid fa-camera"></i>
+                Capture
+            </button>
+
+            <button type="button"
+                    class="btn btn-danger ms-2"
+                    (click)="closeCamera()">
+                Close
+            </button>
+
+        </div>
+
+    </div>
+         
+        </div>
+      </div>
+     
+    </form>
+  </div>
 </ng-template>

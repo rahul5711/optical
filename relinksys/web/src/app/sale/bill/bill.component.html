@@ -603,7 +603,7 @@
             <!-- save product spec end -->
         </form>
 
-        <form #f1="ngForm" (ngSubmit)="addItem()">
+        <form #f1="ngForm" (ngSubmit)="addItem()" autocomplete="on">
             <div class="row row rowModify " *ngIf="category !== 'Services' ">
                 <!-- <div class="col-xl-4 col-lg-4 col-md-9 col-8 mb-0">
                     <mat-form-field class="example-full-width mb-0">
@@ -737,13 +737,13 @@
                 <div class="col-xl-1 col-lg-1 col-md-2 col-6 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Remark</mat-label>
-                        <input matInput name="Remark" [(ngModel)]="BillItem.Remark">
+                        <input matInput name="Remark" [(ngModel)]="BillItem.Remark" autocomplete="on">
                     </mat-form-field>
                 </div>
                 <div class="col-xl-1 col-lg-1 col-md-2 col-3 mb-0 col-1Modify">
                     <mat-form-field class="example-full-width mb-0">
                         <mat-label>Warranty</mat-label>
-                        <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty">
+                        <input matInput name="Warranty" [(ngModel)]="BillItem.Warranty" autocomplete="on">
                     </mat-form-field>
                 </div>
 

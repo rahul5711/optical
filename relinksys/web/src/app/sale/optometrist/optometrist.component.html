@@ -58,6 +58,55 @@
                                                         <input matInput name="Age"  [(ngModel)]="customerDate.Age"  #Agecontrol disabled />
                                                     </mat-form-field>
                                                 </div>
+                                                <div class="col-xl-1 col-lg-1 col-md-6 col-6">
+                                                     <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>BP </mat-label>
+                                                        <input matInput name="BP"  [(ngModel)]="masterObject.Comprehensive.BP"  #BPcontrol  />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-1 col-lg-1 col-md-6 col-6">
+                                                     <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>Sugar </mat-label>
+                                                        <input matInput name="Sugar"  [(ngModel)]="masterObject.Comprehensive.Sugar"  #Sugarcontrol  />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-1 col-lg-1 col-md-6 col-6">
+                                                     <mat-form-field class="example-full-width mb-0">
+                                                        <mat-label>IOL Power</mat-label>
+                                                        <input matInput name="IOLPower"  [(ngModel)]="masterObject.Comprehensive.IOLPower"  #IOLPowercontrol  />
+                                                    </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-1 col-md-6 col-6">
+                                                   
+
+                                                      <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Diagnosis</mat-label>
+                                                                <textarea rows="1" matInput type="text" name="Diagnosis"
+                                                                    [(ngModel)]="masterObject.Comprehensive.Diagnosis"> </textarea>
+                                                            </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-1 col-md-6 col-6">
+
+                                                     <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Treatment</mat-label>
+                                                                <textarea rows="1" matInput type="text" name="Treatment"
+                                                                    [(ngModel)]="masterObject.Comprehensive.Treatment"> </textarea>
+                                                            </mat-form-field>
+                                                </div>
+                                                <div class="col-xl-2 col-lg-1 col-md-6 col-6">
+
+                                                      <mat-form-field class="example-full-width mb-0">
+                                                                <mat-label>Operation</mat-label>
+                                                                <textarea rows="1" matInput type="text" name="Operation"
+                                                                    [(ngModel)]="masterObject.Comprehensive.Operation"> </textarea>
+                                                            </mat-form-field>
+                                                </div>
+                                              
+
+
+
+
+
                                             </div>
                                             <div class="row">
                                                 <div class="col-xl-3 col-lg-3 col-md-6 col-6">
@@ -1348,7 +1397,7 @@
                                                             <td>
                                                                 <input class="inputW" type="text" name="LIDLASHES_L"
                                                                     [(ngModel)]="masterObject.Comprehensive.SlitLamp.LIDLASHES_L"
-                                                                    #LIDLASHES_Lcontrol style="text-transform: uppercase;"/>
+                                                                    #LIDLASHES_Lcontrol style="text-transform: uppercase;"  autocomplete="on"/>
                                                             </td>
                                                         </tr>
                                                         <tr>

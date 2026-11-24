@@ -14,6 +14,7 @@ import { FileUploadService } from 'src/app/service/helpers/file-upload.service';
 import { take } from 'rxjs/operators';
 import { CompressImageService } from 'src/app/service/helpers/compress-image.service';
 import { ChangeDetectorRef } from '@angular/core';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-optometrist',
@@ -61,6 +62,7 @@ currentPowerID: number | null = null;
     ID: null, CustomerID: 0, CompanyID: 0,
     Comprehensive: {
      ExaminationDate:'',  Reasonforvisit: '', Occupation: '', Nearworkinghours: '', BreakFrequencyduringnearwork: '',
+     BP:'',Sugar:'', IOLPower:'', Diagnosis:'', Treatment:'', Operation:'',
       coList: [],
       ocularHistoryList: [],
       systemicHistoryList: [],
@@ -651,10 +653,12 @@ currentPowerID: number | null = null;
 }
 
   ngOnInit(): void {
+    this.masterObject.Comprehensive.ExaminationDate = moment().format('yyyy-MM-DD');
     if (this.masterObject.ID != 0 || this.masterObject.ID != null) {
       this.PatientRecordList('Comprehensive')
     }
     this.getCustomerById()
+     
   }
 
   checkChange(mode: any) {

@@ -2,6 +2,25 @@
     height: 25px;
     color: #ff5100;
 }
+
+
+.camera-box {
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    background: #fff;
+}
+
+.camera-video {
+    width: 100%;
+    height: 90%;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #000;
+}
+
 .selected {
   background-color: #3f51b5; /* Bootstrap Blue */
   color: white;

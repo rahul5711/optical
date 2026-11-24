@@ -38,6 +38,7 @@ import { NgxPrintModule } from 'ngx-print';
 // import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { AboutComponent } from './common/about/about.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { NgxEchartsModule } from 'ngx-echarts';
 
@@ -59,6 +60,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
+    MatAutocompleteModule,
     MatListModule,
     MatSnackBarModule,
     AppRoutingModule,
