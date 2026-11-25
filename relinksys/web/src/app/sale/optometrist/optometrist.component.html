@@ -674,10 +674,10 @@
                                                 <div class="col-12">
                                                     <h4 class="OEx-h4">Visual Acuity Unaided</h4>
                                                 </div>
-                                                <div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-12"
-                                                    style="overflow: auto; height: 150px;">
+                                                <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-6 col-12"
+                                                    style="overflow: auto; height: 250px;">
 
-                                                    <table>
+                                                    <table style="width:100%">
                                                         <tr class="mobbtn2" style="width:100%">
                                                             <th></th>
                                                             <th>Distance</th>
@@ -733,7 +733,7 @@
                                                         </tr>
                                                         <tr class="mobbtn2 pt-md-3 pt-1" style="width:100%">
                                                             <th>
-                                                                BE
+                                                                BE Without Glasses
                                                             </th>
                                                             <td>
                                                                 <input class="inputW" type="text" name="BEDPVA_UC"
@@ -747,6 +747,29 @@
                                                             <td>
                                                                 <input class="inputW" type="text" name="BENPVA_UC"
                                                                     [(ngModel)]="masterObject.Comprehensive.Unaided.BENPVA"
+                                                                    id="BENPVA" list="dpNvaList">
+                                                                <datalist id="dpNvaList">
+                                                                    <option [value]="d.Name" *ngFor="let d of dataPNVA">
+                                                                        {{d.Name}} </option>
+                                                                </datalist>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="mobbtn2 pt-md-3 pt-1" style="width:100%">
+                                                            <th>
+                                                                BE With Glasses
+                                                            </th>
+                                                            <td>
+                                                                <input class="inputW" type="text" name="BEDPVA_UC"
+                                                                    [(ngModel)]="masterObject.Comprehensive.Unaided.BEWDPVA"
+                                                                    id="BEDPVA" list="dpvaList">
+                                                                <datalist id="dpvaList">
+                                                                    <option [value]="d.Name" *ngFor="let d of dataPVA">
+                                                                        {{d.Name}} </option>
+                                                                </datalist>
+                                                            </td>
+                                                            <td>
+                                                                <input class="inputW" type="text" name="BENPVA_UC"
+                                                                    [(ngModel)]="masterObject.Comprehensive.Unaided.BEWNPVA"
                                                                     id="BENPVA" list="dpNvaList">
                                                                 <datalist id="dpNvaList">
                                                                     <option [value]="d.Name" *ngFor="let d of dataPNVA">
@@ -1522,6 +1545,107 @@
                                                 </div>
 
                                             </div>
+
+                                            <div class="row mt-3">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">PD Measurement Measure</h4>
+                                        </div>
+
+                                        <div class="col-xxl-4 col-xl-4 col-lg-5 col-md-6 col-12">
+                                            <table style="width:100%">
+                                                <tr style="width:100%">
+                                                    <th style="width:30%"></th>
+                                                    <th>R_PD</th>
+                                                    <th>L_PD</th>
+                                                </tr>
+                                                <tr style="width:100%">
+                                                    <th>
+                                                        Distance PD
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="REDPD"
+                                                        [(ngModel)]="masterObject.Comprehensive.PDMeasure.REDPD"  >
+                                                       
+                                                    </td>
+                                                    <td>
+
+                                                        <input class="inputW" type="text" name="LEDPD"
+                                                            [(ngModel)]="masterObject.Comprehensive.PDMeasure.LEDPD">
+                                                       
+                                                    </td>
+
+                                                </tr>
+                                                <tr class=" pt-3" style="width:100% ; height: 45px;">
+                                                    <th>
+                                                        Near PD
+                                                    </th>
+                                                    <td>
+                                                        <input class="inputW" type="text" name="RENPD"
+                                                            [(ngModel)]="masterObject.Comprehensive.PDMeasure.RENPD">
+                                                      
+                                                    </td>
+                                                    <td>
+                                                        <input class="inputW " type="text" name="LENPD"
+                                                            [(ngModel)]="masterObject.Comprehensive.PDMeasure.LENPD" >
+                                                      
+                                                    </td>
+                                                </tr>
+                                                <tr class=" pt-3" style="width:100%">
+                                                    <th>
+                                                        Both Eye PD
+                                                    </th>
+
+                                                    <td colspan="2">
+                                                        <input class="inputW" type="text" name="BEPD"
+                                                            [(ngModel)]="masterObject.Comprehensive.PDMeasure.BEPD">
+                                                       
+                                                    </td>
+
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                            <div class="row mt-3">
+                                        <div class="col-12">
+                                            <h4 class="OEx-h4">Lens Recommendation Recommend According To LifeStyle</h4>
+                                        </div>
+                                        <div class="col-xl-1 col-lg-1  col-md-1 col-12 me-5">
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.OfficeUser" type="checkbox"
+                                                name="OfficeUser"> Office User</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.BlueLightProtection"
+                                                type="checkbox" name="BlueLightProtection"> Blue Light
+                                                Protection</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.AntiGlare" type="checkbox"
+                                                name="AntiGlare"> Anti Glare</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.LightweightLens"
+                                                type="checkbox" name="LightweightLens"> Lightweight Lens</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.NightDrivingLens"
+                                                type="checkbox" name="NightDrivingLens"> Night Driving
+                                                Lens?</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.Photochromic" type="checkbox"
+                                                name="Photochromic">Photochromic (Optional)</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.OutdoorUser" type="checkbox"
+                                                name="OutdoorUser">Outdoor User?</mat-checkbox>
+
+                                        </div>
+                                        <div class="col-xl-1 col-lg-1  col-md-1 col-12  ms-4">
+
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.PolarizedSunglasses "
+                                                type="checkbox" name="PolarizedSunglasses">Polarized
+                                                Sunglasses</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.UVProtection" type="checkbox"
+                                                name="UVProtection">UV Protection</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.Glass " type="checkbox"
+                                                name="Glass"> Glass</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.ProgressiveLens"
+                                                type="checkbox" name="ProgressiveLens"> Progressive Lens</mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.ReadingGlasses" type="checkbox"
+                                                name="ReadingGlasses"> Reading Glasses </mat-checkbox>
+                                            <mat-checkbox [(ngModel)]="masterObject.Comprehensive.Exam.HighContrast " type="checkbox"
+                                                name="HighContrast"> High Contrast Option </mat-checkbox>
+                                        </div>
+                                    </div>
 
                                             <div class="row heads mt-3">
                                                 <div class="col-12 pt-2">

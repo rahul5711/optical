@@ -76,7 +76,7 @@ currentPowerID: number | null = null;
       },
       VisualAcuity: '',
       Unaided: {
-        REDPVA: '', RENPVA: '', LEDPVA: '', LENPVA: '', BEDPVA: '', BENPVA: '',
+        REDPVA: '', RENPVA: '', LEDPVA: '', LENPVA: '', BEDPVA: '', BENPVA: '', BEWDPVA:'' , BEWNPVA:''
       },
       Retinoscopy: false,
       Cycloplegia: false,
@@ -103,6 +103,13 @@ currentPowerID: number | null = null;
       SlitLamp: {
         drawingImg: '', LIDLASHES_R: '', LIDLASHES_L: '', CONJUNCTIVA_R: '', CONJUNCTIVA_L: '', CORNEA_R: '', CORNEA_L: '', IRIS_R: '', IRIS_L: '',
         PUPIL_R: '', PUPIL_L: '', ANTERIORCHAMBER_R: '', ANTERIORCHAMBER_L: '', CRYSTALLINELENS_R: '', CRYSTALLINELENS_L: '', SCLERA_R: '', SCLERA_L: '', LACRIMALSYSTEM_R: '', LACRIMALSYSTEM_L: ''
+      },
+  PDMeasure: {
+                    REDPD: '', LEDPD: '', RENPD: '', LENPD: '', BEPD: ''
+                  },
+      Exam:{
+          OfficeUser: false, BlueLightProtection: false, AntiGlare: false, LightweightLens: false, NightDrivingLens: false, Photochromic: false, OutdoorUser: false, PolarizedSunglasses: false,
+      UVProtection: false, Glass: false, ProgressiveLens: false, ReadingGlasses: false, HighContrast: false,
       },
       PosteriorSegment: {
         CUPDISCRATIO: '', MACULAFOVEA: '', ABNORMALITIES: '',
@@ -653,7 +660,7 @@ currentPowerID: number | null = null;
 }
 
   ngOnInit(): void {
-    this.masterObject.Comprehensive.ExaminationDate = moment().format('yyyy-MM-DD');
+    
     if (this.masterObject.ID != 0 || this.masterObject.ID != null) {
       this.PatientRecordList('Comprehensive')
     }
@@ -1361,7 +1368,7 @@ currentPowerID: number | null = null;
       this.masterObject = {
         ID: null, CustomerID: 0, CompanyID: 0,
         Comprehensive: {
-          Reasonforvisit: '', Occupation: '', Nearworkinghours: '', BreakFrequencyduringnearwork: '',
+          ExaminationDate: moment().format('YYYY-MM-DD'),  Reasonforvisit: '', Occupation: '', Nearworkinghours: '', BreakFrequencyduringnearwork: '',
           coList: [],
           ocularHistoryList: [],
           systemicHistoryList: [],
@@ -1399,6 +1406,13 @@ currentPowerID: number | null = null;
             drawingImg: '', LIDLASHES_R: '', LIDLASHES_L: '', CONJUNCTIVA_R: '', CONJUNCTIVA_L: '', CORNEA_R: '', CORNEA_L: '', IRIS_R: '', IRIS_L: '',
             PUPIL_R: '', PUPIL_L: '', ANTERIORCHAMBER_R: '', ANTERIORCHAMBER_L: '', CRYSTALLINELENS_R: '', CRYSTALLINELENS_L: '', SCLERA_R: '', SCLERA_L: '', LACRIMALSYSTEM_R: '', LACRIMALSYSTEM_L: ''
           },
+            PDMeasure: {
+                    REDPD: '', LEDPD: '', RENPD: '', LENPD: '', BEPD: ''
+                  },
+           Exam:{
+          OfficeUser: false, BlueLightProtection: false, AntiGlare: false, LightweightLens: false, NightDrivingLens: false, Photochromic: false, OutdoorUser: false, PolarizedSunglasses: false,
+      UVProtection: false, Glass: false, ProgressiveLens: false, ReadingGlasses: false, HighContrast: false,
+      },
           PosteriorSegment: {
             CUPDISCRATIO: '', MACULAFOVEA: '', ABNORMALITIES: '',
           },
@@ -1411,7 +1425,7 @@ currentPowerID: number | null = null;
       this.masterObject2 = {
         ID: null, CustomerID: 0, CompanyID: 0,
         Binocular: {
-          Interpretation: '',
+          Interpretation: '', ExaminationDate: moment().format('YYYY-MM-DD'),
           W4DTDistance: '',
       W4DTNear: '',
       MONOCULAR_RE: '',
@@ -1436,7 +1450,7 @@ currentPowerID: number | null = null;
       this.masterObject3 = {
         ID: null, CustomerID: 0, CompanyID: 0,
         Contact: {
-          FIRSTTIMECLUSERyes: false,
+          FIRSTTIMECLUSERyes: false,   ExaminationDate: moment().format('YYYY-MM-DD'),
           FIRSTTIMECLUSERNo: false,
           PREVIOUSLYWEARING_TEXT: '',
           TYPE_TEXT: '',
@@ -1465,9 +1479,9 @@ currentPowerID: number | null = null;
     }
     else if (Type === 'lowVision') {
       this.masterObject4 = {
-        ID: null, CustomerID: 0, CompanyID: 0,
+        ID: null, CustomerID: 0, CompanyID: 0, 
         lowVision: {
-          Reasonforvisit: '', Occupation: '',
+          Reasonforvisit: '', Occupation: '',   ExaminationDate: moment().format('YYYY-MM-DD'), 
           coList: [],
           ocularHistoryList: [],
           systemicHistoryList: [],
@@ -1671,6 +1685,10 @@ currentPowerID: number | null = null;
             if (Type === 'Comprehensive') {
               this.masterObject = res.data[0];
                this.masterObject.Comprehensive.ADVICE = this.masterObject.Comprehensive.ADVICE.replace(/<br\s*\/?>/g, '\n');
+               this.masterObject.Comprehensive.PDMeasure ??= { REDPD: '', LEDPD: '', RENPD: '', LENPD: '', BEPD: ''};
+               this.masterObject.Comprehensive.Exam ??={
+          OfficeUser: false, BlueLightProtection: false, AntiGlare: false, LightweightLens: false, NightDrivingLens: false, Photochromic: false, OutdoorUser: false, PolarizedSunglasses: false,
+      UVProtection: false, Glass: false, ProgressiveLens: false, ReadingGlasses: false, HighContrast: false,};
               const savedImage = this.masterObject.Comprehensive.SlitLamp.drawingImg;
               if (savedImage) {
                 const img = new Image();
@@ -1735,6 +1753,15 @@ currentPowerID: number | null = null;
                     drawingImg: '', LIDLASHES_R: '', LIDLASHES_L: '', CONJUNCTIVA_R: '', CONJUNCTIVA_L: '', CORNEA_R: '', CORNEA_L: '', IRIS_R: '', IRIS_L: '',
                     PUPIL_R: '', PUPIL_L: '', ANTERIORCHAMBER_R: '', ANTERIORCHAMBER_L: '', CRYSTALLINELENS_R: '', CRYSTALLINELENS_L: '', SCLERA_R: '', SCLERA_L: '', LACRIMALSYSTEM_R: '', LACRIMALSYSTEM_L: ''
                   },
+                    PDMeasure: {
+                    REDPD: '', LEDPD: '', RENPD: '', LENPD: '', BEPD: ''
+                  },
+                    
+
+                   Exam:{
+          OfficeUser: false, BlueLightProtection: false, AntiGlare: false, LightweightLens: false, NightDrivingLens: false, Photochromic: false, OutdoorUser: false, PolarizedSunglasses: false,
+      UVProtection: false, Glass: false, ProgressiveLens: false, ReadingGlasses: false, HighContrast: false,
+      },
                   PosteriorSegment: {
                     CUPDISCRATIO: '', MACULAFOVEA: '', ABNORMALITIES: '',
                   },
@@ -2184,6 +2211,9 @@ syncPower(source: 'spectacle' | 'Comprehensive') {
     const subs: Subscription = this.cs.getCustomerById(this.id).subscribe({
       next: (res: any) => {
         if (res.success) {
+           if (this.masterObject.ID == 0 || this.masterObject.ID == null) {
+          this.masterObject.Comprehensive.ExaminationDate = moment().format('YYYY-MM-DD');
+        }
           this.customerDate = res?.data?.[0] || {};
           this.customerDate.Age = this.customerDate?.Age || 0
           
