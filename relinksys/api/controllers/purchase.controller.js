@@ -1699,7 +1699,7 @@ module.exports = {
     },
 
 
-    AllPrintBarcode: async (req, res, next) => {
+     AllPrintBarcode: async (req, res, next) => {
         let connection;
         try {
             const CompanyID = req.user.CompanyID ? req.user.CompanyID : 0;
@@ -1824,6 +1824,8 @@ module.exports = {
                 printdata.paddingTop = `${Number(printdata.barcodeFormate.paddingTop)}px`;
 
                 printdata.MRPHide = printdata.barcodeFormate.MRPHide;
+                console.log( printdata.MRPHide,' printdata.MRPHide printdata.MRPHide');
+                
                 printdata.taxHide = printdata.barcodeFormate.taxHide;
                 printdata.productNameHide = printdata.barcodeFormate.productNameHide;
                 printdata.specialCodeHide = printdata.barcodeFormate.specialCodeHide;
@@ -1915,20 +1917,20 @@ module.exports = {
                             }
 
                             else if (printdata.CompanyBarcode == 7) {
-                                if (printdata.CompanyID == 507) {
+                                if(printdata.CompanyID == 507 || printdata.CompanyID == 540){
+                                     options = {
+                                    "height": "35mm",
+                                    "width": "90mm",
+                                    timeout: 600000,
+                                };
+                                }else{
                                     options = {
-                                        "height": "35mm",
-                                        "width": "90mm",
-                                        timeout: 600000,
-                                    };
-                                } else {
-                                    options = {
-                                        "height": "27mm",
-                                        "width": "38mm",
-                                        timeout: 600000,
-                                    };
+                                    "height": "27mm",
+                                    "width": "38mm",
+                                    timeout: 600000,
+                                };
                                 }
-
+                               
                             }
                             else if (printdata.CompanyBarcode == 12) {
                                 options = {
@@ -1952,29 +1954,13 @@ module.exports = {
                                 };
                             }
                             else if (printdata.CompanyBarcode == 10) {
-                                const options = {
-                                    format: "A4",
-                                    orientation: "portrait",
+                              const options = {
+                        format: "A4",
+                            orientation: "portrait",
 
-                                    border: {
-                                        top: "15mm",
-                                        right: "0mm",
-                                        bottom: "1mm",
-                                        left: "0mm"
-                                    },
-
-                                    header: {
-                                        height: "0mm",
-                                        contents: ""
-                                    },
-
-                                    footer: {
-                                        height: "0mm",
-                                        contents: ""
-                                    },
-
-                                    timeout: 600000
-                                };
+    
+    timeout: 600000
+};
                             }
 
                             pdf.create(data, options).toFile(fileName, function (err, data) {
@@ -1999,6 +1985,8 @@ module.exports = {
             }
         }
     },
+
+
 
 
 
