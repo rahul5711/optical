@@ -608,11 +608,17 @@ export class InventoryReportComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
-          this.inventoryList = res.data
-          this.inventoryList = res.data.map((item: any) => ({
-           ...item,
-            productImg: JSON.parse(item.productImg || '[]')
-          }));
+          // this.inventoryList = res.data
+         this.inventoryList = res.data.map((item: any) => {
+  const images = JSON.parse(item.productImg || '[]');
+
+  return {
+    ...item,
+    productImg: images.map((img: any) =>
+      typeof img === 'string' ? img : img.ImageName
+    ).filter((img: string) => img)
+  };
+});
           this.inventoryList.forEach((element: any) => {
             this.TtlR = + this.TtlR + element.RetailPrice * element.Count
             this.TtlW = + this.TtlW + element.WholeSalePrice * element.Count
@@ -774,7 +780,16 @@ export class InventoryReportComponent implements OnInit {
       next: (res: any) => {
         if (res.success) {
           this.as.successToast(res.message)
-          this.inventoryList = res.data
+        this.inventoryList = res.data.map((item: any) => {
+  const images = JSON.parse(item.productImg || '[]');
+
+  return {
+    ...item,
+    productImg: images.map((img: any) =>
+      typeof img === 'string' ? img : img.ImageName
+    ).filter((img: string) => img)
+  };
+});
           this.inventoryList.forEach((element: any) => {
             this.TtlR = + this.TtlR + element.RetailPrice * element.Count
             this.TtlW = + this.TtlW + element.WholeSalePrice * element.Count
