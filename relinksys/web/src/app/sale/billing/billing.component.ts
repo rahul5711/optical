@@ -1138,13 +1138,29 @@ getWebsiteLink(){
     }
   }
 
+  // calculateAge() {
+  //   if (this.data.DOB) {
+  //     var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());
+  //     this.data.Age = Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25);
+  //     this.cdr.detectChanges();
+  //   }
+  // }
+
   calculateAge() {
-    if (this.data.DOB) {
-      var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());
-      this.data.Age = Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25);
-      this.cdr.detectChanges();
+    if (
+        this.data.DOB &&
+        this.data.DOB !== '0000-00-00' &&
+        !isNaN(new Date(this.data.DOB).getTime())
+    ) {
+        var timeDiff = Math.abs(Date.now() - new Date(this.data.DOB).getTime());
+
+        this.data.Age = Math.floor(
+            timeDiff / (1000 * 3600 * 24) / 365.25
+        );
+
+        this.cdr.detectChanges();
     }
-  }
+}
 
 //   openModal(content: any) {
 //     this.modalService.open(content, { centered: true, backdrop: 'static', keyboard: false, size: 'md' });
